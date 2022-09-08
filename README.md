@@ -2,6 +2,18 @@
 
 This is the repository of the [identity and authentication working group](https://wiki.internetcomputer.org/wiki/Identity_%26_Authentication). This repository is used to collaborate, document decisions, discuss changes, raise issues and provide feedback.
 
+## Working Group Members
+
+The working group sessions are public and everybody is welcome. If you are interested in discussions about identity and authentication on the IC, please join us.
+
+### Permanent Members
+* DFINITY lead: [Frederik Rothenberger](https://github.com/frederikrothenberger)
+* Community Leads:
+  *  [Dan Ostrovsky](https://github.com/dostro) (Identity Labs)
+  * Bruce Huang (AstroX)
+* DFINITY Research Lead: [Michel Abdalla](https://github.com/michelabdalla-dfinity)
+* Coordinator: [Emma Peretti](https://github.com/emmaperetti)
+
 ## Topics in Discussion
 | Topic                                                                          | Description                                                                                                                                                                                                                                                                                                                          |
 |--------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
