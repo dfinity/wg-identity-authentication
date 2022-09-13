@@ -10,7 +10,7 @@ The working group sessions are public and everybody is welcome. If you are inter
 * DFINITY lead: [Frederik Rothenberger](https://github.com/frederikrothenberger)
 * Community Leads:
   *  [Dan Ostrovsky](https://github.com/dostro) (Identity Labs)
-  * Bruce Huang (AstroX)
+  * [Bruce Huang](https://github.com/brutoshi) (AstroX)
 * DFINITY Research Lead: [Michel Abdalla](https://github.com/michelabdalla-dfinity)
 * Coordinator: [Emma Peretti](https://github.com/emmaperetti)
 
