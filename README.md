@@ -12,7 +12,7 @@ The working group sessions are public and everybody is welcome. If you are inter
   *  [Dan Ostrovsky](https://github.com/dostro) (Identity Labs)
   * [Bruce Huang](https://github.com/brutoshi) (AstroX)
 * DFINITY Research Lead: [Michel Abdalla](https://github.com/michelabdalla-dfinity)
-* Coordinator: [Emma Peretti](https://github.com/emmaperetti)
+* Coordinator: [Mary Dwyer](https://github.com/marydwyer)
 
 ## Topics in Discussion
 | Topic                                                                          | Description                                                                                                                                                                                                                                                                                                                          |
