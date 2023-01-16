@@ -121,7 +121,7 @@ service : {
 
 ## Validation of Derivation Origin
 
-If the IDP uses principal derivation based on the front-end origin, the target canister must be validated against that origin. This validation prevents the derived principal being used in unintended interactions or being leaked to malicious canisters.
+If the IDP uses principal derivation based on the front-end origin, the target canister must be validated against that origin. This validation prevents the derived principal from being used in unintended interactions or being leaked to malicious canisters.
 
 To validate a target canister against an origin, the asset `/.well-known/ic-proxy-config` must be fetched from that origin. The target canister is allowed to be called with a principal from this origin if one of the following conditions is true:
 * the canister id is in the list of `allowedTargetCanisters`
