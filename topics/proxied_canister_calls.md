@@ -65,6 +65,7 @@ The IDP calls the target canister and polls for the result.
 The IDP sends the call result to the relying party:
 * body of the read state response that contains the call result.
 * request id of the request that was made by the IDP.
+* if the IDP uses principal derivation: principal derived from the relying party front-end origin that corresponds to the identity the user authenticated as to authorize the proxy call. This allows the relying party to determine if the user chose a different identity to execute the proxy call than the one used to sign in to the relying party front-end (if any).
 
 The relying party MAY verify that the read state response.
 
@@ -124,8 +125,12 @@ service : {
 If the IDP uses principal derivation based on the front-end origin, the target canister must be validated against that origin. This validation prevents the derived principal from being used in unintended interactions or being leaked to malicious canisters.
 
 To validate a target canister against an origin, the asset `/.well-known/ic-proxy-config` must be fetched from that origin. The target canister is allowed to be called with a principal from this origin if one of the following conditions is true:
-* the canister id is in the list of `allowedTargetCanisters`
-* the list of `allowedTargetCanisters` contains the string `"*"` which is a wild card allowing all canisters
+* the canister id is in the list of `allowedTargetCanisters` and one of the following conditions is true:
+  * the method is listed in the `methods` list
+  * the `methods` is absent.
+* the list of `allowedTargetCanisters` contains the string `"*"` (which is a wild card matching all canisters) and one of the following conditions is true:
+  * the method is listed in the `methods` list
+  * the `methods` is absent.
 
 > Note: In order to allow an IDP to read the path '/.well-known/ic-proxy-config', the CORS response header `Access-Control-Allow-Origin` must be set and allow the IDP origin.
 
@@ -138,10 +143,26 @@ To validate a target canister against an origin, the asset `/.well-known/ic-prox
   "type": "object",
   "properties": {
     "allowedTargetCanisters": {
-      "description": "List of allowed target canister ids that for proxied canister calls using a principal derived from this origin.",
+      "description": "List of allowed target canisters (with an optional allow list of callable methods) that for proxied canister calls using a principal derived from this origin.",
       "type": "array",
       "items": {
-        "type": "string"
+        "type": "object",
+        "properties": {
+          "canisterId": {
+            "type": "string"
+          },
+          "methods": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "canisterId"
+        ]
       },
       "minItems": 0,
       "uniqueItems": true
@@ -155,19 +176,33 @@ To validate a target canister against an origin, the asset `/.well-known/ic-prox
 
 ### Example
 
-List specific canister ids:
+The following example allows only method `foo` on canister `a4gq6-oaaaa-aaaab-qaa4q-cai` and **all** methods on canister `a4gq6-oaaaa-aaaab-qaa4q-cai`:
 
 ```json
 {
-  "allowedTargetCanisters": ["a4gq6-oaaaa-aaaab-qaa4q-cai", "m7sm4-2iaaa-aaaab-qabra-cai"]
+  "allowedTargetCanisters": [
+    {
+      "canisterId": "a4gq6-oaaaa-aaaab-qaa4q-cai",
+      "methods": [
+        "foo"
+      ]
+    },
+    {
+      "canisterId": "a4gq6-oaaaa-aaaab-qaa4q-cai"
+    }
+  ]
 }
 ```
 
-Allowing all canisters to be called:
+Allowing all canisters and all methods to be called:
 
 ```json
 {
-  "allowedTargetCanisters": ["*"]
+  "allowedTargetCanisters": [
+    {
+      "canisterId": "*"
+    }
+  ]
 }
 ```
 
@@ -204,6 +239,8 @@ interface IcProxyCallResult {
   // Request id of the call that was made by the IDP front-end.
   // See https://internetcomputer.org/docs/current/references/ic-interface-spec/#request-id
   requestId: Uint8Array;
+  // principal derived from the relying party origin from the identity used to make the proxy call 
+  principal?: string;
 }
 ```
 
