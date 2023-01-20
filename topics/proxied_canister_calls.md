@@ -28,7 +28,7 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 document are to be interpreted as described in [RFC2119](https://datatracker.ietf.org/doc/html/rfc2119).
 
 ## Assumptions
-* The browser and the IDP can be trusted.
+* The browser and the IDP are trusted by the end-user and the relying party.
 * Relying parties and target canisters might be malicious.
 
 ## Protocol
@@ -44,7 +44,7 @@ The request MUST be sent over an authenticated channel (e.g. WindowPostMessages)
 ### 2: IDP Validates Call and Collects Consent Information
 The IDP fetches the resources required to present the consents screen to the user:
 * The IDP calls the target canister method `validate_proxy_call`. If the call is rejected or the result is not `valid`, then the validation fails.
-* If the IDP derives different principals for each front-end the well-known asset `/.well-known/proxy-config` on the front-end origin MUST be fetched to verify that the given principal is allowed to interact with the target canister using proxy calls.
+* If the IDP derives different principals for each front-end the well-known asset `/.well-known/ic-proxy-config` on the front-end origin MUST be fetched to verify that the given principal is allowed to interact with the target canister using proxy calls.
 
 If any of these validations fails, the protocol aborts with an error.
 ### 3: User Authentication and User Consent
