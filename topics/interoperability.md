@@ -32,6 +32,16 @@ The problem can be phrased slightly differently depending on the type of identit
 * if global principals are used (in conjunction with delegation targets): The goal of this project is to provide means for users to allow additional delegation targets with limited permissions. ![diagram of interactions with global principals](../diagrams/interop_global_principal.png)
 
 
+## Use Cases
+| Number  | Use Case |
+| ------ | -------------------------------------------------------------------------------------------------------------------- |
+| UC-1 | A user wants to use specific photos they stored on dapp A to build a photo book on dapp B, without granting dapp B control over their photos in dapp A. |
+| UC-2 | A user continuously proves that they own an NFT in wallet A to dapp B in a privacy-preserving manner. |
+| UC-3 | A user easily aggregates their assets across multiple wallets in a privacy-preserving manner. |
+| UC-4 | A user may use a single wallet across many dapps in a privacy-preserving manner. |
+| UC-5 | A user wants to use their personal identity (identity 1) to complete payments through a payment dapp (dapp A) while using their professional identity (identity 2) to purchase sunglasses on a shopping dapp (dapp B), without re-connecting in either dapp.|
+
+
 ## Permission Request Flow
 
 The following is a flow loosely based on the OAuth 2.0 / OpenID Connect flows that are generally used by Web 2.0 applications. A flow like this will be familiar to most users.
