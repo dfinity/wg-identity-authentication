@@ -1,6 +1,9 @@
-# Identity & Authentication Working Group
+# Identity and Wallet Standards
 
-This is the repository of the [identity and authentication working group](https://wiki.internetcomputer.org/wiki/Identity_%26_Authentication). This repository is used to collaborate, document decisions, discuss changes, raise issues and provide feedback.
+This is the repository of the [Identity and Wallet Standards Working Group (previously Identity and Authentication)](https://wiki.internetcomputer.org/wiki/Identity_%26_Authentication). This repository is used to collaborate, document decisions, discuss changes, raise issues and provide feedback.
+
+## Mission Statement
+Work towards the development and adoption of ICRC standards related to identity and wallets on the Internet Computer.
 
 ## Meetings
 
@@ -28,11 +31,29 @@ The working group sessions are public and everybody is welcome. If you are inter
 * DFINITY Research Lead: [Michel Abdalla](https://github.com/michelabdalla-dfinity)
 * Coordinator: [Mary Dwyer](https://github.com/marydwyer)
 
-## Topics in Discussion
-| Topic                                                                          | Description                                                                                                                                                                                                                                                                                                                          |
-|--------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Mobile App Integration                                                         | Improving interactions between:<br/>1. native mobile apps (Android and iOS) and identity providers hosted on the IC.<br/>2. dapps hosted on the ic with native mobile wallets acting as identity providers                                                                                                                           |
-| [Interoperability of Services using User Identity](topics/interoperability.md) | Currently, users either have different principals on each service or limited access rights to a specific list of canisters. While great for security some use-cases require to bridge this isolation in a controlled way. The working group needs to find a solution for this problem. Attribute sharing is part of this discussion. |
-| Transaction Approval                                                           | Currently, access to a service can only be given entirely or not at all. This is not sufficient for high value interactions. In those cases, repeated and explicit user consent for the particular interaction is desired (e.g. authorizing asset transfers). Developers should have an easy to use way to achieve that.             |
-| [Attribute Support on the Internet Computer](topics/attribute-sharing.md) | For identity providers such as the Internet Identity, the principal under which a user is known to a dapp is both unique to that dapp and unpredictable, making it hard for dapps to share information about their users with one another. Here we discuss ways of addressing this problem in a privacy preserving manner. |
 
+## Process
+| Status  | Description |
+| ------------- | ------------- |
+| Issue | Propose a topic as an issue  |
+| Prioritized  | Prioritize issue and assign leader (who will drive the progress issue)  |
+| Requirements  | Write requirements for spec  |
+| Draft Solution  | Design specification  |
+| Approved Spec  | Agree on solution design in the working group, which should represent the industry (sign off from X people in the group)  |
+| Community Approval  | Socialize spec (sign off from Y people in the community, including)  |
+| Standard  | ICRC Standard  |
+
+
+## Topics
+| Name  | Topic | Lead  | Status | Related Standard  | Drafted Spec |
+| ------------- | ------------- |  ------------- |  ------------- |  ------------- |  ------------- | 
+| ICRC - # | Verifiable Credentials and Presentations | [Michel Abdalla](https://github.com/michelabdalla-dfinity)  | Draft Solution | [w3c Verifiable Credentials] (https://www.w3.org/TR/vc-data-model/)  |  |
+| ICRC - # | WalletConnect | Ben Zhai  | Prioritized | [Wallet Connect] (https://docs.walletconnect.com/2.0)  |  |
+| ICRC - # | Transaction Approval With Canister Calls | [Frederik Rothenberger](https://github.com/frederikrothenberger)  | Draft Solution | | [PR #16](https://github.com/dfinity/wg-identity-authentication/pull/16)|
+| ICRC - # | rpc calls  | [Dan Ostrovsky](https://github.com/dostro)  | Prioritized | [rpc standard](https://www.jsonrpc.org/specification) | |
+
+
+
+
+
+                                                                                                                                                                                                                                                                                                    
