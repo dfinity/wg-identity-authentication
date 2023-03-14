@@ -14,6 +14,7 @@
   * [Validation of Derivation Origin](#validation-of-derivation-origin)
     * [JSON Schema](#json-schema)
     * [Example](#example)
+  * [Transition Path](#transition-path)
   * [Appendix A: JSON-RPC over WindowPostMessages between Relying Party and IDP](#appendix-a--json-rpc-over-windowpostmessages-between-relying-party-and-idp)
     * [JSON-RPC Requests / Responses](#json-rpc-requests--responses)
       * [Request Proxied Call (Step 1)](#request-proxied-call--step-1-)
@@ -68,7 +69,6 @@ The IDP calls the target canister and polls for the result.
 The IDP sends the call result to the relying party:
 * body of the read state response that contains the call result.
 * request id of the request that was made by the IDP.
-* if the IDP uses principal derivation: principal derived from the relying party front-end origin that corresponds to the identity the user authenticated as to authorize the proxy call. This allows the relying party to determine if the user chose a different identity to execute the proxy call than the one used to sign in to the relying party front-end (if any).
 
 The relying party MAY verify that the read state response.
 
@@ -251,7 +251,5 @@ This sections specifies the types of the message payloads to be sent, if JSON-RP
     // Request id of the call that was made by the IDP front-end.
     // See https://internetcomputer.org/docs/current/references/ic-interface-spec/#request-id
     requestId: Uint8Array;
-    // principal derived from the relying party origin for the identity used to make the proxy call 
-    principal?: string;
   }
   ```
