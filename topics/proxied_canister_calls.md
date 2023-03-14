@@ -1,22 +1,25 @@
 # Proxied Canister Calls
 
-* [Summary](#summary)
-* [Assumptions](#assumptions)
-* [Protocol](#protocol)
-  * [1: Relying Party Sends Proxy Call Request to IDP](#1--relying-party-sends-proxy-call-request-to-idp)
-  * [2: IDP Validates Call and Collects Consent Information](#2--idp-validates-call-and-collects-consent-information)
-  * [3: User Authentication and User Consent](#3--user-authentication-and-user-consent)
-  * [4: IDP Calls Target Canister](#4--idp-calls-target-canister)
-  * [5: IDP Sends Result to Relying Party](#5--idp-sends-result-to-relying-party)
-* [Proxied Call Consent Information Interface](#proxied-call-consent-information-interface)
-* [Validation of Derivation Origin](#validation-of-derivation-origin)
-  * [JSON Schema](#json-schema)
-  * [Example](#example)
-* [Appendix A: Using WindowPostMessages as a Channel between Relying Party and IDP](#appendix-a--using-windowpostmessages-as-a-channel-between-relying-party-and-idp)
-  * [WindowPostMessage Types](#windowpostmessage-types)
-    * [Request Proxied Call (Step 1)](#request-proxied-call--step-1-)
-    * [Proxied Call Result (Step 5)](#proxied-call-result--step-5-)
-    * [Error Result](#error-result)
+<!-- TOC -->
+* [Proxied Canister Calls](#proxied-canister-calls)
+  * [Summary](#summary)
+  * [Assumptions](#assumptions)
+  * [Protocol](#protocol)
+    * [1: Relying Party Sends Proxy Call Request to IDP](#1--relying-party-sends-proxy-call-request-to-idp)
+    * [2: IDP Validates Call and Collects Consent Information](#2--idp-validates-call-and-collects-consent-information)
+    * [3: User Authentication and User Consent](#3--user-authentication-and-user-consent)
+    * [4: IDP Calls Target Canister](#4--idp-calls-target-canister)
+    * [5: IDP Sends Result to Relying Party](#5--idp-sends-result-to-relying-party)
+  * [Proxied Call Consent Information Interface](#proxied-call-consent-information-interface)
+  * [Validation of Derivation Origin](#validation-of-derivation-origin)
+    * [JSON Schema](#json-schema)
+    * [Example](#example)
+  * [Appendix A: JSON-RPC over WindowPostMessages between Relying Party and IDP](#appendix-a--json-rpc-over-windowpostmessages-between-relying-party-and-idp)
+    * [JSON-RPC Requests / Responses](#json-rpc-requests--responses)
+      * [Request Proxied Call (Step 1)](#request-proxied-call--step-1-)
+      * [Proxied Call Result (Step 5)](#proxied-call-result--step-5-)
+<!-- TOC -->
+
 
 ## Summary
 This specification describes a protocol for proxying canister calls through an identity provider (IDP) on the IC. This gives dapps on the IC the ability to send canister calls to other services on the users behalf if explicitly consented to by the end-user.
@@ -40,7 +43,7 @@ The IDP receives a request to proxy a canister call. The request MUST contain th
 * Arg: Argument to pass to the canister method
 * If the IDP derives different principals for each front-end (i.e. NFID, Internet Identity) the derivation origin needs to be included as well
 
-The request MUST be sent over an authenticated channel (e.g. WindowPostMessages).
+The request MUST be sent over an authenticated channel (e.g. WindowPostMessages). It is RECOMMENDED to use [JSON-RPC 2.0](https://www.jsonrpc.org/specification) for the interaction between the relying party and the IDP (see [Appendix A](#appendix-a--json-rpc-over-windowpostmessages-between-relying-party-and-idp)).
 ### 2: IDP Validates Call and Collects Consent Information
 The IDP fetches the resources required to present the consents screen to the user:
 * The IDP calls the target canister method `validate_proxy_call`. If the call is rejected or the result is not `valid`, then the validation fails.
@@ -206,52 +209,42 @@ Allowing all canisters and all methods to be called:
 }
 ```
 
-## Appendix A: Using WindowPostMessages as a Channel between Relying Party and IDP
+## Appendix A: JSON-RPC over WindowPostMessages between Relying Party and IDP
 
-As described in [step 1](#1--relying-party-sends-proxy-call-request-to-idp) of the protocol, the request form the relying party to the IDP must be sent over an authenticated channel. One such channel is the `WindowPostMessage` browser API.
+As described in [step 1](#1--relying-party-sends-proxy-call-request-to-idp) of the protocol, the request form the relying party to the IDP MUST be sent over an authenticated channel. One such channel is the `WindowPostMessage` browser API.
 
 This allows the IDP front-end window to determine the origin of the relying party (which must be displayed on the consent screen, see [step 3](#3--user-authentication-and-user-consent)).
 
-This sections specifies the types of the message payloads to be sent, if the `WindowPostMessage` browser API is used to implement this protocol.
+This sections specifies the types of the message payloads to be sent, if JSON-RPC 2.0 over the `WindowPostMessage` browser API is used to implement this protocol.
 
-### WindowPostMessage Types
+### JSON-RPC Requests / Responses
 
 #### Request Proxied Call (Step 1)
 
-```
-interface IcProxyCallRequest {
-  kind: "ic-proxy-call-request";
-  // textual representation of the target canister principal
-  targetCanister: string;
-  methodName: string;
-  arg: Uint8Array;
-  derivationOrigin?: string;
-}
-```
+* JSON-RPC `method`: "ic-proxy-call-request"
+* JSON-RPC `params` type:
+  ``` json
+  interface IcProxyCallParams {
+    // textual representation of the target canister principal
+    targetCanister: string;
+    methodName: string;
+    arg: Uint8Array;
+    derivationOrigin?: string;
+  }
+  ```
 
 #### Proxied Call Result (Step 5)
 
-```
-interface IcProxyCallResult {
-  kind: "ic-proxy-call-result";
-  // Response body of the read state request containing the call result, see https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-read-state
-  readStateResponseBody: Uint8Array;
-  // Request id of the call that was made by the IDP front-end.
-  // See https://internetcomputer.org/docs/current/references/ic-interface-spec/#request-id
-  requestId: Uint8Array;
-  // principal derived from the relying party origin from the identity used to make the proxy call 
-  principal?: string;
-}
-```
-
-#### Error Result
-
-```
-interface IcProxyCallFailure {
-  kind: "ic-proxy-call-failure";
-  // Description intended for developers
-  description: string;
-  errorCode: number;
-}
-```
-
+* JSON-RPC `method`: "ic-proxy-call-result"
+* JSON-RPC `result` type:
+  ``` json
+  interface IcProxyCallResult {
+    // Response body of the read state request containing the call result, see https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-read-state
+    readStateResponseBody: Uint8Array;
+    // Request id of the call that was made by the IDP front-end.
+    // See https://internetcomputer.org/docs/current/references/ic-interface-spec/#request-id
+    requestId: Uint8Array;
+    // principal derived from the relying party origin for the identity used to make the proxy call 
+    principal?: string;
+  }
+  ```
