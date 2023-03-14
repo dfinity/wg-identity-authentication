@@ -55,7 +55,7 @@ The following consent information MUST be shown to the user:
 * origin of the relying party
 * derivation origin, if any
 * target canister
-* human readable call consent information (retrieved from the target canister)
+* human-readable call consent information (retrieved from the target canister)
 
 The user needs to be presented with options to accept or reject the call. Explicit user interaction (i.e. pressing a button) is required in this step. If the user owns multiple identities on the IDP they SHOULD have the option to select which one is used. The consent screen MAY also show the technical call details (i.e. method name and arguments).
 
@@ -93,7 +93,7 @@ type proxy_call_validation = record {
 };
 
 type consent_info = record {
-    // Consent text describing in a human readable format what the call will do.
+    // Consent text describing in a human-readable format what the call will do.
     // The format is markdown.
     consent_text: text;
     // Same semantics as HTTP lang attribute
@@ -125,7 +125,7 @@ service : {
 
 ## Validation of Derivation Origin
 
-If the IDP uses principal derivation based on the front-end origin, the target canister must be validated against that origin. This validation prevents the derived principal from being used in unintended interactions or being leaked to malicious canisters.
+If the IDP uses principal derivation based on the front-end origin, the target canister MUST be validated against that origin. This validation prevents the derived principal from being used in unintended interactions or being leaked to malicious canisters.
 
 To validate a target canister against an origin, the asset `/.well-known/ic-proxy-config` must be fetched from that origin. The target canister is allowed to be called with a principal from this origin if one of the following conditions is true:
 * the canister id is in the list of `allowedTargetCanisters` and one of the following conditions is true:
