@@ -228,9 +228,9 @@ This sections specifies the types of the message payloads to be sent, if JSON-RP
 
 #### Request Proxied Call (Step 1)
 
-* JSON-RPC `method`: "ic-proxy-call-request"
+* JSON-RPC `method`: ic-proxy-call-request
 * JSON-RPC `params` type:
-  ``` json
+  ```
   interface IcProxyCallParams {
     // textual representation of the target canister principal
     targetCanister: string;
@@ -242,9 +242,9 @@ This sections specifies the types of the message payloads to be sent, if JSON-RP
 
 #### Proxied Call Result (Step 5)
 
-* JSON-RPC `method`: "ic-proxy-call-result"
+* JSON-RPC `method`: ic-proxy-call-result
 * JSON-RPC `result` type:
-  ``` json
+  ```
   interface IcProxyCallResult {
     // Response body of the read state request containing the call result, see https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-read-state
     readStateResponseBody: Uint8Array;
