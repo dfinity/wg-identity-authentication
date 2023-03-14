@@ -209,6 +209,13 @@ Allowing all canisters and all methods to be called:
 }
 ```
 
+## Transition Path
+
+To ease the adoption of this standard, IDPs MAY allow proxy-calling even if the target canister has not implemented the required canister interface if the following additional security measures are implemented:
+* the `target` is am open-source, well-known canister
+* the human-readable consent information is provided by the IDP directly
+* the user is informed appropriately that the consent information is not provided by the `target` canister
+
 ## Appendix A: JSON-RPC over WindowPostMessages between Relying Party and IDP
 
 As described in [step 1](#1--relying-party-sends-proxy-call-request-to-idp) of the protocol, the request form the relying party to the IDP MUST be sent over an authenticated channel. One such channel is the `WindowPostMessage` browser API.
