@@ -1,4 +1,4 @@
-# Canister Call Consent Messages
+# ICRC-21: Canister Call Consent Messages
 
 ## Summary
 This specification describes a protocol for obtaining human-readable consent messages for canister calls. These messages are intended to be shown to users to help them make informed decisions about whether to approve a canister call / sign a transaction.
