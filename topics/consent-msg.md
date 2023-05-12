@@ -77,7 +77,10 @@ type consent_message_response = variant {
 };
 
 service : {
-    consent_message: (consent_message_request) -> (consent_message_response);
+    // Returns a human-readable consent message for the given canister call.
+    // The return type is `opt` to allow future extension of the consent_message_response variant.
+    // (see recommendation here: https://internetcomputer.org/docs/current/references/candid-ref#type-variant--n--t--)
+    consent_message: (consent_message_request) -> (opt consent_message_response);
 }
 ```
 
@@ -92,7 +95,12 @@ The canister call is designed to be used with both cold and hot wallets. In addi
 This section describes the interactions between the wallet and the relying party for _hot_ wallets:
 
 1. The relying party connects to the wallet and requests a signature on a canister call.
-2. The wallet fetches the consent message from the target canister and validates the response.
+2. The wallet fetches the consent message from the target canister and validates the response:
+   * `consent_message_request.method` must match the canister call method.
+   * `consent_message_request.arg` must match the canister call argument.
+   * The `consent_message` canister call must be made to the target canister.
+   * The response to the `consent_message` canister call (fetched using `read_state`) be delivered in a valid certificate (see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification)).
+   * The decoded response must not be `null` and match the `consent_message_response.valid` variant.
 3. The consent message is presented to the user.
 4. The user approves the canister call.
 5. The request is signed, alongside with the read state request for the matching request id and sent back to the relying party.
@@ -103,11 +111,16 @@ This section describes the interactions between the wallet and the relying party
 * the wallet is not able to interact with canisters
 * no knowledge of time is assumed
 
-1. The relying party fetches the consent message from the target canister matching the canister call.
+1. The relying party fetches the consent message from the target canister (matching the canister call).
 2. The canister call and the consent message request as well as the certified response are transferred to the wallet.
 3. The wallet validates the consent message:
-   1. The consent message request must match the canister call.
-   2. The consent message response must be certified and valid.
+   1. The consent message request must match the canister call:
+      * `consent_message_request.method` must match the canister call method.
+      * `consent_message_request.arg` must match the canister call argument.
+      * The `consent_message` request `canister_id` must match the target canister id.
+   2. The consent message response must be certified and valid:
+      * The response to the `consent_message` canister call must be provided in a valid certificate (see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification)).
+      * The decoded response must not be `null` and match the `consent_message_response.valid` variant.
    3. The consent message response certificate `time` must be recent with respect to the `ingress_expiry` of the canister call.
    4. The consent message user preferences must match the user preferences of the wallet. In particular, the consent message must be in a language understood by the user.
 4. If validation is successful, the consent message is presented to the user.
