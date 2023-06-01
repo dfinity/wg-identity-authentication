@@ -108,7 +108,9 @@ This section describes the interactions between the wallet and the relying party
    * If the user approves the canister call, continue with step 5.
    * If the user rejects the canister call (or does not respond within a certain time frame), the wallet returns an error to the relying party. No further steps are executed.
 5. The request is signed, submitted to the IC.
-6. The certified response is retrieved using read state requests and returned to the relying party.
+6. The certified response is retrieved using read state requests
+7. A message should be displayed to the user that indicates whether the canister call was successful or not.
+8. The response returned to the relying party.
 
 ### Cold Wallet Use-Case
 
@@ -134,11 +136,13 @@ This section describes the interactions between the wallet and the relying party
 5. If validation is successful, the consent message is presented to the user.
    * Otherwise, the wallet must abort the signing process and display an error message to the user. No further steps are executed.
 6. User approval:
-   * If the user approves the canister call, continue with step 5.
+   * If the user approves the canister call, continue with step 7.
    * If the user rejects the canister call (or does not respond within a certain time frame), the wallet returns an error to the relying party (via the chain connected component). No further steps are executed.
 7. The request is signed and transferred to the chain connected component.
-8. The request is signed, submitted to the IC.
-9. The certified response is retrieved using read state requests and returned to the relying party.
+8. The request is submitted to the IC.
+9. The certified response is retrieved using read state requests
+10. A message should be displayed to the user that indicates whether the canister call was successful or not.
+11. The response returned to the relying party.
 
 ## Example
 
