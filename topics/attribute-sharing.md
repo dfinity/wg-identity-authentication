@@ -51,6 +51,8 @@ In order to preserve user privacy, the value of P<sub>New</sub> needs to be unpr
 
 ## Proposal focused on self-sovereign identities
 
+**NOTE:** *The flow described below is slightly outdated, an update is coming soon (in particular, after some simplifications, there is no need for an Issuer Frontend anymore).*
+
 Following the intuition above, we now propose a specific flow focused on self-sovereign identities, which does __not__ provide payment support. ![diagram of message flow among the issuer, identity provider, and relying party dapps](../diagrams/attribute-sharing-flow.png)
 
 This proposal has the following features:
@@ -60,6 +62,26 @@ This proposal has the following features:
 * Identity providers can use the credential manifest information to submit the credential application for the user. This is represented by step (11).
 * If the issuer accepted the credential application by the user, it issues a credential using the new joint identifier for the user, as indicated in step (14).  The credential format can be based on the verifiable credentials data model [[VC-DATA-MODEL][VC]].
 * It allows users to use different anchors with respect to the issuer and relying party dapps, as indicated in step (7).
+
+
+## MVP as the first step towards the full support of attribute sharing.
+
+In order to demonstrate how credentials can be supported in the IC, we're
+working first on an MVP-version (Minimum Viable Product) of attribute sharing.  
+Specifically, the MVP will reduce/postpone some requirements:  
+* No billing support
+* No system support for verifying credentials – a Rust library instead. 
+* No manifest request/response, issuer credential types already known to Relying Party and Identity Provider
+
+![Diagram of Attribute Sharing MVP](../diagrams/attribute-sharing-mvp.png)
+
+The basic setup for the MVP is as follows
+* **Issuer**: Dummy backend providing two possible attributes for a given principal
+* **Relying Party**: Dummy frontend and backend to request and verify credentials with a single attribute in it
+* **Identity Provider**: frontend and backend support for bridging credentials
+
+The development of the MVP happens in [vc-mvp](https://github.com/dfinity/internet-identity/tree/vc-mvp)-branch, which
+is periodically synced with the main branch (to avoid significant discrepancies).
 
 ## Flow description
 
