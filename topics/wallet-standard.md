@@ -118,6 +118,7 @@ Once the connection between the relying party and wallet is established, the rel
 
 - `text`: A plain `string` value.
 - `blob`: A `string` value describing binary data encoded in base64.
+- `nat`: A `string` value of an unsigned 64-bit integer.
 - `HashTree`: A recursive type defined as a union of:
     - `[0]`: Empty Node.
     - `[1, HashTree, HashTree]`: Fork Node.
