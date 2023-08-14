@@ -1,12 +1,19 @@
 # ICRC-25: Wallet Interaction Standard
 
+## Summary
+
+This specification describes a communication protocol between dapps (decentralized applications) and wallets. It defines messages that both sides should use to interact with each other and provides guidelines on how to process them.
+
+## Terminology
+
+* wallet: A service that manages a user's keys and can sign and perform canister calls on their behalf.
+* relying party: A service that wants to request calls on a specific canister.
+
 ## Messages
 
+### `permission`
 
-
-### Permission
-
-The purpose of the permission messages is to establish a connection between a relying party and a wallet.
+The purpose of the `permission` messages is to establish a connection between a relying party and a wallet, grant the relying party access to public parts of the user's identity and define the scope of actions the relying part is allowed to perform.
 
 #### Types
 
@@ -118,9 +125,9 @@ The purpose of the permission messages is to establish a connection between a re
 }
 ```
 
-### Canister Call
+### `canister_call`
 
-Once the connection between the relying party and wallet is established, the relying party can request the wallet to execute canister calls.
+Once the connection between the relying party and the wallet is established, and the relying party has been granted the `canister_call` permission scope, the relying party can request the wallet to execute canister calls.
 
 #### Types
 
@@ -226,7 +233,7 @@ Once the connection between the relying party and wallet is established, the rel
 }
 ```
 
-### Error
+### `error`
 
 While processing a request from the relying party, the wallet can cancel it at any time by sending an error in response.
 
