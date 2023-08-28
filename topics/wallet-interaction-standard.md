@@ -22,7 +22,7 @@ The purpose of the `permission` messages is to establish a connection between a 
 
 #### Request
 
-`version` (`text`): The version of the standard used.
+`version` (`text`): The version of the standard used. If the wallet does not support the version of the request, it must send the `"VERSION_NOT_SUPPORTED"` error in response.
 
 `appMetadata`: Information about the relying party.
 - `name` (`text`): The user-friendly name of the relying party. 
@@ -40,7 +40,7 @@ The purpose of the `permission` messages is to establish a connection between a 
 
 #### Response
 
-`version` (`text`): The version of the standard used.
+`version` (`text`): The version of the standard used. It must match the `version` from the request.
 
 `appMetadata`: Information about the wallet.
 - `name` (`text`): The user-friendly name of the wallet.
@@ -126,7 +126,7 @@ Once the connection between the relying party and the wallet is established, and
 
 #### Request
 
-`version` (`text`): The version of the standard used.
+`version` (`text`): The version of the standard used. If the wallet does not support the version of the request, it must send the `"VERSION_NOT_SUPPORTED"` error in response.
 
 `network`: Network details on which the call should be executed.
 - `chainId` (`text`) - The chain id of the network as described in the [CAIP-2]() standard.
@@ -144,7 +144,7 @@ Once the connection between the relying party and the wallet is established, and
 
 #### Response
 
-`version` (`text`): The version of the standard used.
+`version` (`text`): The version of the standard used. It must match the `version` from the request.
 
 `network`: Network details on which the call was executed.
 - `chainId` (`text`): The chain id of the network as described in the [CAIP-2]() standard.
@@ -230,6 +230,7 @@ While processing a request from the relying party, the wallet can cancel it at a
 
 `errorType` (`text`): The reason behind the cancellation. Possible values:
 - `"ABORTED"`: The user has canceled the action.
+- `"VERSION_NOT_SUPPORTED`: The version of the standard is not supported by the wallet.
 - `"NETWORK_NOT_SUPPORTED"`: The network on which the action was requested is not supported by the wallet.
 - `"NOT_GRANTED"`: The wallet has not granted permission to perform the action.
 - `"NETWORK"`: The network call failed.
