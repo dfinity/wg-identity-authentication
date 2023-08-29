@@ -54,17 +54,17 @@ The purpose of the `permission` messages is to establish a connection between a 
 `scopes`: A list of permission scopes that the user has agreed the relying party can be granted. This should be a subset of the `scopes` field from the original request. Possible values:
 - `"canister_call"`
 
-`identity`: The identity the user has selected.
+`identities`: A list of identities the user has selected.
 - `publicKey` (`blob`): The DER-encoded public key associated with the identity. The public key can be used to [derive a self-authenticating principal](https://internetcomputer.org/docs/current/references/ic-interface-spec/#principal).
 - `ledger` (optional): Ledger data.
-    - `subaccount` (`blob`, optional)
+    - `subaccounts` (`blob`, optional): A list of subaccounts the user has selected.
 
 `signature` (`blob`): The signature produced by signing the concatenation of the domain separator `\x0Aic-wallet-challenge` (UTF-8 encoded) and the challenge with the private key associated with the `identity`.
 
 #### Use-Case
 
 1. The relying party sends a `permission` request to the wallet.
-2. Upon receiving the message, the wallet presents the details of the to-be-established connection to the user and asks the user to select the identity that will be paired in response.
+2. Upon receiving the message, the wallet presents the details of the to-be-established connection to the user and asks the user to select identities that will be paired in response.
     - If the user approves the request, the wallet sends a succesful response back to the relying party.
     - If the user rejects the request, the wallet sends a response with an error back to the relying party.
 3. After receiving a succesful response, the relying party verifies that the wallet has access to the private key associated with the provided identity:
@@ -106,9 +106,11 @@ The purpose of the `permission` messages is to establish a connection between a 
             "chainId": "icp:737ba355e855bd4b61279056603e0550"
         }],
         "scopes": ["canister_call"],
-        "identity": {
-            "publicKey": "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEOTdHYwpFTr/oPXOfLQcteymk8AQE41VwPQ1W7Xpm0Zt1AY4+5aOnMAbAIjXEchxPuGbPWqPqwntXMPs3w4rOaA==" /* principal: 2mdal-aedsb-hlpnv-qu3zl-ae6on-72bt5-fwha5-xzs74-5dkaz-dfywi-aqe */
-        },
+        "identities": [
+            {
+                "publicKey": "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEOTdHYwpFTr/oPXOfLQcteymk8AQE41VwPQ1W7Xpm0Zt1AY4+5aOnMAbAIjXEchxPuGbPWqPqwntXMPs3w4rOaA==" /* principal: 2mdal-aedsb-hlpnv-qu3zl-ae6on-72bt5-fwha5-xzs74-5dkaz-dfywi-aqe */
+            }
+        ],
         "signature": "bldf7qn7DC5NzTyX5kp4GpZHaEncE5/6n/Y8av3xjEwIVFAwmhyW0uM+WBXRTj4QbScot04dfaBXUOcSWF0IjQ=="
     }
 }
