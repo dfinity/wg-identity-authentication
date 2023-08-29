@@ -33,7 +33,7 @@ The purpose of the `permission` messages is to establish a connection between a 
 - `name` (`text`, optional): An optional user-friendly name of the network.
 - `rpcUrl` (`text`, optional): An optional custom RPC URL associated with the network.
 
-`scopes`: A list of permission scopes the relying party requires. Possible values: 
+`scopes`: A list of permission scopes the relying party requires. If the wallet does not support any of the requested scopes, it should ignore it. Possible values: 
 - `"canister_call"`
 
 `challenge` (`blob`): A challenge used for the wallet to sign in order to prove its access to the identity. The challenge should be an array of 32 cryptographically random bytes generated from a secure random source by the sender of the request.
@@ -51,7 +51,7 @@ The purpose of the `permission` messages is to establish a connection between a 
 - `name` (`text`, optional): An optional user-friendly name of the network.
 - `rpcUrl` (`text`, optional): An optional custom RPC URL associated with the network.
 
-`scopes`: A list of permission scopes that the user has agreed the relying party can be granted. This should be a subset of the `scopes` field from the original request. Possible values:
+`scopes`: A list of permission scopes that the wallet supports and the user has agreed the relying party can be granted. This should be a subset of the `scopes` field from the original request. Possible values:
 - `"canister_call"`
 
 `identities`: A list of identities the user has selected.
