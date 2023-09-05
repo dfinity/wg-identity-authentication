@@ -81,6 +81,10 @@ service : {
     // The return type is `opt` to allow future extension of the consent_message_response variant.
     // (see recommendation here: https://internetcomputer.org/docs/current/references/candid-ref#type-variant--n--t--)
     icrc21_consent_message: (icrc21_consent_message_request) -> (opt icrc21_consent_message_response);
+    
+    // Returns a list of supported standards related to consent messages that this canister implements.
+    // The result should always have at least one entry: record { name = "ICRC-21"; url = "https://github.com/dfinity/wg-identity-authentication" }
+    icrc21_supported_standards : () -> (vec record { name : text; url : text }) query;
 }
 ```
 
