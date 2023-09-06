@@ -27,13 +27,13 @@ The mechanisms described in this specification ease the technical burden and emp
 The following interface must be implemented to support canister call consent messages:
 
 ```
-type consent_preferences = record {
+type icrc21_consent_preferences = record {
     // Same semantics as HTTP Accept-Language header
     language: text;
 
 };
 
-type consent_message_request = record {
+type icrc21_consent_message_request = record {
     // Method name of the canister call.
     method: text;
     // Argument of the canister call.
@@ -42,7 +42,7 @@ type consent_message_request = record {
     consent_preferences: consent_preferences;
 };
 
-type consent_info = record {
+type icrc21_consent_info = record {
     // Consent message describing in a human-readable format what the call will do.
     // Markdown formatting can be used. No external resources (e.g. images) are allowed.
     //
@@ -60,31 +60,35 @@ type consent_info = record {
     language: text;
 };
 
-type error_info = record {
+type icrc21_error_info = record {
     // Machine parsable error. Can be chosen by the target canister but should indicate the error category.
     error_code: nat;
     // Human readable technical description of the error intended for developers, not the end-user.
     description: text;
 };
 
-type consent_message_response = variant {
+type icrc21_consent_message_response = variant {
     // The call is valid,
-    valid: consent_info;
+    valid: icrc21_consent_info;
     // The call is not allowed (i.e. because calls to this method are not supposed to be signed by end-users, the arguments exceed certain bounds, etc.)
-    forbidden: error_info;
+    forbidden: icrc21_error_info;
     // The call is malformed and would cause an error (i.e. the method does not exist, the arguments cannot be decoded, etc.).
     malformed_call: error_info;
     // The call does not have a consent message (yet). This error should be used by canister developers that want to gradually
     // roll out support for the consent message interface. I.e. as a placeholder result for canister calls that will provide
     // a consent message or a definitive error result (see above) in the future.
-    not_supported: error_info;
+    not_supported: icrc21_error_info;
 };
 
 service : {
     // Returns a human-readable consent message for the given canister call.
     // The return type is `opt` to allow future extension of the consent_message_response variant.
     // (see recommendation here: https://internetcomputer.org/docs/current/references/candid-ref#type-variant--n--t--)
-    consent_message: (consent_message_request) -> (opt consent_message_response);
+    icrc21_consent_message: (icrc21_consent_message_request) -> (opt icrc21_consent_message_response);
+    
+    // Returns a list of supported standards related to consent messages that this canister implements.
+    // The result should always have at least one entry: record { name = "ICRC-21"; url = "https://github.com/dfinity/wg-identity-authentication" }
+    icrc21_supported_standards : () -> (vec record { name : text; url : text }) query;
 }
 ```
 
@@ -102,11 +106,11 @@ This section describes the interactions between the wallet and the relying party
 
 1. The relying party connects to the wallet and requests a signature on a canister call.
 2. The wallet fetches the consent message from the target canister and validates the response:
-   * `consent_message_request.method` must match the canister call method.
-   * `consent_message_request.arg` must match the canister call argument.
-   * The `consent_message` canister call must be made to the target canister.
-   * The response to the `consent_message` canister call (fetched using `read_state`) must be delivered in a valid certificate (see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification)).
-   * The decoded response must not be `null` and match the `consent_message_response.valid` variant.
+   * `icrc21_consent_message_request.method` must match the canister call method.
+   * `icrc21_consent_message_request.arg` must match the canister call argument.
+   * The `icrc21_consent_message` canister call must be made to the target canister.
+   * The response to the `icrc21_consent_message` canister call (fetched using `read_state`) must be delivered in a valid certificate (see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification)).
+   * The decoded response must not be `null` and match the `icrc21_consent_message_response.valid` variant.
 3. The consent message is presented to the user.
 4. User approval:
    * If the user approves the canister call, continue with step 5.
@@ -129,12 +133,12 @@ This section describes the interactions between the wallet and the relying party
 3. The canister call and the consent message request as well as the certified response are transferred to the cold wallet component.
 4. The cold wallet component validates the consent message:
    1. The consent message request must match the canister call:
-      * `consent_message_request.method` must match the canister call method.
-      * `consent_message_request.arg` must match the canister call argument.
-      * The `consent_message` request `canister_id` must match the target canister id.
+      * `icrc21_consent_message_request.method` must match the canister call method.
+      * `icrc21_consent_message_request.arg` must match the canister call argument.
+      * The `icrc21_consent_message` request `canister_id` must match the target canister id.
    2. The consent message response must be certified and valid:
-      * The response to the `consent_message` canister call must be provided in a valid certificate (see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification)).
-      * The decoded response must not be `null` and match the `consent_message_response.valid` variant.
+      * The response to the `icrc21_consent_message` canister call must be provided in a valid certificate (see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification)).
+      * The decoded response must not be `null` and match the `icrc21_consent_message_response.valid` variant.
    3. The consent message response certificate `time` must be recent with respect to the `ingress_expiry` of the canister call.
    4. The consent message user preferences must match the user preferences of the wallet. In particular, the consent message must be in a language understood by the user.
 5. If validation is successful, the consent message is presented to the user.
@@ -169,7 +173,7 @@ Argument for the ledger canister call to `transfer`:
 )
 ```
 
-Argument for the ledger canister call to `consent_message`:
+Argument for the ledger canister call to `icrc21_consent_message`:
 
 ```
 (
@@ -189,7 +193,7 @@ Argument for the ledger canister call to `consent_message`:
 (
    variant {
       valid = record {
-         consent_text = "Transfer 7.89 ICP to account ed2182..., include memo: 123. Fee: 0.0001 ICP.";
+         consent_message = "Transfer 7.89 ICP to account ed2182..., include memo: 123. Fee: 0.0001 ICP.";
          language = "en-US"
       }
    }
