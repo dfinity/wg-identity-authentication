@@ -74,6 +74,10 @@ type icrc21_consent_message_response = variant {
     forbidden: icrc21_error_info;
     // The call is malformed and would cause an error (i.e. the method does not exist, the arguments cannot be decoded, etc.).
     malformed_call: icrc21_error_info;
+    // The call does not have a consent message (yet). This error should be used by canister developers that want to gradually
+    // roll out support for the consent message interface. I.e. as a placeholder result for canister calls that will provide
+    // a consent message or a definitive error result (see above) in the future.
+    not_supported: icrc21_error_info;
 };
 
 service : {
