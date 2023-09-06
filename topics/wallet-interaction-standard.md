@@ -1,5 +1,9 @@
 # ICRC-25: Wallet Interaction Standard
 
+| Status |
+|:------:|
+| Draft  |
+
 ## Summary
 
 This specification describes a communication protocol between dapps (decentralized applications) and wallets. It defines messages that both sides should use to interact with each other and provides guidelines on how to process them.
