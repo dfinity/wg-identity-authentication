@@ -33,7 +33,7 @@ The purpose of the `permission` messages is to establish a connection between a 
 - `iconUrl` (`text`, optional): An optional URL pointing to an icon resource representing the relying party.
 
 `networks`: A list of networks on which the relying party plans to operate.
-- `chainId`(`text`): The chain id of the network as described in the [CAIP-2]() standard.
+- `chainId`(`text`): The chain id of the network as described in the [CAIP-2](https://github.com/icvc/icp-namespace/blob/caip2/caip2.md) standard.
 - `name` (`text`, optional): An optional user-friendly name of the network.
 - `rpcUrl` (`text`, optional): An optional custom RPC URL associated with the network.
 
@@ -51,7 +51,7 @@ The purpose of the `permission` messages is to establish a connection between a 
 - `iconUrl` (`text`, optional): An optional URL poiting to an icon resource representing the wallet.
 
 `networks`: A list of networks on which the user has agreed the relying party can operate. This should be a subset of the `networks` from the original request.
-- `chainId` (`text`): The chain id of the network as described in the [CAIP-2]() standard.
+- `chainId` (`text`): The chain id of the network as described in the [CAIP-2](https://github.com/icvc/icp-namespace/blob/caip2/caip2.md) standard.
 - `name` (`text`, optional): An optional user-friendly name of the network.
 - `rpcUrl` (`text`, optional): An optional custom RPC URL associated with the network.
 
@@ -132,7 +132,7 @@ Once the connection between the relying party and the wallet is established, and
 `version` (`text`): The version of the standard used. If the wallet does not support the version of the request, it must send the `"VERSION_NOT_SUPPORTED"` error in response.
 
 `network`: Network details on which the call should be executed.
-- `chainId` (`text`) - The chain id of the network as described in the [CAIP-2]() standard.
+- `chainId` (`text`) - The chain id of the network as described in the [CAIP-2](https://github.com/icvc/icp-namespace/blob/caip2/caip2.md) standard.
 - `name` (`text`, optional): An optional user-friendly name of the network.
 - `rpcUrl` (`text`, optional): An optional custom RPC URL associated with the network.
 
@@ -150,7 +150,7 @@ Once the connection between the relying party and the wallet is established, and
 `version` (`text`): The version of the standard used. It must match the `version` from the request.
 
 `network`: Network details on which the call was executed.
-- `chainId` (`text`): The chain id of the network as described in the [CAIP-2]() standard.
+- `chainId` (`text`): The chain id of the network as described in the [CAIP-2](https://github.com/icvc/icp-namespace/blob/caip2/caip2.md) standard.
 - `name` (`text`, optional): An optional user-friendly name of the network.
 - `rpcUrl` (`text`, optional): An optional custom RPC URL associated with the network.
 
@@ -168,7 +168,7 @@ Once the connection between the relying party and the wallet is established, and
 #### Use-Case
 
 1. The relying party sends a `canister_call` request to the wallet.
-2. Upon receiving the request, the wallet validates whether the relying party has the permission to request the action and processes the message following the [ICRC-21]() specification.
+2. Upon receiving the request, the wallet validates whether the relying party has the permission to request the action and processes the message following the [ICRC-21](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/consent-msg.md) specification.
     - If the user approves the request:
         - The wallet sends the call to the IC (in order to get a certified results, all calls, including queries, should be sent as `update` calls), retrieves its [content map](https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-call) and [calculates a request id](https://internetcomputer.org/docs/current/references/ic-interface-spec/#request-id) based on it.
         - The wallet continues to call `read_state` for the calculated request id until [the status of the call](https://internetcomputer.org/docs/current/references/ic-interface-spec/#state-tree-request-status) indicates that the call has been processed (succesfully or not).
