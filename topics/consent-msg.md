@@ -39,7 +39,7 @@ type icrc21_consent_message_request = record {
     // Argument of the canister call.
     arg: blob;
     // User preferences with regards to the consent message presented to the end-user.
-    consent_preferences: consent_preferences;
+    consent_preferences: icrc21_consent_preferences;
 };
 
 type icrc21_consent_info = record {
@@ -67,17 +67,24 @@ type icrc21_error_info = record {
     description: text;
 };
 
-type icrc21_consent_message_response = variant {
-    // The call is valid,
-    valid: icrc21_consent_info;
+type icrc21_error = variant {
     // The call is not allowed (i.e. because calls to this method are not supposed to be signed by end-users, the arguments exceed certain bounds, etc.)
-    forbidden: icrc21_error_info;
+    Forbidden: icrc21_error_info;
     // The call is malformed and would cause an error (i.e. the method does not exist, the arguments cannot be decoded, etc.).
-    malformed_call: icrc21_error_info;
+    MalformedCall: icrc21_error_info;
     // The call does not have a consent message (yet). This error should be used by canister developers that want to gradually
     // roll out support for the consent message interface. I.e. as a placeholder result for canister calls that will provide
     // a consent message or a definitive error result (see above) in the future.
-    not_supported: icrc21_error_info;
+    NotSupported: icrc21_error_info;
+    // Any error not covered by the above variants.
+    GenericError: icrc21_error_info;
+};
+
+type icrc21_consent_message_response = variant {
+    // The call is ok, consent message is provided.
+    Ok: icrc21_consent_info;
+    // The call is not ok, error is provided.
+    Err: icrc21_error;
 };
 
 service : {
@@ -85,7 +92,7 @@ service : {
     // The return type is `opt` to allow future extension of the consent_message_response variant.
     // (see recommendation here: https://internetcomputer.org/docs/current/references/candid-ref#type-variant--n--t--)
     icrc21_consent_message: (icrc21_consent_message_request) -> (opt icrc21_consent_message_response);
-    
+
     // Returns a list of supported standards related to consent messages that this canister implements.
     // The result should always have at least one entry: record { name = "ICRC-21"; url = "https://github.com/dfinity/wg-identity-authentication" }
     icrc21_supported_standards : () -> (vec record { name : text; url : text }) query;
@@ -192,7 +199,7 @@ Argument for the ledger canister call to `icrc21_consent_message`:
 ```
 (
    variant {
-      valid = record {
+      Ok = record {
          consent_message = "Transfer 7.89 ICP to account ed2182..., include memo: 123. Fee: 0.0001 ICP.";
          language = "en-US"
       }
