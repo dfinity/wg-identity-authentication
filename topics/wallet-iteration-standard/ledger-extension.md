@@ -79,6 +79,7 @@ Example usages:
                     "standards": ["icrc1"],
                     "canisterIds": ["ryjl3-tyaaa-aaaaa-aaaba-cai"],
                     "bytes": "0000000000000000000000000000000000000000000000000000000000e73f5c",
+                    "name": "Account 3"
                   }
                 ]
             }
