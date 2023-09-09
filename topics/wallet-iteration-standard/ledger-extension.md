@@ -25,6 +25,8 @@ There are many types of wallets:
 - Wallets that keep a list of subaccounts per ledger
 - Wallets that keep a list of subaccounts used across all ledgers
 
+To support all these different wallets and pass these details to the relying party, the subaccounts in this spec are defined with multiple properties to indicate on which networks, standards and ledgers the subaccounts are meant to be used.
+
 #### Request
 
 The `ledger` scope is passed to the ICRC-25 `permission` request message scopes, no additional fields in the request are required in this spec.
