@@ -6,7 +6,7 @@
 
 ## Summary
 
-This specification describes a ledger extension for the ICRC-25 Wallet Interation Standard.
+This specification describes a ledger extension for the ICRC-25 Wallet Interaction Standard.
 
 ## Terminology
 
