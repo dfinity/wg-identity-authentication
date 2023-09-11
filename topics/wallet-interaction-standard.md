@@ -70,6 +70,33 @@ The purpose of the `permission` messages is to establish a connection between a 
         - If the signature verification succeeds, the relying party accepts the connection.
         - If the signature verificaiton fails, the relying party rejects the connection.
 
+```mermaid
+sequenceDiagram
+    participant RP as Relying Party
+    participant W as Wallet
+    participant U as User
+
+    RP ->> W: Request permission
+    alt Version is not supported
+        W ->> RP: Error response: VERSION_NOT_SUPPORTED
+    else Network is not supported
+        W ->> RP: Error response: NETWORK_NOT_SUPPORTED
+    else
+        W ->> U: Display connection details (requested networks, scopes)
+        alt Approved
+            U ->> W: Approve request
+            Note left of U: Selects identities to share with the Relying Party
+            W ->> W: Store the granted permission scopes
+            W ->> W: Sign the challenge
+            W ->> RP: Permission response
+            RP ->> RP: Verify the signatures
+        else Rejected
+            U ->> W: Reject request
+            W ->> RP: Error response: NOT_GRANTED
+        end
+    end
+```
+
 #### Example
 
 ```json
