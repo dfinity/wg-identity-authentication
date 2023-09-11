@@ -82,10 +82,9 @@ sequenceDiagram
     else Network is not supported
         W ->> RP: Error response: NETWORK_NOT_SUPPORTED
     else
-        W ->> U: Display connection details (requested networks, scopes)
+        W ->> U: Display connection details (requested networks, scopes)<br/> Ask to select identities to share with Relying Party
         alt Approved
-            U ->> W: Approve request
-            Note left of U: Selects identities to share with the Relying Party
+            U ->> W: Select identities<br/>Approve request
             W ->> W: Store the granted permission scopes
             W ->> W: Sign the challenge
             W ->> RP: Permission response
@@ -199,6 +198,47 @@ Once the connection between the relying party and the wallet is established, and
         - If the validation process fails, the relying party rejects the response.
     - The relying party uses the calculated request id to retrieve [the `reply` blob](https://internetcomputer.org/docs/current/references/ic-interface-spec/#state-tree-request-status) from the `certificate`'s state tree.
         - If the `reply` blob is not present, the relying party rejects the response.
+
+```mermaid
+sequenceDiagram
+    participant RP as Relying Party
+    participant W as Wallet
+    participant U as User
+    participant C as Target Canister
+
+    RP ->> W: Request canister call
+    alt Version is not supported
+        W ->> RP: Error response: VERSION_NOT_SUPPORTED
+    else Network is not supported
+        W ->> RP: Error reponse: NETWORK_NOT_SUPPORTED
+    else Relying party has not been granted the `canister_call` permission
+        W ->> RP: Error response: NOT_GRANTED
+    else
+        alt Canister supports ICRC-21
+            Note over W,C: Follow the ICRC-21 standard
+        else Canister does not support ICRC-21
+            W ->> U: Display canister call details (canisterId, sender, method, arg)
+            Note over W,U: The arguments should be decoded, otherwise a warning must be displayed
+        end
+        alt Approved
+            U ->> W: Approve request
+            W ->> C: Submit canister call
+            W ->> W: Wait for the canister call result
+            alt Call successful
+                W ->> U: Display success message
+                W ->> RP: Canister call response
+                RP ->> RP: Validate the certificate
+                RP ->> RP: Retrieve the result
+            else Call failed
+                W ->> U: Display failure message
+                W ->> RP: Error response: NETWORK | UNKNOWN
+            end
+        else Rejected
+            U ->> W: Reject request
+            W ->> RP: Error response: ABORTED
+        end
+    end
+```
 
 #### Example
 
