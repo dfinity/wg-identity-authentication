@@ -13,6 +13,11 @@ This specification describes a communication protocol between dapps (decentraliz
 * wallet: A service that manages a user's keys and can sign and perform canister calls on their behalf.
 * relying party: A service that wants to request calls on a specific canister.
 
+
+## Transport Requirements
+
+This standard is agnostic to the transport mechanism / channel used to send the messages, as long as it provides authenticity and integrity. Confidentiality is not required.
+
 ## Messages
 
 ### `permission`
