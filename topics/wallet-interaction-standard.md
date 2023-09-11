@@ -28,10 +28,6 @@ The purpose of the `permission` messages is to establish a connection between a 
 
 `version` (`text`): The version of the standard used. If the wallet does not support the version of the request, it must send the `"VERSION_NOT_SUPPORTED"` error in response.
 
-`appMetadata`: Information about the relying party.
-- `name` (`text`): The user-friendly name of the relying party. 
-- `iconUrl` (`text`, optional): An optional URL pointing to an icon resource representing the relying party.
-
 `networks`: A list of networks on which the relying party plans to operate.
 - `chainId`(`text`): The chain id of the network as described in the [CAIP-2](https://github.com/icvc/icp-namespace/blob/caip2/caip2.md) standard.
 - `name` (`text`, optional): An optional user-friendly name of the network.
@@ -45,10 +41,6 @@ The purpose of the `permission` messages is to establish a connection between a 
 #### Response
 
 `version` (`text`): The version of the standard used. It must match the `version` from the request.
-
-`walletMetadata`: Information about the wallet.
-- `name` (`text`): The user-friendly name of the wallet.
-- `iconUrl` (`text`, optional): An optional URL poiting to an icon resource representing the wallet.
 
 `networks`: A list of networks on which the user has agreed the relying party can operate. This should be a subset of the `networks` from the original request.
 - `chainId` (`text`): The chain id of the network as described in the [CAIP-2](https://github.com/icvc/icp-namespace/blob/caip2/caip2.md) standard.
@@ -83,9 +75,6 @@ The purpose of the `permission` messages is to establish a connection between a 
     "method": "permission",
     "params": {
         "version": "1",
-        "appMetadata": {
-            "name": "My DApp"
-        },
         "networks": [{
             "chainId": "icp:737ba355e855bd4b61279056603e0550",
         }],
@@ -100,9 +89,6 @@ The purpose of the `permission` messages is to establish a connection between a 
     "jsonrpc": "2.0",
     "result": {
         "version": "1",
-        "walletMetadata": {
-            "name": "My Wallet"
-        },
         "networks": [{
             "chainId": "icp:737ba355e855bd4b61279056603e0550"
         }],
