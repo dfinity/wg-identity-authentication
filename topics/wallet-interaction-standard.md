@@ -192,7 +192,7 @@ Once the connection between the relying party and the wallet is established, and
     - If the request version is not supported by the wallet, the wallet sends a response with an error back to the relying party.
     - If the network is not supported by the wallet, the wallet sends a response with an error back to the relying party.
     - If the relying party has not been granted the permission to request the action, the wallet sends a response with an error back to the relying party.
-3. Next, the wallet processes the message following the [ICRC-21](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/consent-msg.md) specification. If the target canister does not support ICRC-21, the wallet should try to decode the arguments by itself and display raw canister call details. If the arguments cannot be decoded, a proper warning must be displayed.
+3. Next, the wallet processes the message following the [ICRC-21](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/consent-msg.md) specification. If the target canister does not support ICRC-21, the wallet should display a warning, try to decode the arguments by itself and display raw canister call details. If the arguments cannot be decoded, a proper warning must be displayed.
     - If the user approves the request:
         - The wallet sends the call to the IC (in order to get a certified results, all calls, including queries, should be sent as `update` calls), retrieves its [content map](https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-call) and [calculates a request id](https://internetcomputer.org/docs/current/references/ic-interface-spec/#request-id) based on it.
         - The wallet continues to call `read_state` for the calculated request id until [the status of the call](https://internetcomputer.org/docs/current/references/ic-interface-spec/#state-tree-request-status) indicates that the call has been processed (succesfully or not).
@@ -224,8 +224,8 @@ sequenceDiagram
         alt Canister supports ICRC-21
             Note over W,C: Follow the ICRC-21 standard
         else Canister does not support ICRC-21
-            W ->> U: Display canister call details (canisterId, sender, method, arg)
-            Note over W,U: The arguments should be decoded, otherwise a warning must be displayed
+            W ->> U: Display warning and canister call details (canisterId, sender, method, arg)
+            Note over W,U: The warning should inform the user that the canister does not support ICRC-21<br/>The arguments should be decoded, otherwise another warning must be displayed
         end
         alt Approved
             U ->> W: Approve request
