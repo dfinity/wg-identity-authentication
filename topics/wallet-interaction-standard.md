@@ -59,6 +59,18 @@ The purpose of the `permission` messages is to establish a connection between a 
 - `publicKey` (`blob`): The DER-encoded public key associated with the identity, derived in accordance with one of [the signature algorithms supported by the IC](https://internetcomputer.org/docs/current/references/ic-interface-spec/#signatures). The public key can be used to [derive a self-authenticating principal](https://internetcomputer.org/docs/current/references/ic-interface-spec/#principal).
 - `signature` (`blob`): The signature produced by signing the concatenation of the domain separator `\x13ic-wallet-challenge` (UTF-8 encoded) and the challenge with the private key associated with the identity.
 
+#### Error
+
+While processing the request from the relying party, the wallet can cancel it at any time by sending an error in response.
+
+`errorType` (`text`): The reason behind the cancellation. Possible values:
+- `"VERSION_NOT_SUPPORTED`: The version of the standard is not supported by the wallet.
+- `"NETWORK_NOT_SUPPORTED"`: The network on which the action was requested is not supported by the wallet.
+- `"NOT_GRANTED"`: The wallet has not granted permission to perform the action.
+- `"UNKNOWN"`: The reason is unknown.
+
+`description` (`text`, optional): An optional description of the error.
+
 #### Use-Case
 
 1. The relying party sends a `permission` request to the wallet.
@@ -135,7 +147,19 @@ sequenceDiagram
         ]
     }
 }
+
+// Error
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "error": {
+        "version": "1",
+        "errorType": "NOT_GRANTED",
+        "description": "The user has rejected the permission."
+    }
+}
 ```
+
 
 ### `canister_call`
 
@@ -184,6 +208,20 @@ Once the connection between the relying party and the wallet is established, and
 - `arg` (`blob`)
 
 `certificate` (`blob`): The certificate returned by the `read_state` call as specified [here](https://internetcomputer.org/docs/current/references/ic-interface-spec/#certificate). The value is CBOR-encoded.
+
+#### Error
+
+While processing the request from the relying party, the wallet can cancel it at any time by sending an error in response.
+
+`errorType` (`text`): The reason behind the cancellation. Possible values:
+- `"ABORTED"`: The user has canceled the action.
+- `"VERSION_NOT_SUPPORTED`: The version of the standard is not supported by the wallet.
+- `"NETWORK_NOT_SUPPORTED"`: The network on which the action was requested is not supported by the wallet.
+- `"NOT_GRANTED"`: The wallet has not granted permission to perform the action.
+- `"NETWORK"`: The network call failed.
+- `"UNKNOWN"`: The reason is unknown.
+
+`description` (`text`, optional): An optional description of the error.
 
 #### Use-Case
 
@@ -288,36 +326,15 @@ sequenceDiagram
         "certificate": "2dn3omR0cmVlgwGDAYIEWCDbGqoAWNjUIoTvYJXJ1d7kXYQxwJNfo38JT65LLVkZsoMBgwJOcmVxdWVzdF9zdGF0dXODAlgg7MfguoW+I0iJuMBdVigbtth22JBuAAqm0C39alKLmsqDAYMCRXJlcGx5ggNYq0RJREwBawK8igF9xf7SAXEBAAGWAUlDUkMtMiBBZ2VudCBlcnJvcjogKENhbmlzdGVyRXJyb3IsICJJQzA1MDM6IENhbmlzdGVyIHJ5amwzLXR5YWFhLWFhYWFhLWFhYWJhLWNhaSB0cmFwcGVkIGV4cGxpY2l0bHk6IElDUkMtMiBmZWF0dXJlcyBhcmUgbm90IGVuYWJsZWQgb24gdGhlIGxlZGdlci4iKYMCRnN0YXR1c4IDR3JlcGxpZWSCBFggD/rb0QsMZPXgOy0VFGgeQnUXoSwtK/M+hgO2pueq7UuDAYIEWCCPaMYe2OYoqQnR7mpSR6h2WzzA8byWm8yQKz1K6Y835IMCRHRpbWWCA0mgnuioz9nbvhdpc2lnbmF0dXJlWDCEOhywYNqcVJD3I1ZcEAfCw2FkwECK6qHzyPDuXetUHVLlRrezmD7iGK2eOP8krMw="
     }
 }
-```
 
-### `error`
-
-While processing a request from the relying party, the wallet can cancel it at any time by sending an error in response.
-
-#### Response
-
-`errorType` (`text`): The reason behind the cancellation. Possible values:
-- `"ABORTED"`: The user has canceled the action.
-- `"VERSION_NOT_SUPPORTED`: The version of the standard is not supported by the wallet.
-- `"NETWORK_NOT_SUPPORTED"`: The network on which the action was requested is not supported by the wallet.
-- `"NOT_GRANTED"`: The wallet has not granted permission to perform the action.
-- `"NETWORK"`: The network call failed.
-- `"UNKNOWN"`: The reason is unknown.
-
-`description` (`text`, optional): An optional description of the error.
-
-
-#### Example
-
-```json
-// Response
+// Error
 {
     "id": 1,
     "jsonrpc": "2.0",
     "error": {
         "version": "1",
         "errorType": "ABORTED",
-        "description": "The user has rejected the request."
+        "description": "The user has rejected the action."
     }
 }
 ```
