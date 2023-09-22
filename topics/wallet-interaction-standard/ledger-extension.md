@@ -46,8 +46,8 @@ required in this spec.
           the networks in the permission request.
         - `canisterIds` (`opt vec principal`): Optional list of ledger canister ids for this subaccount, subaccount is
           assumed to be for any `ICRC-1` ledger if undefined.
-        - `bytes` (`blob`): Subaccount bytes used to derive the subaccount identity, this is 32 bytes for ICRC-1 but
-          could differ for other standards and networks.
+        - `bytes` (`blob`): Subaccount bytes used to derive the subaccount identity, this is 32 bytes as defined in
+          the ICRC-1 ledger standard.
         - `name` (`opt text`): Optional name for this subaccount.
 
 #### Use-Case
