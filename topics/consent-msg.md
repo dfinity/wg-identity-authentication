@@ -113,7 +113,7 @@ In addition to implementing the above interface, it is recommended that the cani
 
 The wallet should send the `icrc21_consent_message` call using the same identity as it would for the actual canister call for which the consent message was issued.
 
-Any canister implementing the `icrc21_consent_message` interface must require authentication for this call. In addition, the canister must ensure that if the actual call is made with a different identity that either:
+Any canister implementing the `icrc21_consent_message` interface must require authentication for this call. In addition, the canister must ensure that if the actual call is made with a different identity then either:
 * the call fails with an error and without side effects
 * the call succeeds and the previously issued consent message (for a different identity) still accurately describes the outcome of the call
 
