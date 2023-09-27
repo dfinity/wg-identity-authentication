@@ -9,11 +9,11 @@
 ## Summary
 This specification describes a protocol for obtaining human-readable consent messages for canister calls. These messages are intended to be shown to users to help them make informed decisions about whether to approve a canister call / sign a transaction.
 
-The protocol is designed in such a way that it can be used interactively (e.g. in a browser-based wallet) or non-interactively (e.g. in a cold wallet).
+The protocol is designed in such a way that it can be used interactively (e.g. in a browser-based signer) or non-interactively (e.g. in a cold signer).
 
 ## Terminology
 
-* wallet: a service that manages the keys of a user and can sign canister calls on their behalf. This component displays the consent message to the user. The wallet may be split in a hot (with connection to the IC) and cold (offline) component.
+* signer: a service that manages the keys of a user and can sign canister calls on their behalf. This component displays the consent message to the user. The signer may be split in a hot (with connection to the IC) and cold (offline) component.
 * relying party: the service that requests a signature on a specific canister call.
 * target canister: the canister that is the target of the canister call.
 
@@ -24,7 +24,7 @@ Interactions with canisters can have significant consequences. For example, a ca
 The mechanisms described in this specification ease the technical burden and empower users to make informed decisions before signing canister calls.
 
 ## Assumptions
-* The wallet is trusted by the user.
+* The signer is trusted by the user.
 * The relying party is _not_ trusted and might be malicious.
 * The target canister is trusted by the user. Interactions with malicious canisters are not covered by this specification. In particular, interacting with a malicious canister can produce arbitrary outcomes regardless of how user consent was collected.
 
@@ -107,11 +107,11 @@ service : {
 }
 ```
 
-In addition to implementing the above interface, it is recommended that the canister also provides its full candid interface in the public `candid:service` metadata section, as discussed [here](https://forum.dfinity.org/t/rfc-canister-metadata-standard). This is required to properly decode the arguments if the wallet also wants to display technical information about the canister call.
+In addition to implementing the above interface, it is recommended that the canister also provides its full candid interface in the public `candid:service` metadata section, as discussed [here](https://forum.dfinity.org/t/rfc-canister-metadata-standard). This is required to properly decode the arguments if the signer also wants to display technical information about the canister call.
 
 ### Authentication
 
-The wallet should send the `icrc21_consent_message` call using the same identity as it would for the actual canister call for which the consent message was issued.
+The signer should send the `icrc21_consent_message` call using the same identity as it would for the actual canister call for which the consent message was issued.
 
 Any canister implementing the `icrc21_consent_message` interface must require authentication for this call. In addition, the canister must ensure that if the actual call is made with a different identity then either:
 * the call fails with an error and without side effects
@@ -119,46 +119,46 @@ Any canister implementing the `icrc21_consent_message` interface must require au
 
 Requiring authentication on the `icrc21_consent_message` call ensures that canisters can protect themselves against clients maliciously generating consent messages to drain cycles.
 
-> **_WARNING:_**  Canister developers must take care to not rely on the current state of the canister / identity attached data when issuing the consent message. There might be a significant time delay (depending on the wallet used) between retrieving the consent message and submitting the canister call. The consent message must accurately describe all possible outcomes of the canister call, accounting for that time delay.  
+> **_WARNING:_**  Canister developers must take care to not rely on the current state of the canister / identity attached data when issuing the consent message. There might be a significant time delay (depending on the signer used) between retrieving the consent message and submitting the canister call. The consent message must accurately describe all possible outcomes of the canister call, accounting for that time delay.  
 
 ## Use-Cases
 
-The canister call is designed to be used with both cold and hot wallets. In addition to the wallet use-cases it can also be used to enhance the documentation on generic canister interfaces.
+The canister call is designed to be used with both cold and hot signers. In addition to the signer use-cases it can also be used to enhance the documentation on generic canister interfaces.
 
-### Hot Wallet Use-Case
+### Hot Signer Use-Case
 
-This section describes the interactions between the wallet and the relying party for _hot_ wallets:
+This section describes the interactions between the signer and the relying party for _hot_ signers:
 
 ```mermaid
 sequenceDiagram
     participant RP as Relying Party
-    participant W as Wallet
+    participant S as Signer
     participant T as Target Canister
     participant U as User
 
-    Note over RP, W: Interactions follow ICRC-25 standard
-    RP ->> W: Request canister call
-    W ->> T: Request consent message
-    T ->> W: Consent message response
+    Note over RP, S: Interactions follow ICRC-25 standard
+    RP ->> S: Request canister call
+    S ->> T: Request consent message
+    T ->> S: Consent message response
     alt Received consent message
-        W ->> U: Display consent message
+        S ->> U: Display consent message
     else No consent message
-        W ->> U: Display warning
+        S ->> U: Display warning
     end
-    U ->> W: Approve / reject canister call
+    U ->> S: Approve / reject canister call
     alt Approved
-    W ->> W: Sign canister call
-    W ->> T: Submit canister call
-    T ->> W: Canister call response
-    W ->> U: Display success / failure message
-    W ->> RP: Canister call response
+    S ->> S: Sign canister call
+    S ->> T: Submit canister call
+    T ->> S: Canister call response
+    S ->> U: Display success / failure message
+    S ->> RP: Canister call response
     else Rejected
-    W ->> RP: Rejection response
+    S ->> RP: Rejection response
     end
 ```
 
-1. The relying party connects to the wallet and requests a signature on a canister call.
-2. The wallet fetches the consent message from the target canister and validates the response:
+1. The relying party connects to the signer and requests a signature on a canister call.
+2. The signer fetches the consent message from the target canister and validates the response:
    * `icrc21_consent_message_request.method` must match the canister call method.
    * `icrc21_consent_message_request.arg` must match the canister call argument.
    * The `icrc21_consent_message` canister call must be made to the target canister.
@@ -167,54 +167,54 @@ sequenceDiagram
 3. The consent message is presented to the user.
 4. User approval:
    * If the user approves the canister call, continue with step 5.
-   * If the user rejects the canister call (or does not respond within a certain time frame), the wallet returns an error to the relying party. No further steps are executed.
+   * If the user rejects the canister call (or does not respond within a certain time frame), the signer returns an error to the relying party. No further steps are executed.
 5. The request is signed, submitted to the IC.
 6. The certified response is retrieved using read state requests
 7. A message should be displayed to the user that indicates whether the canister call was successful or not.
 8. The response returned to the relying party.
 
-### Cold Wallet Use-Case
+### Cold Signer Use-Case
 
-This section describes the interactions between the wallet and the relying party for wallets that have a _cold_ component:
-* the cold wallet component is not able to interact with canisters
-* the cold wallet component has no knowledge of time
+This section describes the interactions between the signer and the relying party for signers that have a _cold_ component:
+* the cold signer component is not able to interact with canisters
+* the cold signer component has no knowledge of time
 
 ```mermaid
 sequenceDiagram
     participant RP as Relying Party
-    participant W as Chain Connected Wallet Component
-    participant CW as Cold Wallet Component
+    participant S as Chain Connected Signer Component
+    participant CS as Cold Signer Component
     participant T as Target Canister
     participant U as User
 
-    Note over RP, W: Interactions follow ICRC-25 standard
-    RP ->> W: Request canister call
-    W ->> T: Request consent message
-    T ->> W: Consent message response
-    W ->> CW: - Canister call request<br>- Consent message
-    CW ->> CW: Validate consent message
+    Note over RP, S: Interactions follow ICRC-25 standard
+    RP ->> S: Request canister call
+    S ->> T: Request consent message
+    T ->> S: Consent message response
+    S ->> CS: - Canister call request<br>- Consent message
+    CS ->> CS: Validate consent message
     alt Received consent message
-        CW ->> U: Display consent message
+        CS ->> U: Display consent message
     else No consent message
-        CW ->> U: Display warning
+        CS ->> U: Display warning
     end
-    U ->> CW: Approve / reject canister call
+    U ->> CS: Approve / reject canister call
     alt Approved
-    CW ->> CW: Sign canister call
-    CW ->> W: Transfer signed canister call
-    W ->> T: Submit canister call
-    T ->> W: Canister call response
-    W ->> U: Display success / failure message
-    W ->> RP: Canister call response
+    CS ->> CS: Sign canister call
+    CS ->> S: Transfer signed canister call
+    S ->> T: Submit canister call
+    T ->> S: Canister call response
+    S ->> U: Display success / failure message
+    S ->> RP: Canister call response
     else Rejected
-    W ->> RP: Rejection response
+    S ->> RP: Rejection response
     end
 ```
 
-1. The relying party connects to the wallet and requests a signature on a canister call.
-2. The wallet fetches the consent message from the target canister:
-3. The canister call and the consent message request as well as the certified response are transferred to the cold wallet component.
-4. The cold wallet component validates the consent message:
+1. The relying party connects to the signer and requests a signature on a canister call.
+2. The signer fetches the consent message from the target canister:
+3. The canister call and the consent message request as well as the certified response are transferred to the cold signer component.
+4. The cold signer component validates the consent message:
    1. The consent message request must match the canister call:
       * `icrc21_consent_message_request.method` must match the canister call method.
       * `icrc21_consent_message_request.arg` must match the canister call argument.
@@ -223,12 +223,12 @@ sequenceDiagram
       * The response to the `icrc21_consent_message` canister call must be provided in a valid certificate (see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification)).
       * The decoded response must not be `null` and match the `icrc21_consent_message_response.valid` variant.
    3. The consent message response certificate `time` must be recent with respect to the `ingress_expiry` of the canister call.
-   4. The consent message user preferences must match the user preferences of the wallet. In particular, the consent message must be in a language understood by the user.
+   4. The consent message user preferences must match the user preferences of the signer. In particular, the consent message must be in a language understood by the user.
 5. If validation is successful, the consent message is presented to the user.
-   * Otherwise, the wallet must abort the signing process and display an error message to the user. No further steps are executed.
+   * Otherwise, the signer must abort the signing process and display an error message to the user. No further steps are executed.
 6. User approval:
    * If the user approves the canister call, continue with step 7.
-   * If the user rejects the canister call (or does not respond within a certain time frame), the wallet returns an error to the relying party (via the chain connected component). No further steps are executed.
+   * If the user rejects the canister call (or does not respond within a certain time frame), the signer returns an error to the relying party (via the chain connected component). No further steps are executed.
 7. The request is signed and transferred to the chain connected component.
 8. The request is submitted to the IC.
 9. The certified response is retrieved using read state requests
