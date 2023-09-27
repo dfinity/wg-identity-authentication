@@ -1,4 +1,4 @@
-# ICRC-25: Wallet Interaction Standard
+# ICRC-25: Signer Interaction Standard
 
 | Status |
 |:------:|
@@ -6,11 +6,11 @@
 
 ## Summary
 
-This specification describes a communication protocol between dapps (decentralized applications) and wallets. It defines messages that both sides should use to interact with each other and provides guidelines on how to process them.
+This specification describes a communication protocol between dapps (decentralized applications) and signers. It defines messages that both sides should use to interact with each other and provides guidelines on how to process them.
 
 ## Terminology
 
-* wallet: A service that manages a user's keys and can sign and perform canister calls on their behalf.
+* signer: A service that manages a user's keys and can sign and perform canister calls on their behalf.
 * relying party: A service that wants to request calls on a specific canister.
 
 
@@ -22,7 +22,7 @@ This standard is agnostic to the transport mechanism / channel used to send the 
 
 ### `permission`
 
-The purpose of the `permission` messages is to establish a connection between a relying party and a wallet, grant the relying party access to public parts of the user's identity and define the scope of actions the relying part is allowed to perform.
+The purpose of the `permission` messages is to establish a connection between a relying party and a signer, grant the relying party access to public parts of the user's identity and define the scope of actions the relying part is allowed to perform.
 
 #### Types
 
@@ -31,17 +31,17 @@ The purpose of the `permission` messages is to establish a connection between a 
 
 #### Request
 
-`version` (`text`): The version of the standard used. If the wallet does not support the version of the request, it must send the `"VERSION_NOT_SUPPORTED"` error in response.
+`version` (`text`): The version of the standard used. If the signer does not support the version of the request, it must send the `"VERSION_NOT_SUPPORTED"` error in response.
 
 `networks`: A list of networks on which the relying party plans to operate.
 - `chainId`(`text`): The chain id of the network as described in the [CAIP-2](https://github.com/icvc/icp-namespace/blob/caip2/caip2.md) standard.
 - `name` (`text`, optional): An optional user-friendly name of the network.
 - `rpcUrl` (`text`, optional): An optional custom RPC URL associated with the network.
 
-`scopes`: A list of permission scopes the relying party requires. If the wallet does not support any of the requested scopes, it should ignore it. Possible values: 
+`scopes`: A list of permission scopes the relying party requires. If the signer does not support any of the requested scopes, it should ignore it. Possible values: 
 - `"canister_call"`
 
-`challenge` (`blob`): A challenge used for the wallet to sign in order to prove its access to the identity. The challenge should be an array of 32 cryptographically random bytes generated from a secure random source by the sender of the request.
+`challenge` (`blob`): A challenge used for the signer to sign in order to prove its access to the identity. The challenge should be an array of 32 cryptographically random bytes generated from a secure random source by the sender of the request.
 
 #### Response
 
@@ -52,61 +52,61 @@ The purpose of the `permission` messages is to establish a connection between a 
 - `name` (`text`, optional): An optional user-friendly name of the network.
 - `rpcUrl` (`text`, optional): An optional custom RPC URL associated with the network.
 
-`scopes`: A list of permission scopes that the wallet supports and the user has agreed the relying party can be granted. This should be a subset of the `scopes` field from the original request. Possible values:
+`scopes`: A list of permission scopes that the signer supports and the user has agreed the relying party can be granted. This should be a subset of the `scopes` field from the original request. Possible values:
 - `"canister_call"`
 
 `identities`: A list of identities the user has selected to share with the relying party.
 - `publicKey` (`blob`): The DER-encoded public key associated with the identity, derived in accordance with one of [the signature algorithms supported by the IC](https://internetcomputer.org/docs/current/references/ic-interface-spec/#signatures). The public key can be used to [derive a self-authenticating principal](https://internetcomputer.org/docs/current/references/ic-interface-spec/#principal).
-- `signature` (`blob`): The signature produced by signing the concatenation of the domain separator `\x13ic-wallet-challenge` (UTF-8 encoded) and the challenge with the private key associated with the identity.
+- `signature` (`blob`): The signature produced by signing the concatenation of the domain separator `\x13ic-signer-challenge` (UTF-8 encoded) and the challenge with the private key associated with the identity.
 
 #### Error
 
-While processing the request from the relying party, the wallet can cancel it at any time by sending an error in response.
+While processing the request from the relying party, the signer can cancel it at any time by sending an error in response.
 
 `errorType` (`text`): The reason behind the cancellation. Possible values:
-- `"VERSION_NOT_SUPPORTED`: The version of the standard is not supported by the wallet.
-- `"NETWORK_NOT_SUPPORTED"`: The network on which the action was requested is not supported by the wallet.
-- `"NOT_GRANTED"`: The wallet has not granted permission to perform the action.
+- `"VERSION_NOT_SUPPORTED`: The version of the standard is not supported by the signer.
+- `"NETWORK_NOT_SUPPORTED"`: The network on which the action was requested is not supported by the signer.
+- `"NOT_GRANTED"`: The signer has not granted permission to perform the action.
 - `"UNKNOWN"`: The reason is unknown.
 
 `description` (`text`, optional): An optional description of the error.
 
 #### Use-Case
 
-1. The relying party sends a `permission` request to the wallet.
-2. Upon receiving the message, the wallet first checks if it can process the message.
-    - If the request version is not supported by the wallet, the wallet sends a response with an error back to the relying party.
-    - If none of the requested networks is supported by the wallet, the wallet sends a response with an error back to the relying party.
-3. Next, the wallet presents the details of the to-be-established connection to the user and asks the user to select identities that will be paired in response.
-    - If the user approves the request, the wallet saves information about the granted permission scopes and sends a succesful response back to the relying party.
-    - If the user rejects the request, the wallet sends a response with an error back to the relying party.
-3. After receiving a succesful response, the relying party verifies that the wallet has access to the private key associated with the provided identities:
-    - The relying party retrieves the `publicKey` from each `identities` value, determines the `signature` scheme and verifies whether it was generated by signing the concatenation of the domain separator `\x13ic-wallet-challenge` (UTF-8 encoded) and the `challenge` from the request with the private key associated with the `publicKey`.
+1. The relying party sends a `permission` request to the signer.
+2. Upon receiving the message, the signer first checks if it can process the message.
+    - If the request version is not supported by the signer, the signer sends a response with an error back to the relying party.
+    - If none of the requested networks is supported by the signer, the signer sends a response with an error back to the relying party.
+3. Next, the signer presents the details of the to-be-established connection to the user and asks the user to select identities that will be paired in response.
+    - If the user approves the request, the signer saves information about the granted permission scopes and sends a succesful response back to the relying party.
+    - If the user rejects the request, the signer sends a response with an error back to the relying party.
+3. After receiving a succesful response, the relying party verifies that the signer has access to the private key associated with the provided identities:
+    - The relying party retrieves the `publicKey` from each `identities` value, determines the `signature` scheme and verifies whether it was generated by signing the concatenation of the domain separator `\x13ic-signer-challenge` (UTF-8 encoded) and the `challenge` from the request with the private key associated with the `publicKey`.
         - If the signature verification succeeds for all `identities`, the relying party accepts the connection.
         - If the signature verificaiton fails for any `identitites` value, the relying party rejects the connection.
 
 ```mermaid
 sequenceDiagram
     participant RP as Relying Party
-    participant W as Wallet
+    participant S as Signer
     participant U as User
 
-    RP ->> W: Request permission
+    RP ->> S: Request permission
     alt Version is not supported
-        W ->> RP: Error response: VERSION_NOT_SUPPORTED
+        S ->> RP: Error response: VERSION_NOT_SUPPORTED
     else Network is not supported
-        W ->> RP: Error response: NETWORK_NOT_SUPPORTED
+        S ->> RP: Error response: NETWORK_NOT_SUPPORTED
     else
-        W ->> U: Display connection details (requested networks, scopes)<br/> Ask to select identities to share with Relying Party
+        S ->> U: Display connection details (requested networks, scopes)<br/> Ask to select identities to share with Relying Party
         alt Approved
-            U ->> W: Select identities<br/>Approve request
-            W ->> W: Store the granted permission scopes
-            W ->> W: Sign the challenge
-            W ->> RP: Permission response
+            U ->> S: Select identities<br/>Approve request
+            S ->> S: Store the granted permission scopes
+            S ->> S: Sign the challenge
+            S ->> RP: Permission response
             RP ->> RP: Verify the signatures
         else Rejected
-            U ->> W: Reject request
-            W ->> RP: Error response: NOT_GRANTED
+            U ->> S: Reject request
+            S ->> RP: Error response: NOT_GRANTED
         end
     end
 ```
@@ -163,7 +163,7 @@ sequenceDiagram
 
 ### `canister_call`
 
-Once the connection between the relying party and the wallet is established, and the relying party has been granted the `canister_call` permission scope, the relying party can request the wallet to execute canister calls.
+Once the connection between the relying party and the signer is established, and the relying party has been granted the `canister_call` permission scope, the relying party can request the signer to execute canister calls.
 
 #### Types
 
@@ -173,7 +173,7 @@ Once the connection between the relying party and the wallet is established, and
 
 #### Request
 
-`version` (`text`): The version of the standard used. If the wallet does not support the version of the request, it must send the `"VERSION_NOT_SUPPORTED"` error in response.
+`version` (`text`): The version of the standard used. If the signer does not support the version of the request, it must send the `"VERSION_NOT_SUPPORTED"` error in response.
 
 `network`: Network details on which the call should be executed.
 - `chainId` (`text`) - The chain id of the network as described in the [CAIP-2](https://github.com/icvc/icp-namespace/blob/caip2/caip2.md) standard.
@@ -211,13 +211,13 @@ Once the connection between the relying party and the wallet is established, and
 
 #### Error
 
-While processing the request from the relying party, the wallet can cancel it at any time by sending an error in response.
+While processing the request from the relying party, the signer can cancel it at any time by sending an error in response.
 
 `errorType` (`text`): The reason behind the cancellation. Possible values:
 - `"ABORTED"`: The user has canceled the action.
-- `"VERSION_NOT_SUPPORTED`: The version of the standard is not supported by the wallet.
-- `"NETWORK_NOT_SUPPORTED"`: The network on which the action was requested is not supported by the wallet.
-- `"NOT_GRANTED"`: The wallet has not granted permission to perform the action.
+- `"VERSION_NOT_SUPPORTED`: The version of the standard is not supported by the signer.
+- `"NETWORK_NOT_SUPPORTED"`: The network on which the action was requested is not supported by the signer.
+- `"NOT_GRANTED"`: The signer has not granted permission to perform the action.
 - `"NETWORK"`: The network call failed.
 - `"UNKNOWN"`: The reason is unknown.
 
@@ -225,19 +225,19 @@ While processing the request from the relying party, the wallet can cancel it at
 
 #### Use-Case
 
-1. The relying party sends a `canister_call` request to the wallet.
-2. Upon receiving the request, the wallet validates wheter it can process the message.
-    - If the request version is not supported by the wallet, the wallet sends a response with an error back to the relying party.
-    - If the network is not supported by the wallet, the wallet sends a response with an error back to the relying party.
-    - If the relying party has not been granted the permission to request the action, the wallet sends a response with an error back to the relying party.
-3. Next, the wallet processes the message following the [ICRC-21](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/consent-msg.md) specification. If the target canister does not support ICRC-21, the wallet should display a warning, try to decode the arguments by itself and display raw canister call details. If the arguments cannot be decoded, a proper warning must be displayed.
+1. The relying party sends a `canister_call` request to the signer.
+2. Upon receiving the request, the signer validates whether it can process the message.
+    - If the request version is not supported by the signer, the signer sends a response with an error back to the relying party.
+    - If the network is not supported by the signer, the signer sends a response with an error back to the relying party.
+    - If the relying party has not been granted the permission to request the action, the signer sends a response with an error back to the relying party.
+3. Next, the signer processes the message following the [ICRC-21](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/consent-msg.md) specification. If the target canister does not support ICRC-21, the signer should display a warning, try to decode the arguments by itself and display raw canister call details. If the arguments cannot be decoded, a proper warning must be displayed.
     - If the user approves the request:
-        - The wallet sends the call to the IC (in order to get a certified results, all calls, including queries, should be sent as `update` calls), retrieves its [content map](https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-call) and [calculates a request id](https://internetcomputer.org/docs/current/references/ic-interface-spec/#request-id) based on it.
-        - The wallet continues to call `read_state` for the calculated request id until [the status of the call](https://internetcomputer.org/docs/current/references/ic-interface-spec/#state-tree-request-status) indicates that the call has been processed (succesfully or not).
-            - If the status of the call is `replied`, the wallet retrieves the CBOR-encoded [certificate](https://internetcomputer.org/docs/current/references/ic-interface-spec/#certificate) from [the `read_state` response](https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-read-state) and sends it together with the content map in response back to the relying party.
-            - If the status of the call indicates the call failed, the wallet sends a response with an error back to the relying party.
-    - If the user rejects the request or if the wallet fails to complete the requested action for any reason, the wallet sends a response with an error back to the relying party.
-3. If the response is successful, the relying party verifies whether the call performed by the wallet was genuine and retrieves the result:
+        - The signer sends the call to the IC (in order to get a certified results, all calls, including queries, should be sent as `update` calls), retrieves its [content map](https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-call) and [calculates a request id](https://internetcomputer.org/docs/current/references/ic-interface-spec/#request-id) based on it.
+        - The signer continues to call `read_state` for the calculated request id until [the status of the call](https://internetcomputer.org/docs/current/references/ic-interface-spec/#state-tree-request-status) indicates that the call has been processed (succesfully or not).
+            - If the status of the call is `replied`, the signer retrieves the CBOR-encoded [certificate](https://internetcomputer.org/docs/current/references/ic-interface-spec/#certificate) from [the `read_state` response](https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-read-state) and sends it together with the content map in response back to the relying party.
+            - If the status of the call indicates the call failed, the signer sends a response with an error back to the relying party.
+    - If the user rejects the request or if the signer fails to complete the requested action for any reason, the signer sends a response with an error back to the relying party.
+3. If the response is successful, the relying party verifies whether the call performed by the signer was genuine and retrieves the result:
     - The relying party retrieves the `contentMap` from the response, verifies that its values match the expectations and uses it to [calculate a request id](https://internetcomputer.org/docs/current/references/ic-interface-spec/#request-id).
     - The relying party retrieves the CBOR-encoded [`certificate`](https://internetcomputer.org/docs/current/references/ic-interface-spec/#certificate) from the response, decodes it and validates its authenticity with regard to [the root of trust](https://internetcomputer.org/docs/current/references/ic-interface-spec/#root-of-trust).
         - If the validation process fails, the relying party rejects the response.
@@ -247,40 +247,40 @@ While processing the request from the relying party, the wallet can cancel it at
 ```mermaid
 sequenceDiagram
     participant RP as Relying Party
-    participant W as Wallet
+    participant S as signer
     participant U as User
     participant C as Target Canister
 
-    RP ->> W: Request canister call
+    RP ->> S: Request canister call
     alt Version is not supported
-        W ->> RP: Error response: VERSION_NOT_SUPPORTED
+        S ->> RP: Error response: VERSION_NOT_SUPPORTED
     else Network is not supported
-        W ->> RP: Error reponse: NETWORK_NOT_SUPPORTED
+        S ->> RP: Error reponse: NETWORK_NOT_SUPPORTED
     else Relying party has not been granted the `canister_call` permission
-        W ->> RP: Error response: NOT_GRANTED
+        S ->> RP: Error response: NOT_GRANTED
     else
         alt Canister supports ICRC-21
-            Note over W,C: Follow the ICRC-21 standard
+            Note over S,C: Follow the ICRC-21 standard
         else Canister does not support ICRC-21
-            W ->> U: Display warning and canister call details (canisterId, sender, method, arg)
-            Note over W,U: The warning should inform the user that the canister does not support ICRC-21<br/>The arguments should be decoded, otherwise another warning must be displayed
+            S ->> U: Display warning and canister call details (canisterId, sender, method, arg)
+            Note over S,U: The warning should inform the user that the canister does not support ICRC-21<br/>The arguments should be decoded, otherwise another warning must be displayed
         end
         alt Approved
-            U ->> W: Approve request
-            W ->> C: Submit canister call
-            W ->> W: Wait for the canister call result
+            U ->> S: Approve request
+            S ->> C: Submit canister call
+            S ->> S: Wait for the canister call result
             alt Call successful
-                W ->> U: Display success message
-                W ->> RP: Canister call response
+                S ->> U: Display success message
+                S ->> RP: Canister call response
                 RP ->> RP: Validate the certificate
                 RP ->> RP: Retrieve the result
             else Call failed
-                W ->> U: Display failure message
-                W ->> RP: Error response: NETWORK | UNKNOWN
+                S ->> U: Display failure message
+                S ->> RP: Error response: NETWORK | UNKNOWN
             end
         else Rejected
-            U ->> W: Reject request
-            W ->> RP: Error response: ABORTED
+            U ->> S: Reject request
+            S ->> RP: Error response: ABORTED
         end
     end
 ```
