@@ -129,7 +129,33 @@ The canister call is designed to be used with both cold and hot wallets. In addi
 
 This section describes the interactions between the wallet and the relying party for _hot_ wallets:
 
-![](../diagrams/hot_wallet_consent_message_use_case.svg "Hot Wallet Use-Case Sequence Diagram")
+```mermaid
+sequenceDiagram
+    participant RP as Relying Party
+    participant W as Wallet
+    participant T as Target Canister
+    participant U as User
+
+    Note over RP, W: Interactions follow ICRC-25 standard
+    RP ->> W: Request canister call
+    W ->> T: Request consent message
+    T ->> W: Consent message response
+    alt Received consent message
+        W ->> U: Display consent message
+    else No consent message
+        W ->> U: Display warning
+    end
+    U ->> W: Approve / reject canister call
+    alt Approved
+    W ->> W: Sign canister call
+    W ->> T: Submit canister call
+    T ->> W: Canister call response
+    W ->> U: Display success / failure message
+    W ->> RP: Canister call response
+    else Rejected
+    W ->> RP: Rejection response
+    end
+```
 
 1. The relying party connects to the wallet and requests a signature on a canister call.
 2. The wallet fetches the consent message from the target canister and validates the response:
@@ -153,7 +179,37 @@ This section describes the interactions between the wallet and the relying party
 * the cold wallet component is not able to interact with canisters
 * the cold wallet component has no knowledge of time
 
-![](../diagrams/cold_wallet_consent_message_use_case.svg "Cold Wallet Use-Case Sequence Diagram")
+```mermaid
+sequenceDiagram
+    participant RP as Relying Party
+    participant W as Chain Connected Wallet Component
+    participant CW as Cold Wallet Component
+    participant T as Target Canister
+    participant U as User
+
+    Note over RP, W: Interactions follow ICRC-25 standard
+    RP ->> W: Request canister call
+    W ->> T: Request consent message
+    T ->> W: Consent message response
+    W ->> CW: - Canister call request<br>- Consent message
+    CW ->> CW: Validate consent message
+    alt Received consent message
+        CW ->> U: Display consent message
+    else No consent message
+        CW ->> U: Display warning
+    end
+    U ->> CW: Approve / reject canister call
+    alt Approved
+    CW ->> CW: Sign canister call
+    CW ->> W: Transfer signed canister call
+    W ->> T: Submit canister call
+    T ->> W: Canister call response
+    W ->> U: Display success / failure message
+    W ->> RP: Canister call response
+    else Rejected
+    W ->> RP: Rejection response
+    end
+```
 
 1. The relying party connects to the wallet and requests a signature on a canister call.
 2. The wallet fetches the consent message from the target canister:
