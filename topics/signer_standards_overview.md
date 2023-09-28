@@ -4,7 +4,7 @@ This document gives an overview over the ICRC standards related to signer intera
 It explains the motivation behind the standards and how they relate to each other.
 
 The following ICRC standards are relevant in this context:
-* The Internet Computer Interface Specification
+* The [Internet Computer Interface Specification](https://internetcomputer.org/docs/current/references/ic-interface-spec/), specifically the [HTTPs interface](https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-interface)
 * [ICRC-21](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_21_consent_msg.md): Canister Call Consent Messages
 * [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md): Signer Interaction Standard
 * ICRC-27: ICRC-25 Extension for ICRC-1 ledger subaccounts
