@@ -38,8 +38,8 @@ The purpose of the `permission` messages is to establish a connection between a 
 - `name` (`text`, optional): An optional user-friendly name of the network.
 - `rpcUrl` (`text`, optional): An optional custom RPC URL associated with the network.
 
-`scopes`: A list of permission scopes the relying party requires. If the signer does not support any of the requested scopes, it should ignore it. Possible values: 
-- `"canister_call"`
+`scopes`: A list of permission scope objects the relying party requires. If the signer does not support any of the requested scopes, it should ignore it. Permission scope properties:
+- `scopeId` (`text`): Currently only the value `"canister_call"` is supported.
 
 `challenge` (`blob`): A challenge used for the signer to sign in order to prove its access to the identity. The challenge should be an array of 32 cryptographically random bytes generated from a secure random source by the sender of the request.
 
@@ -52,8 +52,8 @@ The purpose of the `permission` messages is to establish a connection between a 
 - `name` (`text`, optional): An optional user-friendly name of the network.
 - `rpcUrl` (`text`, optional): An optional custom RPC URL associated with the network.
 
-`scopes`: A list of permission scopes that the signer supports and the user has agreed the relying party can be granted. This should be a subset of the `scopes` field from the original request. Possible values:
-- `"canister_call"`
+`scopes`: A list of permission scope objects that the signer supports and the user has agreed the relying party can be granted. This must be a subset of the `scopes` field from the original request. Permission scope properties:
+- `scopeId` (`text`): Currently only the value `"canister_call"` is supported.
 
 `identities`: A list of identities the user has selected to share with the relying party.
 - `publicKey` (`blob`): The DER-encoded public key associated with the identity, derived in accordance with one of [the signature algorithms supported by the IC](https://internetcomputer.org/docs/current/references/ic-interface-spec/#signatures). The public key can be used to [derive a self-authenticating principal](https://internetcomputer.org/docs/current/references/ic-interface-spec/#principal).
@@ -126,9 +126,11 @@ sequenceDiagram
     "params": {
         "version": "1",
         "networks": [{
-            "chainId": "icp:737ba355e855bd4b61279056603e0550",
+            "chainId": "icp:737ba355e855bd4b61279056603e0550"
         }],
-        "scopes": ["canister_call"],
+        "scopes": [{
+          "scopeId": "canister_call"
+        }],
         "challenge": "UjwgsORvEzp98TmB1cAIseNOoD9+GLyN/1DzJ5+jxZM="
     }
 }
@@ -142,7 +144,9 @@ sequenceDiagram
         "networks": [{
             "chainId": "icp:737ba355e855bd4b61279056603e0550"
         }],
-        "scopes": ["canister_call"],
+        "scopes": [{
+          "scopeId": "canister_call"
+        }],
         "identities": [
             {
                 "publicKey": "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEOTdHYwpFTr/oPXOfLQcteymk8AQE41VwPQ1W7Xpm0Zt1AY4+5aOnMAbAIjXEchxPuGbPWqPqwntXMPs3w4rOaA==", /* principal: 2mdal-aedsb-hlpnv-qu3zl-ae6on-72bt5-fwha5-xzs74-5dkaz-dfywi-aqe */
@@ -167,7 +171,7 @@ sequenceDiagram
 
 ### `canister_call`
 
-Once the connection between the relying party and the signer is established, and the relying party has been granted the `canister_call` permission scope, the relying party can request the signer to execute canister calls.
+Once the connection between the relying party and the signer is established, and the relying party has been granted the permission scope with `scopeId` `canister_call`, the relying party can request the signer to execute canister calls.
 
 #### Types
 
