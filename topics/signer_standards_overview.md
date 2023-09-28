@@ -56,10 +56,20 @@ about each others existence prior to the interaction). To help with this, servic
 to support these standards, when they are adopted.
 
 ## Trust Assumptions
+This section explains the trust assumptions that are made by the standards. In the context of these standards, one party
+trusting another party means that the trusting party relies on the trusted party to behave honestly and according to the
+standards. In particular, if trust is misplaced then the trusting party cannot detect or prevent the malicious behaviour
+by the trusted party.
+
+For example, if a user were to try to manage their assets using a malicious signer, there is no way
+for the user to prevent the signer from stealing their assets.
+
+The trust assumptions are as follows:
 * The signer is trusted by the user.
 * The target canister is trusted by the user. Interactions with malicious canisters are not covered by the standards. In particular, interacting with a malicious canister can produce arbitrary outcomes regardless of how the calls were signed.
 * The relying party is _not_ trusted by the user nor the signer and might be malicious.
-* The signer is _not_ trusted by the relying party. The relying party must be able to detect malicious behaviour from a signer.
+* The signer is _not_ trusted by the relying party. The relying party must be able to detect malicious behaviour from a signer
+  with respect to the relying party.
   This property is important for an open ecosystem where relying parties openly interact with any standard compliant signer.
 
 ## Use Cases
