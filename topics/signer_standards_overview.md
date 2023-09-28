@@ -35,6 +35,23 @@ This service can be a webapp (either hosted on-chain (dapp) or using the classic
 The target canister is a canister hosted on the IC. The target canister is chosen by the relying party as the recipient
 of a message that is signed by the signer.
 
+## Motivation
+
+Currently, it is very cumbersome to manage assets in the IC ecosystem. The reason is, that there are no established standards
+on how to interact with wallets / signers. On top of that, the privacy-preserving model of authorizing dapps by issuing
+delegations (as used by Internet Identity and other identity providers) is ill-suited to manage assets that are shared
+across many different services.
+
+The standards referenced in this document aim to provide a lightweight framework for signers to interact with services
+under a common, shared identity. The standards are split in different parts to allow projects to pick and chose the parts
+that they need. Care was taken, to make the standards extensible to open up the space to the community to define the
+extensions they need and prove useful in practice.
+
+If these standards are adopted, the vision is to foster a vibrant and diverse ecosystem of signers, dapps and canisters that
+can interact with each other, _without_ having to specifically integrate with any particular component (or even know
+about each others existence prior to the interaction). To help with this, services maintained by DFINITY will be upgraded
+to support these standards, when they are adopted.
+
 ## Assumptions
 * The signer is trusted by the user.
 * The target canister is trusted by the user. Interactions with malicious canisters are not covered by the standards. In particular, interacting with a malicious canister can produce arbitrary outcomes regardless of how the calls were signed.
