@@ -97,7 +97,10 @@ service : {
     // Returns a human-readable consent message for the given canister call.
     // The return type is `opt` to allow future extension of the consent_message_response variant.
     // (see recommendation here: https://internetcomputer.org/docs/current/references/candid-ref#type-variant--n--t--)
-    // This call requires authentication (i.e. must not be made with the anonymous sender).
+    // This call must not require authentication (i.e. must be available for the anonymous sender).
+    // If the call is made with a non-anonymous identity, the response may be tailored to the identity.
+    //
+    // This is currently an update call. As soon as secure (replicated) query calls are available, this will be changed to such a replicated query call.
     icrc21_consent_message: (icrc21_consent_message_request) -> (opt icrc21_consent_message_response);
 
     // Returns a list of supported standards related to consent messages that this canister implements.
@@ -111,15 +114,21 @@ In addition to implementing the above interface, it is recommended that the cani
 
 ### Authentication
 
-The signer should send the `icrc21_consent_message` call using the same identity as it would for the actual canister call for which the consent message was issued.
+The signer may send the `icrc21_consent_message` call using the same identity as it would for the actual canister call for which the consent message was issued.
 
-Any canister implementing the `icrc21_consent_message` interface must require authentication for this call. In addition, the canister must ensure that if the actual call is made with a different identity then either:
+Any canister implementing the `icrc21_consent_message` interface must not require authentication for this call.
+However, canisters may add additional or different information if a non-anonymous `sender` is used.
+
+For example, a canister might include private information in the consent message, if the call is made by the owner of that information. 
+
+The canister must ensure that if the actual call is made with a different identity than the `icrc21_consent_message` then either:
 * the call fails with an error and without side effects
 * the call succeeds and the previously issued consent message (for a different identity) still accurately describes the outcome of the call
 
-Requiring authentication on the `icrc21_consent_message` call ensures that canisters can protect themselves against clients maliciously generating consent messages to drain cycles.
+> **_WARNING:_**  Canister developers must take care to not rely on the current state of the canister / identity attached data when issuing the consent message. There might be a significant time delay (depending on the signer used) between retrieving the consent message and submitting the canister call. The consent message must accurately describe all possible outcomes of the canister call, accounting for that time delay.
 
-> **_WARNING:_**  Canister developers must take care to not rely on the current state of the canister / identity attached data when issuing the consent message. There might be a significant time delay (depending on the signer used) between retrieving the consent message and submitting the canister call. The consent message must accurately describe all possible outcomes of the canister call, accounting for that time delay.  
+> **_NOTE:_** The `icrc21_consent_message` method is currently declared as an `update` call, due to the necessity
+> of supporting dynamic data in a secure way. As soon as secure (replicated) query calls are available, this will be changed to such a replicated query call.
 
 ## Use-Cases
 
