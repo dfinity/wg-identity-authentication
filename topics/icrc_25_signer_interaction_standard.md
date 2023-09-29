@@ -38,7 +38,7 @@ The purpose of the `permission` messages is to establish a connection between a 
 - `name` (`text`, optional): An optional user-friendly name of the network.
 - `rpcUrl` (`text`, optional): An optional custom RPC URL associated with the network.
 
-`scopes`: A list of permission scope objects the relying party requires. If the signer does not support any of the requested scopes, it should ignore it. Permission scope properties:
+`scopes`: A list of permission scope objects the relying party requires. If the signer does not support a requested scope, it should ignore that particular scope and proceed as if the `scopes` list did not include that object. Permission scope properties:
 - `scopeId` (`text`): Currently only the value `"canister_call"` is supported.
 
 `challenge` (`blob`): A challenge used for the signer to sign in order to prove its access to the identity. The challenge should be an array of 32 cryptographically random bytes generated from a secure random source by the sender of the request.
