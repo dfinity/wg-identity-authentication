@@ -394,8 +394,8 @@ While processing the request from the relying party, the signer can cancel it at
 1. The relying party sends a `revoke_permission` request to the signer.
 2. Upon receiving the request, the signer validates whether it can process the message.
     - If the request version is not supported by the signer, the signer sends a response with an error back to the relying party.
-3. Next, the signer revokes the requested permission scopes. If no scopes are provided, the signer revokes all granted permission scopes. If no scopes remain granted, the signer terminates the session.
-4. The signer sends a response back to the relying party with the list of remaining permission scopes.
+3. Next, the signer revokes the requested permission scopes. If no scopes are provided, the signer revokes all granted permission scopes.
+4. The signer sends a response back to the relying party with the list of remaining permission scopes. If no scopes remain granted, the signer terminates the session.
 
 ```mermaid
 sequenceDiagram
