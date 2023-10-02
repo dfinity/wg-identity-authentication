@@ -24,7 +24,7 @@ The transport channel is not required to provide confidentiality.
 
 ICRC-25 uses sessions to determine the lifetime of granted permissions. Permission scopes (see [`permission` message](#permission)) are granted for the duration of a single session only. 
 
-A session is established when the first permission request is granted. A session can be revoked by the relying party at any time by sending a `revoke_permission` message to the signer. The signer can also terminate the session at any time and should offer the user a method to do so.
+A session is established when the first permission request is granted. A session can be revoked by the relying party at any time by sending a [`revoke_permission` message](#revokepermission) to the signer. The signer can also terminate the session at any time and should offer the user a method to do so.
 
 A session must be terminated automatically after a certain period of inactivity. The session might be extended automatically if the interaction between the relying party and the signer is still _actively_ ongoing when the default session timeout is reached. There must be a maximum session duration (regardless of activity).
 
