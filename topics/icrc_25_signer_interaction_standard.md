@@ -16,13 +16,23 @@ This specification describes a communication protocol between dapps (decentraliz
 
 ## Transport Requirements
 
-This standard is agnostic to the transport mechanism / channel used to send the messages, as long as it provides authenticity and integrity. Confidentiality is not required.
+This standard is agnostic to the transport channel used to send the messages, as long as it provides authenticity and integrity: this means that the communicating parties know the other participant and can be sure that the messages they receive are sent by the party they expect and that the messages have not been tampered with.
+
+The transport channel is not required to provide confidentiality.
+
+## Sessions
+
+ICRC-25 uses sessions to determine the lifetime of granted permissions. Permission scopes (see [`permission` message](#permission)) are granted for the duration of a single session only. 
+
+A session is established when the first permission request is granted. A session can be revoked by the relying party at any time by sending a [`revoke_permission` message](#revokepermission) to the signer. The signer can also terminate the session at any time and should offer the user a method to do so.
+
+A session must be terminated automatically after a certain period of inactivity. The session might be extended automatically if the interaction between the relying party and the signer is still _actively_ ongoing when the default session timeout is reached. There must be a maximum session duration (regardless of activity).
 
 ## Messages
 
 ### `permission`
 
-The purpose of the `permission` messages is to establish a connection between a relying party and a signer, grant the relying party access to public parts of the user's identity and define the scope of actions the relying part is allowed to perform.
+The purpose of the `permission` messages is to grant the relying party access to public parts of the user's identity and define the scope of actions the relying part is allowed to perform.
 
 #### Types
 
@@ -167,7 +177,6 @@ sequenceDiagram
     }
 }
 ```
-
 
 ### `canister_call`
 
@@ -343,6 +352,98 @@ sequenceDiagram
         "version": "1",
         "errorType": "ABORTED",
         "description": "The user has rejected the action."
+    }
+}
+```
+
+### `revoke_permission`
+
+Once the relying party has been granted some permission scopes, the relying party can request to revoke all or a subset of the previously granted permission scopes. If all granted permissions are revoked, the session is terminated.
+
+#### Types
+
+- `text`: A plain `string` value.
+- `blob`: A `string` value describing binary data encoded in base64.
+
+#### Request
+
+`version` (`text`): The version of the standard used. If the signer does not support the version of the request, it must send the `"VERSION_NOT_SUPPORTED"` error in response.
+
+`scopes` (optional): A list of permission scope objects the relying party wants to revoke. If this list is empty, or undefined, the signer revokes all granted permission scopes and terminates the session. If the signer does not recognize a provided scope, or if it has not been granted on the current session, it should ignore that particular scope and proceed as if the `scopes` list did not include that object. Permission scope properties:
+- `scopeId` (`text`): Currently only the value `"canister_call"` is supported.
+
+#### Response
+
+`version` (`text`): The version of the standard used. It must match the `version` from the request.
+
+`scopes`: The list of permission scope objects that remain granted on the current session after applying the revocation. This list may be empty. Permission scope properties:
+- `scopeId` (`text`): Currently only the value `"canister_call"` is supported.
+
+#### Error
+
+While processing the request from the relying party, the signer can cancel it at any time by sending an error in response.
+
+`errorType` (`text`): The reason behind the cancellation. Possible values:
+- `"VERSION_NOT_SUPPORTED`: The version of the standard is not supported by the signer.
+- `"UNKNOWN"`: The reason is unknown.
+
+`description` (`text`, optional): An optional description of the error.
+
+#### Use-Case
+
+1. The relying party sends a `revoke_permission` request to the signer.
+2. Upon receiving the request, the signer validates whether it can process the message.
+    - If the request version is not supported by the signer, the signer sends a response with an error back to the relying party.
+3. Next, the signer revokes the requested permission scopes. If no scopes are provided, the signer revokes all granted permission scopes.
+4. The signer sends a response back to the relying party with the list of remaining permission scopes. If no scopes remain granted, the signer terminates the session.
+
+```mermaid
+sequenceDiagram
+    participant RP as Relying Party
+    participant S as signer
+
+    RP ->> S: Revoke permission
+    alt Version is not supported
+        S ->> RP: Error response: VERSION_NOT_SUPPORTED
+    else
+        S ->> S: Revoke the permission scopes
+        S ->> RP: Reply with remaining permission scopes
+    end
+```
+
+#### Example
+
+```json
+// Request
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "revoke_permission",
+    "params": {
+        "version": "1",
+        "scopes": [{
+          "scopeId": "canister_call"
+        }]
+    }
+}
+
+// Response
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+        "version": "1",
+        "scopes": []
+    }
+}
+
+// Error
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "error": {
+        "version": "1",
+        "errorType": "UNKNOWN"
     }
 }
 ```
