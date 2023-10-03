@@ -8,7 +8,7 @@ The following ICRC standards are relevant in this context:
 * [ICRC-21](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_21_consent_msg.md): Canister Call Consent Messages
 * [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md): Signer Interaction Standard
 * ICRC-27: ICRC-25 Extension for ICRC-1 ledger subaccounts
-* ICRC-29: PostMessage Transport Standard for ICRC-25 (still to be written, does not yet exist)
+* [ICRC-29](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_29_window_post_message_transport.md): PostMessage Transport Standard for ICRC-25
 
 The following diagram presents the interactions between the different components (see [terminology](#terminology)) and shows which standards cover the respective parts of the interactions:
 
