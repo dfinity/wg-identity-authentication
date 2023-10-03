@@ -6,7 +6,7 @@
 
 ## Summary
 
-This standard defines a transport channel to send ICRC-25 messages from a relying party to a signer. The transport channel is based on the [window.postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) API.
+This standard defines a transport channel to send [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md) messages from a relying party to a signer. The transport channel is based on the [window.postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) API.
 
 ## Terminology
 
@@ -15,12 +15,12 @@ This standard defines a transport channel to send ICRC-25 messages from a relyin
 
 ## Trust Assumption
 For this standard to represent an [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md) compliant transport channel, the following assumptions must hold:
-* The users machine is not compromised. In particular, the browser must deliver messages unchanged and represent the `origin` of the different parties correctly.
-* DNS entries are not compromised. The users machine must be able to resolve the domain names of the relying party and signer correctly.
+* The user's machine is not compromised. In particular, the browser must deliver messages unchanged and represent the `origin` of the different parties correctly.
+* DNS entries are not compromised. The user's machine must be able to resolve the domain names of the relying party and signer correctly.
 
-## Establishing the Communication Channel
+## Establishing a Communication Channel
 
-The communication channel is initiated by the relying party. The relying party opens a new window and waits for the signer to send a message indicating that it is ready for interactions.
+A window post message communication channel is initiated by the relying party. The relying party opens a new window and waits for the signer to send a message indicating that it is ready for interactions.
 The message is a [JSON-RPC 2.0](https://www.jsonrpc.org/specification) notification with the method `icrc-29_ready` and no parameters:
 
 ```json
@@ -43,14 +43,15 @@ Messages are sent by calling `window.postMessage` on the signer window, or the `
 When sending messages, the `targetOrigin` parameter must be set to the origin of the signer or relying party window.
 
 The relying party may close the signer window in between interactions. After sending a message, the relying party should
-wait for the signer to send a response before closing the window.
+wait for the signer to send a response before closing the window. If the window is closed before the signer has sent a response,
+the relying party must not make any assumptions about the state of the request.
 
 ## Error Handling
 
 ### Unexpectedly Closed Window
 
 If the signer window is closed unexpectedly, the relying party should handle this as if it had received a `NOT_GRANTED` error.
-Closing the window does _not_ end the session, and the relying party can open a new window and continue the session.
+Closing the window does _not_ end the session (see  [ICRC-25 session](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md#sessions)), and the relying party can open a new window and continue the session.
 
 ### Invalid Messages
 
