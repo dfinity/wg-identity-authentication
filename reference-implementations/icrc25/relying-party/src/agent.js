@@ -8,7 +8,7 @@ const PUBLIC_HOST = 'https://icp-api.io'
 export async function createAgent() {
   return _createAgent({ 
     identity: new AnonymousIdentity(),
-    host: PUBLIC_HOST,
+    host: LOCAL_HOST /* TODO: use different hosts depending on build environment */,
     fetchRootKey: true
   })
 }

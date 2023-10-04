@@ -18,7 +18,7 @@ const PUBLIC_HOST = 'https://icp-api.io'
 export async function createAgent(mnemonic) {
   return _createAgent({ 
     identity: Secp256k1KeyIdentity.fromSeedPhrase(mnemonic),
-    host: PUBLIC_HOST,
+    host: LOCAL_HOST /* TODO: use different hosts depending on build environment */,
     fetchRootKey: true
   })
 }
