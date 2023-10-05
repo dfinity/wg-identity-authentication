@@ -1,6 +1,8 @@
-# ICRC-25 Reference Implementation
+# ICRC-25 Reference Implementation (Work in Progress)
 
 This folder contains a reference implementation of the [ICRC-25 standard](../../topics/icrc_25_signer_interaction_standard.md).
+
+*Note: This is a work in progress and may not be updated to the latest standard version.*
 
 ## Structure
 
@@ -36,3 +38,9 @@ To test the `canister_call` messages:
 1. Open the **Relying Party** and, in the `Trasfer` section, provide the recipient's principal and the amount to send. Then, click `Send`.
 2. In the **Signer** tab, wait for the consent message to show and accept it.
 3. Navigate back to the **Relying Party** tab and observe the response.
+
+## TODO
+
+- Update to the latest standard version
+- Extract crypto library for signature verification
+- Improve agent-js to expose the features we need here (to get rid of the copied code)
