@@ -13,7 +13,8 @@
     "elliptic": "^6.5.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1"
+    "react-scripts": "5.0.1",
+    "@dfinity/standalone-sig-verifier-web": "^1.0.0"
   },
   "scripts": {
     "start": "PORT=3000 GENERATE_SOURCEMAP=false react-app-rewired start",

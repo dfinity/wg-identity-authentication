@@ -1,18 +1,14 @@
 /* global BigInt */
 import { BeaconEvent } from '@airgap/beacon-sdk'
 import { Certificate, requestIdOf } from '@dfinity/agent'
-import { Ed25519PublicKey, unwrapDER } from '@dfinity/identity'
-import { Secp256k1PublicKey } from '@dfinity/identity-secp256k1'
 import { Principal } from '@dfinity/principal'
-import { createHash, randomBytes } from 'crypto-browserify'
-import { ec as EC } from 'elliptic'
+import { randomBytes } from 'crypto-browserify'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-
-import { callQuery, rootKey } from './agent'
+import {callQuery, createAgent, rootKey} from './agent'
 import { BalanceArgs, BalanceResult, idlDecode, idlEncode, TransferArgs, TransferResult } from './idl'
-
 import './App.css'
-import { createDAppClient, publicKeyFromAccount } from './beacon'
+import { createDAppClient, publicKeyFromAccount } from './beacon';
+import initSigVerifier, {verifyIcSignature} from '@dfinity/standalone-sig-verifier-web';
 
 const MAIN_CHAIN_ID = 'icp:737ba355e855bd4b61279056603e0550'
 const ICRC21_CANISTER_ID = 'xhy27-fqaaa-aaaao-a2hlq-cai'
@@ -21,6 +17,7 @@ const ICRC21_TRANSFER_FEE = BigInt(1)
 
 function App() {
   const client = useMemo(() => createDAppClient(), [])
+  const verifier = initSigVerifier();
 
   const [activeAccount, setActiveAccount] = useState(undefined)
   const [balance, setBalance] = useState(undefined)
@@ -69,81 +66,21 @@ function App() {
   }, [activeAccount, fetchBalance])
 
   const verifyPermissionResponse = async (response, challenge) => {
-    const derPublicKey = Buffer.from(response.result.identities[0].publicKey, 'base64')
-    const secp256k1PublicKey = (publicKey) => {
-      try {
-        return {
-          curve: 'secp256k1',
-          raw: Secp256k1PublicKey.fromDer(publicKey).toRaw()
-        }
-      } catch {
-        return undefined
-      }
-    }
-    const ed25519PublicKey = (publicKey) => {
-      try {
-        return {
-          curve: 'ed25519',
-          raw: Ed25519PublicKey.fromDer(publicKey).toRaw()
-        }
-      } catch {
-        return undefined
-      }
-    }
-    const p256PublicKey = (publicKey) => {
-      const ECDSA_P256_OID = Uint8Array.from([
-        ...[0x30, 0x13], // SEQUENCE
-        ...[0x06, 0x07], // OID with 7 bytes
-        ...[0x2a, 0x86, 0x48, 0xce, 0x3d, 0x02, 0x01], // OID ECDSA
-        ...[0x06, 0x08], // OID with 8 bytes
-        ...[0x2a, 0x86, 0x48, 0xce, 0x3d, 0x03, 0x01, 0x07], // OID P-256
-      ]);
-
-      try {
-        return {
-          curve: 'p256',
-          raw: unwrapDER(publicKey, ECDSA_P256_OID)
-        }
-      } catch {
-        return undefined
-      }
-    }
-
-    const publicKey = secp256k1PublicKey(derPublicKey) ?? ed25519PublicKey(derPublicKey) ?? p256PublicKey(derPublicKey)
-    if (publicKey === undefined) {
-      throw new Error('Public key not supported')
-    }
-
-    const signatureRaw = Buffer.from(response.result.signature, 'base64')
-    const dataRaw = Buffer.concat([
-      Buffer.from(new TextEncoder().encode('\x0Aic-wallet-challenge')), 
+    const derPublicKey = Uint8Array.from(Buffer.from(response.result.identities[0].publicKey, 'base64'))
+    const signatureRaw = Uint8Array.from(Buffer.from(response.result.signature, 'base64'))
+    const dataRaw = Uint8Array.from(Buffer.concat([
+      Buffer.from(new TextEncoder().encode('\x0Aic-wallet-challenge')),
       challenge
-    ])
-
-    let signature
-    let data
-    // eslint-disable-next-line default-case
-    switch (publicKey.curve) {
-      case 'secp256k1':
-      case 'p256':
-        signature = { r: signatureRaw.subarray(0, 32), s: signatureRaw.subarray(32) }
-        const hash = createHash('sha256')
-        hash.update(dataRaw)
-        data = hash.digest()
-        break
-      case 'ed25519':
-        signature = signatureRaw
-        data = dataRaw
-        break
+    ]))
+    const root_key = new Uint8Array((await createAgent()).rootKey)
+    try {
+      // make sure signature verifier is initialized
+      await verifier;
+      verifyIcSignature(dataRaw, signatureRaw, derPublicKey, root_key);
+      console.log('challenge verified')
+    } catch (error) {
+      console.error('verifyIcSignature error', error)
     }
-
-    const ec = new EC(publicKey.curve)
-    const verified = ec.verify(data, signature, publicKey.raw, 'hex')
-    if (!verified) {
-      throw new Error('Invalid signature')
-    }
-
-    console.log('challenge verified')
   }
 
   const verifyContentMap = (sender, canisterId, method, arg, contentMap) => {
@@ -245,7 +182,7 @@ function App() {
         arg: Buffer.from(arg).toString('base64')
       })
       console.log('requestCanisterCall `transfer` response', response)
-      
+
       const contentMap = contentMapFromResponse(response)
       verifyContentMap(sender, canisterId, method, arg, contentMap)
 
@@ -288,7 +225,7 @@ function App() {
         <>
           <div>Balance: {balance ? (
             BigInt(balance.owner) > 0 ? `${balance.deposit} DEV (To Deposit: ${BigInt(balance.owner) - ICRC21_TRANSFER_FEE} DEV)` : `${balance.deposit} DEV`
-          ) : '---'}</div>  
+          ) : '---'}</div>
           <br />
           <button onClick={fetchBalance}>Fetch Balance</button>
           <br />
