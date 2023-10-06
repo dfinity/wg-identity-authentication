@@ -6,7 +6,7 @@ import { principalToSubAccount } from '@dfinity/utils'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import './App.css';
-import { call, callQuery, createAgent, query, readState } from './agent';
+import { call, createAgent, readState } from './agent';
 import { createWalletClient } from './beacon'
 import { BalanceArgs, BalanceResult, ConsentMessageRequest, ConsentMessageResponse, ICRC1TransferArgs, ICRC1TransferResult, MintArgs, MintResult, idlDecode, idlEncode } from './idl';
 
@@ -40,7 +40,7 @@ function App() {
     setStatus('Fetching consent message...')
 
     const agent = await createAgent(mnemonic)
-    const queryResponse = await query(agent, canisterId, 'consent_message', idlEncode([ConsentMessageRequest], [{
+    const response = await call(agent, canisterId, 'consent_message', idlEncode([ConsentMessageRequest], [{
       method,
       arg: Buffer.from(arg, 'base64'),
       consent_preferences: {
@@ -50,12 +50,7 @@ function App() {
 
     setStatus('')
 
-    if (queryResponse.status !== 'replied') {
-      console.error(queryResponse)
-      throw new Error('Canister returned error')
-    }
-
-    const consentMessage = idlDecode([ConsentMessageResponse], queryResponse.reply.arg)[0]
+    const consentMessage = idlDecode([ConsentMessageResponse], response)[0]
     if (!consentMessage.Valid) {
       const error = consentMessage.Forbidden || consentMessage.Malformed
       throw new Error(`(${error.error_code}) ${error.description}`)
@@ -119,11 +114,11 @@ function App() {
     try {
       setStatus('Fetching the balance...')
       const agent = await createAgent(mnemonic)
-      const queryResponse = await callQuery(agent, ICRC21_CANISTER_ID, 'balance_of', idlEncode([BalanceArgs], [{
+      const response = await call(agent, ICRC21_CANISTER_ID, 'balance_of', idlEncode([BalanceArgs], [{
         account: Principal.from(account.principal)
       }]))
 
-      const balance = idlDecode([BalanceResult], queryResponse)[0]
+      const balance = idlDecode([BalanceResult], response)[0]
       if (balance.Err) {
         throw balance.Err
       }
@@ -163,9 +158,7 @@ function App() {
       memo: [],
       created_at_time: []
     }]))
-
-    const depositState = await readState(agent, LEDGER_CANISTER_ID, depositCallResponse.requestId)
-    const depositResult = idlDecode([ICRC1TransferResult], depositState.response)[0]
+    const depositResult = idlDecode([ICRC1TransferResult], depositCallResponse)[0]
     
     if (depositResult.Err) {
       setStatus('Deposit failed')
@@ -189,8 +182,7 @@ function App() {
     const mintCallResponse = await call(agent, ICRC21_CANISTER_ID, 'mint', idlEncode([MintArgs], [{
       amount: amount + fee
     }]))
-    const mintState = await readState(agent, ICRC21_CANISTER_ID, mintCallResponse.requestId)
-    const mintResult = idlDecode([MintResult], mintState.response)[0]
+    const mintResult = idlDecode([MintResult], mintCallResponse)[0]
     
     if (mintResult.Err) {
       setStatus('Minting failed')
@@ -257,12 +249,29 @@ function App() {
     setStatus('Executing canister call...')
 
     const agent = await createAgent(mnemonic)
-    const callResponse = await call(
-      agent, 
-      pendingCanisterCallRequest.params.canisterId, 
-      pendingCanisterCallRequest.params.method, 
-      Buffer.from(pendingCanisterCallRequest.params.arg, 'base64')
+    let lastBody = undefined;
+    agent.addTransform(request => {
+          lastBody = request.body;
+          return Promise.resolve(request);
+        }, 1000 // make sure this is the last transform
+    );
+    const callResponse = await agent.call(
+        pendingCanisterCallRequest.params.canisterId, {
+          methodName: pendingCanisterCallRequest.params.method,
+          arg: Buffer.from(pendingCanisterCallRequest.params.arg, 'base64')
+        }
     )
+
+    // build content map before executing read state, because read state will overwrite `lastBody` that we get from the transform function
+    let contentMap = {
+      request_type: lastBody.request_type,
+      sender: Buffer.from(lastBody.sender.toUint8Array()).toString('base64'),
+      nonce: lastBody.nonce ? Buffer.from(lastBody.nonce).toString('base64') : undefined,
+      ingress_expiry: lastBody.ingress_expiry._value.toString(),
+      canister_id: Buffer.from(lastBody.canister_id.toUint8Array()).toString('base64'),
+      method_name: lastBody.method_name,
+      arg: Buffer.from(lastBody.arg).toString('base64'),
+    }
 
     if (!callResponse.response.ok) {
       await client.respondWithError(pendingCanisterCallRequest, { 
@@ -275,15 +284,7 @@ function App() {
         await client.ic.respondWithResult(pendingCanisterCallRequest, {
           version: '1',
           network: pendingCanisterCallRequest.network,
-          contentMap: {
-            request_type: callResponse.contentMap.request_type,
-            sender: Buffer.from(callResponse.contentMap.sender.toUint8Array()).toString('base64'),
-            nonce: callResponse.contentMap.nonce ? Buffer.from(callResponse.contentMap.nonce).toString('base64') : undefined,
-            ingress_expiry: callResponse.contentMap.ingress_expiry._value.toString(),
-            canister_id: Buffer.from(callResponse.contentMap.canister_id.toUint8Array()).toString('base64'),
-            method_name: callResponse.contentMap.method_name,
-            arg: Buffer.from(callResponse.contentMap.arg).toString('base64'),
-          },
+          contentMap,
           certificate: Buffer.from(readStateResponse.certificate).toString('base64')
         })
       } catch (e) {

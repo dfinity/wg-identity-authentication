@@ -1,12 +1,7 @@
 import { 
-  Cbor,
-  Certificate, 
-  Expiry, 
-  IdentityInvalidError, 
-  polling, 
-  requestIdOf,
-  RequestStatusResponseStatus, 
-  SubmitRequestType 
+  Certificate,
+  polling,
+  RequestStatusResponseStatus
 } from '@dfinity/agent'
 import { Secp256k1KeyIdentity } from '@dfinity/identity-secp256k1'
 import { Principal } from '@dfinity/principal'
@@ -16,94 +11,16 @@ const LOCAL_HOST = 'http://127.0.0.1:4943'
 const PUBLIC_HOST = 'https://icp-api.io'
 
 export async function createAgent(mnemonic) {
-  return _createAgent({ 
+  return _createAgent({
     identity: Secp256k1KeyIdentity.fromSeedPhrase(mnemonic),
     host: LOCAL_HOST /* TODO: use different hosts depending on build environment */,
     fetchRootKey: true
   })
 }
 
-export async function query(agent, canisterId, method, arg) {
-  return agent.query(canisterId, { methodName: method, arg })
-}
-
-export async function callQuery(agent, canisterId, method, arg) {
-  const callResponse = await call(agent, canisterId, method, arg)
-  const state = await readState(agent, canisterId, callResponse.requestId)
-
-  return state.response
-}
-
-export async function call(agent, canisterId, method, arg) {
-  const options = {
-    methodName: method,
-    arg
-  }
-
-  const id = await agent._identity
-    if (!id) {
-      throw new IdentityInvalidError(
-        "This identity has expired due this application's security policy. Please refresh your authentication."
-      )
-    }
-    const canister = Principal.from(canisterId)
-    const ecid = options.effectiveCanisterId ? Principal.from(options.effectiveCanisterId) : canister
-
-    const sender = id.getPrincipal() || Principal.anonymous()
-
-    const submit = {
-      request_type: SubmitRequestType.Call,
-      canister_id: canister,
-      method_name: options.methodName,
-      arg: options.arg,
-      sender,
-      ingress_expiry: new Expiry(5 * 60 * 1000)
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let transformedRequest = (await agent._transform({
-      request: {
-        body: null,
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/cbor',
-          ...(agent._credentials ? { Authorization: 'Basic ' + btoa(agent._credentials) } : {})
-        }
-      },
-      endpoint: "call",
-      body: submit
-    }))
-
-    // Apply transform for identity.
-    transformedRequest = await id.transformRequest(transformedRequest)
-
-    const body = Cbor.encode(transformedRequest.body)
-
-    // Run both in parallel. The fetch is quite expensive, so we have plenty of time to
-    // calculate the requestId locally.
-    const [response, requestId] = await Promise.all([
-      agent._fetch('' + new URL(`/api/v2/canister/${ecid.toText()}/call`, agent._host), {
-        ...transformedRequest.request,
-        body
-      }),
-      requestIdOf(submit)
-    ])
-
-    if (!response.ok) {
-      throw new Error(
-        `Server returned an error:\n` + `  Code: ${response.status} (${response.statusText})\n` + `  Body: ${await response.text()}\n`
-      )
-    }
-
-    return {
-      requestId,
-      contentMap: submit,
-      response: {
-        ok: response.ok,
-        status: response.status,
-        statusText: response.statusText
-      }
-    }
+export async function call(agent, canisterId, methodName, arg) {
+  const callResponse = await agent.call(canisterId, {methodName, arg})
+  return await polling.pollForResponse(agent, Principal.from(canisterId), callResponse.requestId, polling.defaultStrategy())
 }
 
 export async function readState(agent, canisterId, requestId, strategy = polling.defaultStrategy()) {
