@@ -26,9 +26,10 @@ export async function call(agent, canisterId, methodName, arg) {
 export async function pollForCert(agent, canisterId, requestId) {
   if (agent.rootKey == null) throw new Error('Agent root key not initialized before polling')
   const path = [new TextEncoder().encode('request_status'), requestId]
+  const request = await agent.createReadStateRequest({paths: [path]});
+  const pollingStrategy = polling.defaultStrategy();
 
   for (;;) {
-    const request = await agent.createReadStateRequest({paths: [path]})
     const state = await agent.readState(canisterId, {paths: [path]}, undefined, request)
     const cert = await Certificate.create({
       certificate: state.certificate,
@@ -55,6 +56,7 @@ export async function pollForCert(agent, canisterId, requestId) {
       case RequestStatusResponseStatus.Received:
       case RequestStatusResponseStatus.Unknown:
       case RequestStatusResponseStatus.Processing:
+        await pollingStrategy(canisterId, requestId, status);
         continue;
       default:
         throw new Error('unexpected response status')
