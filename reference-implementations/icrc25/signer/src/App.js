@@ -6,7 +6,7 @@ import { principalToSubAccount } from '@dfinity/utils'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import './App.css';
-import { call, createAgent, readState } from './agent';
+import { call, createAgent, pollForCert } from './agent';
 import { createWalletClient } from './beacon'
 import { BalanceArgs, BalanceResult, ConsentMessageRequest, ConsentMessageResponse, ICRC1TransferArgs, ICRC1TransferResult, MintArgs, MintResult, idlDecode, idlEncode } from './idl';
 
@@ -280,12 +280,12 @@ function App() {
       })
     } else {
       try {
-        const readStateResponse = await readState(agent, pendingCanisterCallRequest.params.canisterId, callResponse.requestId)
+        const cert = await pollForCert(agent, pendingCanisterCallRequest.params.canisterId, callResponse.requestId)
         await client.ic.respondWithResult(pendingCanisterCallRequest, {
           version: '1',
           network: pendingCanisterCallRequest.network,
           contentMap,
-          certificate: Buffer.from(readStateResponse.certificate).toString('base64')
+          certificate: Buffer.from(cert).toString('base64')
         })
       } catch (e) {
         console.error(e)
