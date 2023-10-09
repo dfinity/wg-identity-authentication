@@ -38,6 +38,7 @@ The purpose of the `permission` messages is to grant the relying party access to
 
 - `text`: A plain `string` value.
 - `blob`: A `string` value describing binary data encoded in base64.
+- `int` An integer value.
 
 #### Request
 
@@ -73,13 +74,28 @@ The purpose of the `permission` messages is to grant the relying party access to
 
 While processing the request from the relying party, the signer can cancel it at any time by sending an error in response.
 
-`errorType` (`text`): The reason behind the cancellation. Possible values:
-- `"VERSION_NOT_SUPPORTED`: The version of the standard is not supported by the signer.
-- `"NETWORK_NOT_SUPPORTED"`: The network on which the action was requested is not supported by the signer.
-- `"NOT_GRANTED"`: The signer has not granted permission to perform the action.
-- `"UNKNOWN"`: The reason is unknown.
+The error is an object comprising the `code`, `message` and optional `data` fields as described in the [JSON-RPC 2.0 Specification](https://www.jsonrpc.org/specification#error_object). In addition the the pre-defined errors, the following values are supported:
 
-`description` (`text`, optional): An optional description of the error.
+##### Version `1` errors (**code: `1xxxx`**)
+- General (**code: `11xxx`**)
+
+| Code  | Message       | Meaning                | Data |
+| ----- | ------------- | ---------------------- | ---- |
+| 11000 | Unknown error | The reason is unknown. | N/A  |
+
+- Not supported (**code: `12xxx`**)
+
+| Code  | Message                | Meaning                                                                       | Data                                                                   |
+| ----- | ---------------------- | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| 12001 | Version not supported  | The version of the standard is not supported by the signer.                   | (`text`): The unsupported value                                        |
+| 12002 | Network not supported  | The network on which the action was requested is not supported by the signer. | A list of unsupported values: <ul><li>(`text`): The chain id</li></ul> |
+
+- User action (**code: `13xxx`**)
+
+| Code  | Message                | Meaning                              | Data |
+| ----- | ---------------------- | ------------------------------------ | ---- |
+| 13001 | Permission not granted | The signer has rejected the request. | N/A  |
+
 
 #### Use-Case
 
@@ -107,9 +123,9 @@ sequenceDiagram
 
     RP ->> S: Request permission
     alt Version is not supported
-        S ->> RP: Error response: VERSION_NOT_SUPPORTED
+        S ->> RP: Error response: Version not supported (12001)
     else Network is not supported
-        S ->> RP: Error response: NETWORK_NOT_SUPPORTED
+        S ->> RP: Error response: Network not supported (12002)
     else
         S ->> U: Display connection details (requested networks, scopes)<br/> Ask to select identities to share with Relying Party
         alt Approved
@@ -120,7 +136,7 @@ sequenceDiagram
             RP ->> RP: Verify the signatures
         else Rejected
             U ->> S: Reject request
-            S ->> RP: Error response: NOT_GRANTED
+            S ->> RP: Error response: Permission not granted (13001)
         end
     end
 ```
@@ -171,9 +187,8 @@ sequenceDiagram
     "id": 1,
     "jsonrpc": "2.0",
     "error": {
-        "version": "1",
-        "errorType": "NOT_GRANTED",
-        "description": "The user has rejected the permission."
+        "code": "13001",
+        "message": "Permission not granted"
     }
 }
 ```
@@ -187,6 +202,7 @@ Once the connection between the relying party and the signer is established, and
 - `text`: A plain `string` value.
 - `blob`: A `string` value describing binary data encoded in base64.
 - `nat`: A `string` value of an unsigned 64-bit integer.
+- `int` An integer value.
 
 #### Request
 
@@ -230,15 +246,34 @@ Once the connection between the relying party and the signer is established, and
 
 While processing the request from the relying party, the signer can cancel it at any time by sending an error in response.
 
-`errorType` (`text`): The reason behind the cancellation. Possible values:
-- `"ABORTED"`: The user has canceled the action.
-- `"VERSION_NOT_SUPPORTED`: The version of the standard is not supported by the signer.
-- `"NETWORK_NOT_SUPPORTED"`: The network on which the action was requested is not supported by the signer.
-- `"NOT_GRANTED"`: The signer has not granted permission to perform the action.
-- `"NETWORK"`: The network call failed.
-- `"UNKNOWN"`: The reason is unknown.
+The error is an object comprising the `code`, `message` and optional `data` fields as described in the [JSON-RPC 2.0 Specification](https://www.jsonrpc.org/specification#error_object). In addition the the pre-defined errors, the following values are supported:
 
-`description` (`text`, optional): An optional description of the error.
+##### Version `1` errors (**code: `1xxxx`**)
+- General (**code: `11xxx`**)
+
+| Code  | Message       | Meaning                | Data |
+| ----- | ------------- | ---------------------- | ---- |
+| 11000 | Unknown error | The reason is unknown. | N/A  |
+
+- Not supported (**code: `12xxx`**)
+
+| Code  | Message                | Meaning                                                                       | Data                                                                   |
+| ----- | ---------------------- | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| 12001 | Version not supported  | The version of the standard is not supported by the signer.                   | (`text`): The unsupported value                                        |
+| 12002 | Network not supported  | The network on which the action was requested is not supported by the signer. | A list of unsupported values: <ul> <li>(`text`): The chain id</li> </ul> |
+
+- User action (**code: `13xxx`**)
+
+| Code  | Message                | Meaning                              | Data |
+| ----- | ---------------------- | ------------------------------------ | ---- |
+| 13001 | Permission not granted | The signer has rejected the request. | N/A  |
+| 13002 | Action aborted         | The user has canceled the action.    | N/A  |
+
+- Network (**code: `14xxx`**)
+
+| Code  | Message                | Meaning                  | Data                                                                                                                            |
+| ----- | ---------------------- | -------------------------| ------------------------------------------------------------------------------------------------------------------------------- |
+| 14000 | Network error          | The network call failed. | (optional) Error details: <ul> <li>`status` (`int`): HTTP status code</li> <li>`message` (`text`, optional): message</li> </ul> |
 
 #### Use-Case
 
@@ -279,11 +314,11 @@ sequenceDiagram
 
     RP ->> S: Request canister call
     alt Version is not supported
-        S ->> RP: Error response: VERSION_NOT_SUPPORTED
+        S ->> RP: Error response: Version not supported (12001)
     else Network is not supported
-        S ->> RP: Error reponse: NETWORK_NOT_SUPPORTED
+        S ->> RP: Error reponse: Network not supported (12002)
     else Relying party has not been granted the `canister_call` permission
-        S ->> RP: Error response: NOT_GRANTED
+        S ->> RP: Error response: Permission not granted (13001)
     else
         alt Canister supports ICRC-21
             Note over S,C: Follow the ICRC-21 standard
@@ -302,11 +337,11 @@ sequenceDiagram
                 RP ->> RP: Retrieve the result
             else Call failed
                 S ->> U: Display failure message
-                S ->> RP: Error response: NETWORK | UNKNOWN
+                S ->> RP: Error response: Network error (14000) | Unknown error (11000)
             end
         else Rejected
             U ->> S: Reject request
-            S ->> RP: Error response: ABORTED
+            S ->> RP: Error response: Action aborted (13002)
         end
     end
 ```
@@ -358,9 +393,8 @@ sequenceDiagram
     "id": 1,
     "jsonrpc": "2.0",
     "error": {
-        "version": "1",
-        "errorType": "ABORTED",
-        "description": "The user has rejected the action."
+        "code": "13002",
+        "message": "Action aborted"
     }
 }
 ```
@@ -373,6 +407,7 @@ Once the relying party has been granted some permission scopes, the relying part
 
 - `text`: A plain `string` value.
 - `blob`: A `string` value describing binary data encoded in base64.
+- `int` An integer value.
 
 #### Request
 
@@ -392,11 +427,20 @@ Once the relying party has been granted some permission scopes, the relying part
 
 While processing the request from the relying party, the signer can cancel it at any time by sending an error in response.
 
-`errorType` (`text`): The reason behind the cancellation. Possible values:
-- `"VERSION_NOT_SUPPORTED`: The version of the standard is not supported by the signer.
-- `"UNKNOWN"`: The reason is unknown.
+The error is an object comprising the `code`, `message` and optional `data` fields as described in the [JSON-RPC 2.0 Specification](https://www.jsonrpc.org/specification#error_object). In addition the the pre-defined errors, the following values are supported:
 
-`description` (`text`, optional): An optional description of the error.
+##### Version `1` errors (**code: `1xxxx`**)
+- General (**code: `11xxx`**)
+
+| Code  | Message       | Meaning                | Data |
+| ----- | ------------- | ---------------------- | ---- |
+| 11000 | Unknown error | The reason is unknown. | N/A  |
+
+- Not supported (**code: `12xxx`**)
+
+| Code  | Message                | Meaning                                                                       | Data                                                                   |
+| ----- | ---------------------- | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| 12001 | Version not supported  | The version of the standard is not supported by the signer.                   | (`text`): The unsupported value                                        |
 
 #### Use-Case
 
@@ -413,7 +457,7 @@ sequenceDiagram
 
     RP ->> S: Revoke permission
     alt Version is not supported
-        S ->> RP: Error response: VERSION_NOT_SUPPORTED
+        S ->> RP: Error response: Version not supported (12001)
     else
         S ->> S: Revoke the permission scopes
         S ->> RP: Reply with remaining permission scopes
@@ -451,8 +495,8 @@ sequenceDiagram
     "id": 1,
     "jsonrpc": "2.0",
     "error": {
-        "version": "1",
-        "errorType": "UNKNOWN"
+        "code": "11000",
+        "message": "Unknown error"
     }
 }
 ```
