@@ -124,8 +124,8 @@ sequenceDiagram
 
 #### Example
 
+Request
 ```json
-// Request
 {
     "id": 1,
     "jsonrpc": "2.0",
@@ -141,8 +141,10 @@ sequenceDiagram
         "challenge": "UjwgsORvEzp98TmB1cAIseNOoD9+GLyN/1DzJ5+jxZM="
     }
 }
+```
 
-// Response
+Response
+```json
 {
     "id": 1,
     "jsonrpc": "2.0",
@@ -156,14 +158,16 @@ sequenceDiagram
         }],
         "identities": [
             {
-                "publicKey": "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEOTdHYwpFTr/oPXOfLQcteymk8AQE41VwPQ1W7Xpm0Zt1AY4+5aOnMAbAIjXEchxPuGbPWqPqwntXMPs3w4rOaA==", /* principal: 2mdal-aedsb-hlpnv-qu3zl-ae6on-72bt5-fwha5-xzs74-5dkaz-dfywi-aqe */
+                "publicKey": "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEOTdHYwpFTr/oPXOfLQcteymk8AQE41VwPQ1W7Xpm0Zt1AY4+5aOnMAbAIjXEchxPuGbPWqPqwntXMPs3w4rOaA==",
                 "signature": "bldf7qn7DC5NzTyX5kp4GpZHaEncE5/6n/Y8av3xjEwIVFAwmhyW0uM+WBXRTj4QbScot04dfaBXUOcSWF0IjQ=="
             }
         ]
     }
 }
+```
 
-// Error
+Error
+```json
 {
     "id": 1,
     "jsonrpc": "2.0",
@@ -298,8 +302,8 @@ sequenceDiagram
 
 #### Example
 
+Request
 ```json
-// Request
 {
     "id": 1,
     "jsonrpc": "2.0",
@@ -315,8 +319,10 @@ sequenceDiagram
         "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdrH2v4C9riZI1Ss2DBLYdFDnt53DN2OUDJIiEgQIAAOgH"
     }
 }
+```
 
-// Response
+Response
+```json
 {
     "id": 1,
     "jsonrpc": "2.0",
@@ -337,8 +343,10 @@ sequenceDiagram
         "certificate": "2dn3omR0cmVlgwGDAYIEWCDbGqoAWNjUIoTvYJXJ1d7kXYQxwJNfo38JT65LLVkZsoMBgwJOcmVxdWVzdF9zdGF0dXODAlgg7MfguoW+I0iJuMBdVigbtth22JBuAAqm0C39alKLmsqDAYMCRXJlcGx5ggNYq0RJREwBawK8igF9xf7SAXEBAAGWAUlDUkMtMiBBZ2VudCBlcnJvcjogKENhbmlzdGVyRXJyb3IsICJJQzA1MDM6IENhbmlzdGVyIHJ5amwzLXR5YWFhLWFhYWFhLWFhYWJhLWNhaSB0cmFwcGVkIGV4cGxpY2l0bHk6IElDUkMtMiBmZWF0dXJlcyBhcmUgbm90IGVuYWJsZWQgb24gdGhlIGxlZGdlci4iKYMCRnN0YXR1c4IDR3JlcGxpZWSCBFggD/rb0QsMZPXgOy0VFGgeQnUXoSwtK/M+hgO2pueq7UuDAYIEWCCPaMYe2OYoqQnR7mpSR6h2WzzA8byWm8yQKz1K6Y835IMCRHRpbWWCA0mgnuioz9nbvhdpc2lnbmF0dXJlWDCEOhywYNqcVJD3I1ZcEAfCw2FkwECK6qHzyPDuXetUHVLlRrezmD7iGK2eOP8krMw="
     }
 }
+```
 
-// Error
+Error
+```json
 {
     "id": 1,
     "jsonrpc": "2.0",
@@ -397,8 +405,8 @@ sequenceDiagram
 
 #### Example
 
+Request
 ```json
-// Request
 {
     "id": 1,
     "jsonrpc": "2.0",
@@ -410,8 +418,10 @@ sequenceDiagram
         }]
     }
 }
+```
 
-// Response
+Response
+```json
 {
     "id": 1,
     "jsonrpc": "2.0",
@@ -420,8 +430,10 @@ sequenceDiagram
         "scopes": []
     }
 }
+```
 
-// Error
+Error
+```json
 {
     "id": 1,
     "jsonrpc": "2.0",
