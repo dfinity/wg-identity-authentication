@@ -44,11 +44,6 @@ The purpose of the `icrc25_request_permission` messages is to grant the relying 
 
 `version` (`text`): The version of the standard used. If the signer does not support the version of the request, it must send the `"VERSION_NOT_SUPPORTED"` error in response.
 
-`networks`: A list of networks on which the relying party plans to operate.
-- `chainId`(`text`): The chain id of the network as described in the [CAIP-2](https://github.com/icvc/icp-namespace/blob/caip2/caip2.md) standard.
-- `name` (`text`, optional): An optional user-friendly name of the network.
-- `rpcUrl` (`text`, optional): An optional custom RPC URL associated with the network.
-
 `scopes`: A list of permission scope objects the relying party requires. If the signer does not support a requested scope, it should ignore that particular scope and proceed as if the `scopes` list did not include that object. Permission scope properties:
 - `scopeId` (`text`): Currently only the value `"icrc25_canister_call"` is supported.
 
@@ -57,11 +52,6 @@ The purpose of the `icrc25_request_permission` messages is to grant the relying 
 #### Response
 
 `version` (`text`): The version of the standard used. It must match the `version` from the request.
-
-`networks`: A list of networks on which the user has agreed the relying party can operate. This should be a subset of the `networks` from the original request.
-- `chainId` (`text`): The chain id of the network as described in the [CAIP-2](https://github.com/icvc/icp-namespace/blob/caip2/caip2.md) standard.
-- `name` (`text`, optional): An optional user-friendly name of the network.
-- `rpcUrl` (`text`, optional): An optional custom RPC URL associated with the network.
 
 `scopes`: A list of permission scope objects that the signer supports and the user has agreed the relying party can be granted. This must be a subset of the `scopes` field from the original request. Permission scope properties:
 - `scopeId` (`text`): Currently only the value `"icrc25_canister_call"` is supported.
@@ -75,7 +65,6 @@ The purpose of the `icrc25_request_permission` messages is to grant the relying 
 While processing the request from the relying party, the signer can cancel it at any time by sending an [error](#errors) in response. In addition to the pre-defined JSON-RPC 2.0 errors, the following values are applicable:
 - `10001 Unknown error`
 - `20101 Version not supported`
-- `20201 Network not supported`
 - `30101 Permission not granted`
 
 #### Use-Case
@@ -83,7 +72,6 @@ While processing the request from the relying party, the signer can cancel it at
 1. The relying party sends a `icrc25_request_permission` request to the signer.
 2. Upon receiving the message, the signer first checks if it can process the message.
     - If the request version is not supported by the signer, the signer sends a response with an error back to the relying party.
-    - If none of the requested networks is supported by the signer, the signer sends a response with an error back to the relying party.
 3. Next, the signer presents the details of the to-be-established connection to the user and asks the user to select identities that will be paired in response. If the user has never interacted with this relying party before, the signer should display information explaining that the user is about to establish a connection with a new relying party.
     > **Note:** The signer should maintain a list of relying parties that are trusted by the user. It is recommended that signers
     assist users when deciding to grant permissions to new relying parties, e.g. by maintaining a list of well-known relying parties
@@ -105,10 +93,8 @@ sequenceDiagram
     RP ->> S: Request permission
     alt Version is not supported
         S ->> RP: Error response: Version not supported (20101)
-    else Network is not supported
-        S ->> RP: Error response: Network not supported (20201)
     else
-        S ->> U: Display connection details (requested networks, scopes)<br/> Ask to select identities to share with Relying Party
+        S ->> U: Display connection details and requested scopes<br/> Ask to select identities to share with Relying Party
         alt Approved
             U ->> S: Select identities<br/>Approve request
             S ->> S: Store the granted permission scopes
@@ -132,9 +118,6 @@ Request
     "method": "icrc25_request_permission",
     "params": {
         "version": "1",
-        "networks": [{
-            "chainId": "icp:737ba355e855bd4b61279056603e0550"
-        }],
         "scopes": [{
           "scopeId": "icrc25_canister_call"
         }],
@@ -150,9 +133,6 @@ Response
     "jsonrpc": "2.0",
     "result": {
         "version": "1",
-        "networks": [{
-            "chainId": "icp:737ba355e855bd4b61279056603e0550"
-        }],
         "scopes": [{
           "scopeId": "icrc25_canister_call"
         }],
@@ -174,11 +154,6 @@ Once the connection between the relying party and the signer is established, and
 
 `version` (`text`): The version of the standard used. If the signer does not support the version of the request, it must send the `"VERSION_NOT_SUPPORTED"` error in response.
 
-`network`: Network details on which the call should be executed.
-- `chainId` (`text`) - The chain id of the network as described in the [CAIP-2](https://github.com/icvc/icp-namespace/blob/caip2/caip2.md) standard.
-- `name` (`text`, optional): An optional user-friendly name of the network.
-- `rpcUrl` (`text`, optional): An optional custom RPC URL associated with the network.
-
 `canisterId` (`text`): The id of the canister on which the call should be executed.
 
 `sender` (`text`): The principal requested to execute the call. Must be associated with one of the `identities` that the user has previously shared with the relying party in the `icrc25_request_permission` response, granting it `icrc25_canister_call` permission scope at the same time.
@@ -191,11 +166,6 @@ Once the connection between the relying party and the signer is established, and
 #### Response
 
 `version` (`text`): The version of the standard used. It must match the `version` from the request.
-
-`network`: Network details on which the call was executed.
-- `chainId` (`text`): The chain id of the network as described in the [CAIP-2](https://github.com/icvc/icp-namespace/blob/caip2/caip2.md) standard.
-- `name` (`text`, optional): An optional user-friendly name of the network.
-- `rpcUrl` (`text`, optional): An optional custom RPC URL associated with the network.
 
 `contentMap`: The actual request content as specified [here](https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-call).
 - `request_type` (`text`)
@@ -213,16 +183,13 @@ Once the connection between the relying party and the signer is established, and
 While processing the request from the relying party, the signer can cancel it at any time by sending an [error](#errors) in response. In addition to the pre-defined JSON-RPC 2.0 errors, the following values are applicable:
 - `10001 Unknown error`
 - `20101 Version not supported`
-- `20201 Network not supported`
 - `30101 Permission not granted`
 - `30201 Action aborted`
-- `40001 Network error`
 #### Use-Case
 
 1. The relying party sends a `icrc25_canister_call` request to the signer.
 2. Upon receiving the request, the signer validates whether it can process the message.
     - If the request version is not supported by the signer, the signer sends a response with an error back to the relying party.
-    - If the network is not supported by the signer, the signer sends a response with an error back to the relying party.
     - If the relying party has not been granted the permission to request the action, the signer sends a response with an error back to the relying party.
 3. Next, the signer processes the message following the [ICRC-21](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/consent-msg.md) specification. If the target canister does not support ICRC-21, the signer should display a warning, try to decode the arguments by itself and display raw canister call details. If the arguments cannot be decoded, a proper warning must be displayed.
     - If the user approves the request:
@@ -257,8 +224,6 @@ sequenceDiagram
     RP ->> S: Request canister call
     alt Version is not supported
         S ->> RP: Error response: Version not supported (20101)
-    else Network is not supported
-        S ->> RP: Error reponse: Network not supported (20201)
     else Relying party has not been granted the `icrc25_canister_call` permission
         S ->> RP: Error response: Permission not granted (30101)
     else
@@ -298,9 +263,6 @@ Request
     "method": "icrc25_canister_call",
     "params": {
         "version": "1",
-        "network": {
-            "chainId": "icp:737ba355e855bd4b61279056603e0550",
-        },
         "canisterId": "bkyz2-fmaaa-aaaaa-qaaaq-cai",
         "sender": "2mdal-aedsb-hlpnv-qu3zl-ae6on-72bt5-fwha5-xzs74-5dkaz-dfywi-aqe",
         "method": "transfer",
@@ -316,9 +278,6 @@ Response
     "jsonrpc": "2.0",
     "result": {
         "version": "1",
-        "network": {
-            "chainId": "icp:737ba355e855bd4b61279056603e0550",
-        },
         "contentMap": {
             "request_type": "call",
             "sender": "g5BOt7awpvKwE85v9Bn0tjg7fMv86NQMjLiyAQI=",
@@ -424,7 +383,6 @@ The error is an object comprising the `code`, `message` and optional `data` fiel
 | Code  | Message                | Meaning                                                                       | Data                                                                     |
 | ----- | ---------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
 | 20101 | Version not supported  | The version of the standard is not supported by the signer.                   | (`text`): The unsupported value                                          |
-| 20201 | Network not supported  | The network on which the action was requested is not supported by the signer. | A list of unsupported values: <ul> <li>(`text`): The chain id</li> </ul> |
 
 - User action (**code: `3xx01`**)
 
