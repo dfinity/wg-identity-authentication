@@ -34,6 +34,12 @@ A session must be terminated automatically after a certain period of inactivity.
 - `nat`: A `string` value of an unsigned 64-bit integer.
 - `int` An integer value.
 
+## Batch Calls
+
+JSON-RPC defines a [batch call](https://www.jsonrpc.org/specification#batch) as a JSON array of requests. All methods defined in this standard may also be invoked as part of a batch.
+
+If a signer receives a batch call, it must process each request sequentially in order of the id and reply with a batch response. Calls resulting in error responses do not prevent the processing of subsequent calls in the batch.
+
 ## Messages
 
 ### `icrc25_request_permission`
