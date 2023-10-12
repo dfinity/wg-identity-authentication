@@ -61,6 +61,18 @@ type icrc21_consent_info = record {
     // It should only contain information that is:
     // * relevant to the user
     // * relevant given the canister call argument
+    //
+    // The message must fit the following context shown to
+    // the user on the signer UI:
+    // ┌─────────────────────────────────┐
+    // │  Approve the following action?  │
+    // │  ┌───────────────────────────┐  │
+    // │  │    <consent_message>      │  │
+    // │  └───────────────────────────┘  │
+    // │  ┌───────────┐   ┌───────────┐  │
+    // │  │  Reject   │   │  Approve  │  │
+    // │  └───────────┘   └───────────┘  │
+    // └─────────────────────────────────┘
     consent_message: text;
     // Same semantics as HTTP lang attribute
     language: text;
@@ -290,4 +302,22 @@ Argument for the ledger canister call to `icrc21_consent_message`:
       }
    }
 )
+```
+### Signer UI Approval Screen
+
+The message will then be shown to the user in the following context:
+
+```
+┌─────────────────────────────────┐
+│  Approve the following action?  │
+│  ┌───────────────────────────┐  │
+│  │ Transfer 7.89 ICP to      │  │
+│  │ account ed2182...,        │  │
+│  │ include memo: 123.        │  │
+│  │ Fee: 0.0001 ICP.          │  │
+│  └───────────────────────────┘  │
+│  ┌───────────┐   ┌───────────┐  │
+│  │  Reject   │   │  Approve  │  │
+│  └───────────┘   └───────────┘  │
+└─────────────────────────────────┘
 ```
