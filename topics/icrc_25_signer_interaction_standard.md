@@ -21,9 +21,9 @@ The transport channel is not required to provide confidentiality.
 
 ## Sessions
 
-ICRC-25 uses sessions to determine the lifetime of granted permissions. Permission scopes (see [`permission` message](#permission)) are granted for the duration of a single session only. 
+ICRC-25 uses sessions to determine the lifetime of granted permissions. Permission scopes (see [`icrc25_request_permission` message](#icrc25requestpermission)) are granted for the duration of a single session only. 
 
-A session is established when the first permission request is granted. A session can be revoked by the relying party at any time by sending a [`revoke_permission` message](#revokepermission) to the signer. The signer can also terminate the session at any time and should offer the user a method to do so.
+A session is established when the first permission request is granted. A session can be revoked by the relying party at any time by sending a [`icrc25_revoke_permission` message](#icrc25revokepermission) to the signer. The signer can also terminate the session at any time and should offer the user a method to do so.
 
 A session must be terminated automatically after a certain period of inactivity. The session might be extended automatically if the interaction between the relying party and the signer is still _actively_ ongoing when the default session timeout is reached. There must be a maximum session duration (regardless of activity).
 
@@ -36,9 +36,9 @@ A session must be terminated automatically after a certain period of inactivity.
 
 ## Messages
 
-### `permission`
+### `icrc25_request_permission`
 
-The purpose of the `permission` messages is to grant the relying party access to public parts of the user's identity and define the scope of actions the relying part is allowed to perform.
+The purpose of the `icrc25_request_permission` messages is to grant the relying party access to public parts of the user's identity and define the scope of actions the relying part is allowed to perform.
 
 #### Request
 
@@ -50,7 +50,7 @@ The purpose of the `permission` messages is to grant the relying party access to
 - `rpcUrl` (`text`, optional): An optional custom RPC URL associated with the network.
 
 `scopes`: A list of permission scope objects the relying party requires. If the signer does not support a requested scope, it should ignore that particular scope and proceed as if the `scopes` list did not include that object. Permission scope properties:
-- `scopeId` (`text`): Currently only the value `"canister_call"` is supported.
+- `scopeId` (`text`): Currently only the value `"icrc25_canister_call"` is supported.
 
 `challenge` (`blob`): A challenge used for the signer to sign in order to prove its access to the identity. The challenge should be an array of 32 cryptographically random bytes generated from a secure random source by the sender of the request.
 
@@ -64,7 +64,7 @@ The purpose of the `permission` messages is to grant the relying party access to
 - `rpcUrl` (`text`, optional): An optional custom RPC URL associated with the network.
 
 `scopes`: A list of permission scope objects that the signer supports and the user has agreed the relying party can be granted. This must be a subset of the `scopes` field from the original request. Permission scope properties:
-- `scopeId` (`text`): Currently only the value `"canister_call"` is supported.
+- `scopeId` (`text`): Currently only the value `"icrc25_canister_call"` is supported.
 
 `identities`: A list of identities the user has selected to share with the relying party.
 - `publicKey` (`blob`): The DER-encoded public key associated with the identity, derived in accordance with one of [the signature algorithms supported by the IC](https://internetcomputer.org/docs/current/references/ic-interface-spec/#signatures). The public key can be used to [derive a self-authenticating principal](https://internetcomputer.org/docs/current/references/ic-interface-spec/#principal).
@@ -80,7 +80,7 @@ While processing the request from the relying party, the signer can cancel it at
 
 #### Use-Case
 
-1. The relying party sends a `permission` request to the signer.
+1. The relying party sends a `icrc25_request_permission` request to the signer.
 2. Upon receiving the message, the signer first checks if it can process the message.
     - If the request version is not supported by the signer, the signer sends a response with an error back to the relying party.
     - If none of the requested networks is supported by the signer, the signer sends a response with an error back to the relying party.
@@ -129,14 +129,14 @@ Request
 {
     "id": 1,
     "jsonrpc": "2.0",
-    "method": "permission",
+    "method": "icrc25_request_permission",
     "params": {
         "version": "1",
         "networks": [{
             "chainId": "icp:737ba355e855bd4b61279056603e0550"
         }],
         "scopes": [{
-          "scopeId": "canister_call"
+          "scopeId": "icrc25_canister_call"
         }],
         "challenge": "UjwgsORvEzp98TmB1cAIseNOoD9+GLyN/1DzJ5+jxZM="
     }
@@ -154,7 +154,7 @@ Response
             "chainId": "icp:737ba355e855bd4b61279056603e0550"
         }],
         "scopes": [{
-          "scopeId": "canister_call"
+          "scopeId": "icrc25_canister_call"
         }],
         "identities": [
             {
@@ -166,9 +166,9 @@ Response
 }
 ```
 
-### `canister_call`
+### `icrc25_canister_call`
 
-Once the connection between the relying party and the signer is established, and the relying party has been granted the permission scope with `scopeId` `canister_call`, the relying party can request the signer to execute canister calls.
+Once the connection between the relying party and the signer is established, and the relying party has been granted the permission scope with `scopeId` `icrc25_canister_call`, the relying party can request the signer to execute canister calls.
 
 #### Request
 
@@ -181,7 +181,7 @@ Once the connection between the relying party and the signer is established, and
 
 `canisterId` (`text`): The id of the canister on which the call should be executed.
 
-`sender` (`text`): The principal requested to execute the call. Must be associated with one of the `identities` that the user has previously shared with the relying party in the `permission` response, granting it `canister_call` permission scope at the same time.
+`sender` (`text`): The principal requested to execute the call. Must be associated with one of the `identities` that the user has previously shared with the relying party in the `icrc25_request_permission` response, granting it `icrc25_canister_call` permission scope at the same time.
 
 `method` (`text`): The name of the call method to be executed.
 
@@ -219,7 +219,7 @@ While processing the request from the relying party, the signer can cancel it at
 - `40001 Network error`
 #### Use-Case
 
-1. The relying party sends a `canister_call` request to the signer.
+1. The relying party sends a `icrc25_canister_call` request to the signer.
 2. Upon receiving the request, the signer validates whether it can process the message.
     - If the request version is not supported by the signer, the signer sends a response with an error back to the relying party.
     - If the network is not supported by the signer, the signer sends a response with an error back to the relying party.
@@ -250,7 +250,7 @@ While processing the request from the relying party, the signer can cancel it at
 ```mermaid
 sequenceDiagram
     participant RP as Relying Party
-    participant S as signer
+    participant S as Signer
     participant U as User
     participant C as Target Canister
 
@@ -259,7 +259,7 @@ sequenceDiagram
         S ->> RP: Error response: Version not supported (20101)
     else Network is not supported
         S ->> RP: Error reponse: Network not supported (20201)
-    else Relying party has not been granted the `canister_call` permission
+    else Relying party has not been granted the `icrc25_canister_call` permission
         S ->> RP: Error response: Permission not granted (30101)
     else
         alt Canister supports ICRC-21
@@ -295,7 +295,7 @@ Request
 {
     "id": 1,
     "jsonrpc": "2.0",
-    "method": "canister_call",
+    "method": "icrc25_canister_call",
     "params": {
         "version": "1",
         "network": {
@@ -333,7 +333,7 @@ Response
 }
 ```
 
-### `revoke_permission`
+### `icrc25_revoke_permission`
 
 Once the relying party has been granted some permission scopes, the relying party can request to revoke all or a subset of the previously granted permission scopes. If all granted permissions are revoked, the session is terminated.
 
@@ -342,14 +342,14 @@ Once the relying party has been granted some permission scopes, the relying part
 `version` (`text`): The version of the standard used. If the signer does not support the version of the request, it must send the `"VERSION_NOT_SUPPORTED"` error in response.
 
 `scopes` (optional): A list of permission scope objects the relying party wants to revoke. If this list is empty, or undefined, the signer revokes all granted permission scopes and terminates the session. If the signer does not recognize a provided scope, or if it has not been granted on the current session, it should ignore that particular scope and proceed as if the `scopes` list did not include that object. Permission scope properties:
-- `scopeId` (`text`): Currently only the value `"canister_call"` is supported.
+- `scopeId` (`text`): Currently only the value `"icrc25_canister_call"` is supported.
 
 #### Response
 
 `version` (`text`): The version of the standard used. It must match the `version` from the request.
 
 `scopes`: The list of permission scope objects that remain granted on the current session after applying the revocation. This list may be empty. Permission scope properties:
-- `scopeId` (`text`): Currently only the value `"canister_call"` is supported.
+- `scopeId` (`text`): Currently only the value `"icrc25_canister_call"` is supported.
 
 #### Errors
 
@@ -359,7 +359,7 @@ While processing the request from the relying party, the signer can cancel it at
 
 #### Use-Case
 
-1. The relying party sends a `revoke_permission` request to the signer.
+1. The relying party sends a `icrc25_revoke_permission` request to the signer.
 2. Upon receiving the request, the signer validates whether it can process the message.
     - If the request version is not supported by the signer, the signer sends a response with an error back to the relying party.
 3. Next, the signer revokes the requested permission scopes. If no scopes are provided, the signer revokes all granted permission scopes.
@@ -386,11 +386,11 @@ Request
 {
     "id": 1,
     "jsonrpc": "2.0",
-    "method": "revoke_permission",
+    "method": "icrc25_revoke_permission",
     "params": {
         "version": "1",
         "scopes": [{
-          "scopeId": "canister_call"
+          "scopeId": "icrc25_canister_call"
         }]
     }
 }
