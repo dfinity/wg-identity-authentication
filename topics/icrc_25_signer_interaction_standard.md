@@ -31,7 +31,6 @@ A session must be terminated automatically after a certain period of inactivity.
 
 - `text`: A plain `string` value.
 - `blob`: A `string` value describing binary data encoded in base64.
-- `nat`: A `string` value of an unsigned 64-bit integer.
 - `int` An integer value.
 
 ## Messages
@@ -167,14 +166,7 @@ Once the connection between the relying party and the signer is established, and
 
 `version` (`text`): The version of the standard used. It must match the `version` from the request.
 
-`contentMap`: The actual request content as specified [here](https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-call).
-- `request_type` (`text`)
-- `sender` (`blob`)
-- `nonce` (`blob`, optional)
-- `ingress_expiry` (`nat`)
-- `canister_id` (`blob`)
-- `method_name` (`text`)
-- `arg` (`blob`)
+`contentMap` (`blob`): The CBOR-encoded content map of the actual request as specified [here](https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-call).
 
 `certificate` (`blob`): The certificate returned by the `read_state` call as specified [here](https://internetcomputer.org/docs/current/references/ic-interface-spec/#certificate). The value is CBOR-encoded.
 
@@ -200,7 +192,7 @@ While processing the request from the relying party, the signer can cancel it at
     - If the user rejects the request or if the signer fails to complete the requested action for any reason, the signer sends a response with an error back to the relying party.
 4. The relying party receives a response from the signer and processes it as follows:
     - On successful response: the relying party verifies whether the call performed by the signer was genuine and retrieves the result:
-        - The relying party retrieves the `contentMap` from the response, verifies that its values match the expectations and uses it to [calculate a request id](https://internetcomputer.org/docs/current/references/ic-interface-spec/#request-id).
+        - The relying party retrieves the CBOR-encoded `contentMap` from the response, verifies that its values match the expectations and uses it to [calculate a request id](https://internetcomputer.org/docs/current/references/ic-interface-spec/#request-id).
         - The relying party retrieves the CBOR-encoded [`certificate`](https://internetcomputer.org/docs/current/references/ic-interface-spec/#certificate) from the response, decodes it and validates its authenticity with regard to [the root of trust](https://internetcomputer.org/docs/current/references/ic-interface-spec/#root-of-trust).
             - If the validation process fails, the relying party rejects the response.
         - The relying party extracts the [request status](https://internetcomputer.org/docs/current/references/ic-interface-spec/#state-tree-request-status) from the `certificate`'s state tree.
@@ -263,10 +255,10 @@ Request
     "method": "icrc25_canister_call",
     "params": {
         "version": "1",
-        "canisterId": "bkyz2-fmaaa-aaaaa-qaaaq-cai",
-        "sender": "2mdal-aedsb-hlpnv-qu3zl-ae6on-72bt5-fwha5-xzs74-5dkaz-dfywi-aqe",
+        "canisterId": "xhy27-fqaaa-aaaao-a2hlq-ca",
+        "sender": "b7gqo-ulk5n-2kpo7-oalt7-p2kyl-o4j5l-kiuwo-eeybr-dab4l-ur6up-pqe",
         "method": "transfer",
-        "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdrH2v4C9riZI1Ss2DBLYdFDnt53DN2OUDJIiEgQIAAOgH"
+        "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdV+ztKgq7E4l1ffuTuwEmw8AtYSjlrJ+WLO5ofQIAAMgB"
     }
 }
 ```
@@ -278,16 +270,8 @@ Response
     "jsonrpc": "2.0",
     "result": {
         "version": "1",
-        "contentMap": {
-            "request_type": "call",
-            "sender": "g5BOt7awpvKwE85v9Bn0tjg7fMv86NQMjLiyAQI=",
-            "nonce": "AAABihipQ2wfDXuJIT9dtQ==",
-            "ingress_expiry": "1692631100652000000",
-            "canister_id": "gAAAAAAQAAEBAQ==",
-            "method_name": "transfer",
-            "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdrH2v4C9riZI1Ss2DBLYdFDnt53DN2OUDJIiEgQIAAOgH"
-        },
-        "certificate": "2dn3omR0cmVlgwGDAYIEWCDbGqoAWNjUIoTvYJXJ1d7kXYQxwJNfo38JT65LLVkZsoMBgwJOcmVxdWVzdF9zdGF0dXODAlgg7MfguoW+I0iJuMBdVigbtth22JBuAAqm0C39alKLmsqDAYMCRXJlcGx5ggNYq0RJREwBawK8igF9xf7SAXEBAAGWAUlDUkMtMiBBZ2VudCBlcnJvcjogKENhbmlzdGVyRXJyb3IsICJJQzA1MDM6IENhbmlzdGVyIHJ5amwzLXR5YWFhLWFhYWFhLWFhYWJhLWNhaSB0cmFwcGVkIGV4cGxpY2l0bHk6IElDUkMtMiBmZWF0dXJlcyBhcmUgbm90IGVuYWJsZWQgb24gdGhlIGxlZGdlci4iKYMCRnN0YXR1c4IDR3JlcGxpZWSCBFggD/rb0QsMZPXgOy0VFGgeQnUXoSwtK/M+hgO2pueq7UuDAYIEWCCPaMYe2OYoqQnR7mpSR6h2WzzA8byWm8yQKz1K6Y835IMCRHRpbWWCA0mgnuioz9nbvhdpc2lnbmF0dXJlWDCEOhywYNqcVJD3I1ZcEAfCw2FkwECK6qHzyPDuXetUHVLlRrezmD7iGK2eOP8krMw="
+        "contentMap": "2dn3p2NhcmdYTkRJREwEbXtuAGwCs7DawwNorYbKgwUBbAP7ygECot6U6wYB2KOMqA19AQMBHVfs7SoKuxOJdX37k7sBJsPALWEo5ayflizuaH0CAADIAWtjYW5pc3Rlcl9pZEoAAAAAAcDR1wEBbmluZ3Jlc3NfZXhwaXJ5GxeNX/65y4YAa21ldGhvZF9uYW1laHRyYW5zZmVyZW5vbmNlUFF4+hAimFhoqkdUcIchz0xscmVxdWVzdF90eXBlZGNhbGxmc2VuZGVyWB1q63Snu+4C5/fpWFu4nq1IpZxCYDEYA8XSPqPfAg==",
+        "certificate": "2dn3omR0cmVlgwGDAYIEWCAPzKZJY/emKhi2GGtBrnHh4cdttATd4+9GtJrNCBepb4MBgwJOcmVxdWVzdF9zdGF0dXODAYIEWCCCgynUaonrKCCywghWCSk9BeDqMoI4yf15nxyU/5JZv4MBggRYIDG7WdzQ9sGWI1MpxizUzxubsEBuNkTT94UOZ9USbzNvgwGCBFggawwbTHxnPUzBAUhWBRjk0nzPs2fPpJlaIYtj5AvcX+ODAYIEWCDiFLyaWuMWjtVurCQcSgny/cqfM8S6qrdihVq7nPz1FoMCWCD/8jdeccvqHVYf06Hw7qPXIDNimC1Uyf47VsvgqKpPiIMBgwJFcmVwbHmCA1RESURMAWsCvIoBfcX+0gFxAQAABIMCRnN0YXR1c4IDR3JlcGxpZWSCBFgg7qZngcNt2+B/RuF44W3LRsKWXG6QQg2L6GdZgJ6Nb3+DAYIEWCAx3tU/mhHfX+wDzF003eSJYN8Nebou8rTeGyxr/rUa1YMCRHRpbWWCA0nw9+r88fjXxhdpc2lnbmF0dXJlWDCXNshvwWG1jGViP7ELePGHCThBw9mts45FxIy4gZATkUEsPeJ6y+cjbn2REmB0Soo="
     }
 }
 ```
