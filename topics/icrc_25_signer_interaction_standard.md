@@ -70,7 +70,7 @@ The purpose of the `permission` messages is to grant the relying party access to
 - `publicKey` (`blob`): The DER-encoded public key associated with the identity, derived in accordance with one of [the signature algorithms supported by the IC](https://internetcomputer.org/docs/current/references/ic-interface-spec/#signatures). The public key can be used to [derive a self-authenticating principal](https://internetcomputer.org/docs/current/references/ic-interface-spec/#principal).
 - `signature` (`blob`): The signature produced by signing the concatenation of the domain separator `\x13ic-signer-challenge` (UTF-8 encoded) and the challenge with the private key associated with the identity.
 
-#### Error
+#### Errors
 
 While processing the request from the relying party, the signer can cancel it at any time by sending an [error](#errors) in response. In addition to the pre-defined JSON-RPC 2.0 errors, the following values are applicable:
 - `10001 Unknown error`
@@ -166,18 +166,6 @@ Response
 }
 ```
 
-Error
-```json
-{
-    "id": 1,
-    "jsonrpc": "2.0",
-    "error": {
-        "code": "30101",
-        "message": "Permission not granted"
-    }
-}
-```
-
 ### `canister_call`
 
 Once the connection between the relying party and the signer is established, and the relying party has been granted the permission scope with `scopeId` `canister_call`, the relying party can request the signer to execute canister calls.
@@ -220,7 +208,7 @@ Once the connection between the relying party and the signer is established, and
 
 `certificate` (`blob`): The certificate returned by the `read_state` call as specified [here](https://internetcomputer.org/docs/current/references/ic-interface-spec/#certificate). The value is CBOR-encoded.
 
-#### Error
+#### Errors
 
 While processing the request from the relying party, the signer can cancel it at any time by sending an [error](#errors) in response. In addition to the pre-defined JSON-RPC 2.0 errors, the following values are applicable:
 - `10001 Unknown error`
@@ -345,18 +333,6 @@ Response
 }
 ```
 
-Error
-```json
-{
-    "id": 1,
-    "jsonrpc": "2.0",
-    "error": {
-        "code": "30201",
-        "message": "Action aborted"
-    }
-}
-```
-
 ### `revoke_permission`
 
 Once the relying party has been granted some permission scopes, the relying party can request to revoke all or a subset of the previously granted permission scopes. If all granted permissions are revoked, the session is terminated.
@@ -375,7 +351,7 @@ Once the relying party has been granted some permission scopes, the relying part
 `scopes`: The list of permission scope objects that remain granted on the current session after applying the revocation. This list may be empty. Permission scope properties:
 - `scopeId` (`text`): Currently only the value `"canister_call"` is supported.
 
-#### Error
+#### Errors
 
 While processing the request from the relying party, the signer can cancel it at any time by sending an [error](#errors) in response. In addition to the pre-defined JSON-RPC 2.0 errors, the following values are applicable:
 - `10001 Unknown Error`
@@ -432,23 +408,11 @@ Response
 }
 ```
 
-Error
-```json
-{
-    "id": 1,
-    "jsonrpc": "2.0",
-    "error": {
-        "code": "10001",
-        "message": "Unknown error"
-    }
-}
-```
-
 ## Errors
 
 The error is an object comprising the `code`, `message` and optional `data` fields as described in the [JSON-RPC 2.0 Specification](https://www.jsonrpc.org/specification#error_object). In addition the the pre-defined errors, the following values are supported:
 
-##### Version `1` errors (**code: `xxx01`**)
+### Version `1` errors (**code: `xxx01`**)
 - General (**code: `1xx01`**)
 
 | Code  | Message       | Meaning                | Data |
@@ -474,3 +438,16 @@ The error is an object comprising the `code`, `message` and optional `data` fiel
 | Code  | Message                | Meaning                  | Data                                                                                                                            |
 | ----- | ---------------------- | -------------------------| ------------------------------------------------------------------------------------------------------------------------------- |
 | 40001 | Network error          | The network call failed. | (optional) Error details: <ul> <li>`status` (`int`): HTTP status code</li> <li>`message` (`text`, optional): message</li> </ul> |
+
+### Example
+
+```json
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "error": {
+        "code": "10001",
+        "message": "Unknown error"
+    }
+}
+```
