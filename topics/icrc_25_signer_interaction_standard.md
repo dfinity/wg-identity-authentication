@@ -13,6 +13,12 @@ This specification describes a communication protocol between dapps (decentraliz
 * signer: A service that manages a user's keys and can sign and perform canister calls on their behalf.
 * relying party: A service that wants to request calls on a specific canister.
 
+## Types
+
+- `text`: A plain `string` value.
+- `blob`: A `string` value describing binary data encoded in base64.
+- `int`: An integer value.
+
 ## Transport Requirements
 
 This standard is agnostic to the transport channel used to send the messages, as long as it provides authenticity and integrity: this means that the communicating parties know the other participant and can be sure that the messages they receive are sent by the party they expect and that the messages have not been tampered with.
@@ -21,17 +27,29 @@ The transport channel is not required to provide confidentiality.
 
 ## Sessions
 
-ICRC-25 uses sessions to determine the lifetime of granted permissions. Permission scopes (see [`icrc25_request_permission` message](#icrc25requestpermission)) are granted for the duration of a single session only. 
+ICRC-25 uses sessions to determine the lifetime of granted permission [scopes](#scopes). Permission scopes (see [`icrc25_request_permission` message](#icrc25requestpermission)) are granted for the duration of a single session only. 
 
 A session is established when the first permission request is granted. A session can be revoked by the relying party at any time by sending a [`icrc25_revoke_permission` message](#icrc25revokepermission) to the signer. The signer can also terminate the session at any time and should offer the user a method to do so.
 
 A session must be terminated automatically after a certain period of inactivity. The session might be extended automatically if the interaction between the relying party and the signer is still _actively_ ongoing when the default session timeout is reached. There must be a maximum session duration (regardless of activity).
 
-## Types
+## Scopes
 
-- `text`: A plain `string` value.
-- `blob`: A `string` value describing binary data encoded in base64.
-- `int` An integer value.
+A scope is the permission to invoke specific JSON-RPC 2.0 method on the signer. A scope is identified by the `method` property which matches the `method` name of the JSON-RPC 2.0 call it relates to. The relying party requests scopes using the [`icrc25_request_permission`](#icrc25requestpermission) method and may revoke them using  [`icrc25_revoke_permission`](#icrc25revokepermission).
+
+Not all methods defined in this standard require a scope.
+
+### Scope Objects
+
+Scopes are represented in JSON-RPC 2.0 messages as JSON objects with the following properties:
+- `method` (`text`): JSON-RPC 2.0 method the scope is associated with.
+
+### List of Scopes
+
+This standard defines the following `method` values for scopes:
+* `icrc25_canister_call`
+
+This list can be extended by other standards.
 
 ## Batch Calls
 
@@ -45,12 +63,15 @@ If a signer receives a batch call, it must process each request sequentially in 
 
 The purpose of the `icrc25_request_permission` messages is to grant the relying party access to public parts of the user's identity and define the scope of actions the relying part is allowed to perform.
 
+#### Prerequisites
+
+None
+
 #### Request
 
 `version` (`text`): The version of the standard used. If the signer does not support the version of the request, it must send the `"VERSION_NOT_SUPPORTED"` error in response.
 
-`scopes`: A list of permission scope objects the relying party requires. If the signer does not support a requested scope, it should ignore that particular scope and proceed as if the `scopes` list did not include that object. Permission scope properties:
-- `scopeId` (`text`): Currently only the value `"icrc25_canister_call"` is supported.
+`scopes`: A list of permission [scope objects](#scope-objects) the relying party requires. If the signer does not support a requested scope, it should ignore that particular scope and proceed as if the `scopes` list did not include that object.
 
 `challenge` (`blob`): A challenge used for the signer to sign in order to prove its access to the identity. The challenge should be an array of 32 cryptographically random bytes generated from a secure random source by the sender of the request.
 
@@ -58,8 +79,7 @@ The purpose of the `icrc25_request_permission` messages is to grant the relying 
 
 `version` (`text`): The version of the standard used. It must match the `version` from the request.
 
-`scopes`: A list of permission scope objects that the signer supports and the user has agreed the relying party can be granted. This must be a subset of the `scopes` field from the original request. Permission scope properties:
-- `scopeId` (`text`): Currently only the value `"icrc25_canister_call"` is supported.
+`scopes`: A list of permission [scope objects](#scope-objects) that the signer supports and the user has agreed the relying party can be granted. This must be a subset of the `scopes` field from the original request.
 
 `identities`: A list of identities the user has selected to share with the relying party.
 - `publicKey` (`blob`): The DER-encoded public key associated with the identity, derived in accordance with one of [the signature algorithms supported by the IC](https://internetcomputer.org/docs/current/references/ic-interface-spec/#signatures). The public key can be used to [derive a self-authenticating principal](https://internetcomputer.org/docs/current/references/ic-interface-spec/#principal).
@@ -124,7 +144,7 @@ Request
     "params": {
         "version": "1",
         "scopes": [{
-          "scopeId": "icrc25_canister_call"
+          "method": "icrc25_canister_call"
         }],
         "challenge": "UjwgsORvEzp98TmB1cAIseNOoD9+GLyN/1DzJ5+jxZM="
     }
@@ -139,7 +159,7 @@ Response
     "result": {
         "version": "1",
         "scopes": [{
-          "scopeId": "icrc25_canister_call"
+          "method": "icrc25_canister_call"
         }],
         "identities": [
             {
@@ -153,7 +173,11 @@ Response
 
 ### `icrc25_canister_call`
 
-Once the connection between the relying party and the signer is established, and the relying party has been granted the permission scope with `scopeId` `icrc25_canister_call`, the relying party can request the signer to execute canister calls.
+This message can be used by the relying party to request canister calls to be executed by the signer.
+
+#### Prerequisites
+
+* Active session with granted scope `icrc25_canister_call`.
 
 #### Request
 
@@ -284,21 +308,23 @@ Response
 
 ### `icrc25_revoke_permission`
 
-Once the relying party has been granted some permission scopes, the relying party can request to revoke all or a subset of the previously granted permission scopes. If all granted permissions are revoked, the session is terminated.
+The relying party can request to revoke all or a subset of the previously granted permission [scopes](#scopes). If all granted permission scopes are revoked, the session (if any) is terminated.
+
+#### Prerequisites
+
+None
 
 #### Request
 
 `version` (`text`): The version of the standard used. If the signer does not support the version of the request, it must send the `"VERSION_NOT_SUPPORTED"` error in response.
 
-`scopes` (optional): A list of permission scope objects the relying party wants to revoke. If this list is empty, or undefined, the signer revokes all granted permission scopes and terminates the session. If the signer does not recognize a provided scope, or if it has not been granted on the current session, it should ignore that particular scope and proceed as if the `scopes` list did not include that object. Permission scope properties:
-- `scopeId` (`text`): Currently only the value `"icrc25_canister_call"` is supported.
+`scopes` (optional): A list of permission [scope objects](#scope-objects) the relying party wants to revoke. If this list is empty, or undefined, the signer revokes all granted permission scopes and terminates the session. If the signer does not recognize a provided scope, or if it has not been granted on the current session, it should ignore that particular scope and proceed as if the `scopes` list did not include that object.
 
 #### Response
 
 `version` (`text`): The version of the standard used. It must match the `version` from the request.
 
-`scopes`: The list of permission scope objects that remain granted on the current session after applying the revocation. This list may be empty. Permission scope properties:
-- `scopeId` (`text`): Currently only the value `"icrc25_canister_call"` is supported.
+`scopes`: The list of [scope objects](#scope-objects) that remain granted on the current session (if any) after applying the revocation. This list may be empty.
 
 #### Errors
 
@@ -339,7 +365,7 @@ Request
     "params": {
         "version": "1",
         "scopes": [{
-          "scopeId": "icrc25_canister_call"
+          "method": "icrc25_canister_call"
         }]
     }
 }
