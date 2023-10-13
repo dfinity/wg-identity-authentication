@@ -18,7 +18,7 @@ This specification describes a communication protocol between dapps (decentraliz
 - `text`: A plain `string` value.
 - `blob`: A `string` value describing binary data encoded in base64.
 - `nat`: A `string` value of an unsigned 64-bit integer.
-- `int` An integer value.
+- `int`: An integer value.
 
 ## Transport Requirements
 
@@ -28,7 +28,7 @@ The transport channel is not required to provide confidentiality.
 
 ## Sessions
 
-ICRC-25 uses sessions to determine the lifetime of granted [scopes](#scopes). Permission scopes (see [`icrc25_request_permission` message](#icrc25requestpermission)) are granted for the duration of a single session only. 
+ICRC-25 uses sessions to determine the lifetime of granted permission [scopes](#scopes). Permission scopes (see [`icrc25_request_permission` message](#icrc25requestpermission)) are granted for the duration of a single session only. 
 
 A session is established when the first permission request is granted. A session can be revoked by the relying party at any time by sending a [`icrc25_revoke_permission` message](#icrc25revokepermission) to the signer. The signer can also terminate the session at any time and should offer the user a method to do so.
 
@@ -36,7 +36,7 @@ A session must be terminated automatically after a certain period of inactivity.
 
 ## Scopes
 
-A scope is a permission to invoke specific JSON-RPC 2.0 method on the signer. A scope is identified by the `method` property which matches the `method` name of the JSON-RPC 2.0 call it relates to. The relying party requests scopes using the [`icrc25_request_permission`](#icrc25requestpermission) method and may revoke them using  [`icrc25_revoke_permission`](#icrc25revokepermission).
+A scope is the permission to invoke specific JSON-RPC 2.0 method on the signer. A scope is identified by the `method` property which matches the `method` name of the JSON-RPC 2.0 call it relates to. The relying party requests scopes using the [`icrc25_request_permission`](#icrc25requestpermission) method and may revoke them using  [`icrc25_revoke_permission`](#icrc25revokepermission).
 
 Not all methods defined in this standard require a scope.
 
@@ -45,7 +45,7 @@ Not all methods defined in this standard require a scope.
 Scopes are represented in JSON-RPC 2.0 messages as JSON objects with the following properties:
 - `method` (`text`): JSON-RPC 2.0 method the scope is associated with.
 
-### List of ICRC-25 Scopes
+### List of Scopes
 
 This standard defines the following `method` values for scopes:
 * `icrc25_canister_call`
@@ -359,7 +359,7 @@ Response
 
 ### `icrc25_revoke_permission`
 
-The relying party can request to revoke all or a subset of the previously granted [scopes](#scopes). If all granted scopes are revoked, the session (if any) is terminated.
+The relying party can request to revoke all or a subset of the previously granted permission [scopes](#scopes). If all granted permission scopes are revoked, the session (if any) is terminated.
 
 #### Prerequisites
 
