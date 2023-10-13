@@ -21,12 +21,12 @@ For this standard to represent an [ICRC-25](https://github.com/dfinity/wg-identi
 ## Establishing a Communication Channel
 
 A window post message communication channel is initiated by the relying party. The relying party opens a new window and waits for the signer to send a message indicating that it is ready for interactions.
-The message is a [JSON-RPC 2.0](https://www.jsonrpc.org/specification) notification with the method `icrc-29_ready` and no parameters:
+The message is a [JSON-RPC 2.0](https://www.jsonrpc.org/specification) notification with the method `icrc29_ready` and no parameters:
 
 ```json
 {
     "jsonrpc": "2.0",
-    "method": "icrc-29_ready"
+    "method": "icrc29_ready"
 }
 ```
 

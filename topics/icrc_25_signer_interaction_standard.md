@@ -17,7 +17,6 @@ This specification describes a communication protocol between dapps (decentraliz
 
 - `text`: A plain `string` value.
 - `blob`: A `string` value describing binary data encoded in base64.
-- `nat`: A `string` value of an unsigned 64-bit integer.
 - `int`: An integer value.
 
 ## Transport Requirements
@@ -52,6 +51,12 @@ This standard defines the following `method` values for scopes:
 
 This list can be extended by other standards.
 
+## Batch Calls
+
+JSON-RPC defines a [batch call](https://www.jsonrpc.org/specification#batch) as a JSON array of requests. All methods defined in this standard may also be invoked as part of a batch.
+
+If a signer receives a batch call, it must process each request sequentially in order of the id and reply with a batch response. Calls resulting in error responses do not prevent the processing of subsequent calls in the batch.
+
 ## Messages
 
 ### `icrc25_request_permission`
@@ -66,11 +71,6 @@ None
 
 `version` (`text`): The version of the standard used. If the signer does not support the version of the request, it must send the `"VERSION_NOT_SUPPORTED"` error in response.
 
-`networks`: A list of networks on which the relying party plans to operate.
-- `chainId`(`text`): The chain id of the network as described in the [CAIP-2](https://github.com/icvc/icp-namespace/blob/caip2/caip2.md) standard.
-- `name` (`text`, optional): An optional user-friendly name of the network.
-- `rpcUrl` (`text`, optional): An optional custom RPC URL associated with the network.
-
 `scopes`: A list of permission [scope objects](#scope-objects) the relying party requires. If the signer does not support a requested scope, it should ignore that particular scope and proceed as if the `scopes` list did not include that object.
 
 `challenge` (`blob`): A challenge used for the signer to sign in order to prove its access to the identity. The challenge should be an array of 32 cryptographically random bytes generated from a secure random source by the sender of the request.
@@ -78,11 +78,6 @@ None
 #### Response
 
 `version` (`text`): The version of the standard used. It must match the `version` from the request.
-
-`networks`: A list of networks on which the user has agreed the relying party can operate. This should be a subset of the `networks` from the original request.
-- `chainId` (`text`): The chain id of the network as described in the [CAIP-2](https://github.com/icvc/icp-namespace/blob/caip2/caip2.md) standard.
-- `name` (`text`, optional): An optional user-friendly name of the network.
-- `rpcUrl` (`text`, optional): An optional custom RPC URL associated with the network.
 
 `scopes`: A list of permission [scope objects](#scope-objects) that the signer supports and the user has agreed the relying party can be granted. This must be a subset of the `scopes` field from the original request.
 
@@ -95,7 +90,6 @@ None
 While processing the request from the relying party, the signer can cancel it at any time by sending an [error](#errors) in response. In addition to the pre-defined JSON-RPC 2.0 errors, the following values are applicable:
 - `10001 Unknown error`
 - `20101 Version not supported`
-- `20201 Network not supported`
 - `30101 Permission not granted`
 
 #### Use-Case
@@ -103,7 +97,6 @@ While processing the request from the relying party, the signer can cancel it at
 1. The relying party sends a `icrc25_request_permission` request to the signer.
 2. Upon receiving the message, the signer first checks if it can process the message.
     - If the request version is not supported by the signer, the signer sends a response with an error back to the relying party.
-    - If none of the requested networks is supported by the signer, the signer sends a response with an error back to the relying party.
 3. Next, the signer presents the details of the to-be-established connection to the user and asks the user to select identities that will be paired in response. If the user has never interacted with this relying party before, the signer should display information explaining that the user is about to establish a connection with a new relying party.
     > **Note:** The signer should maintain a list of relying parties that are trusted by the user. It is recommended that signers
     assist users when deciding to grant permissions to new relying parties, e.g. by maintaining a list of well-known relying parties
@@ -125,10 +118,8 @@ sequenceDiagram
     RP ->> S: Request permission
     alt Version is not supported
         S ->> RP: Error response: Version not supported (20101)
-    else Network is not supported
-        S ->> RP: Error response: Network not supported (20201)
     else
-        S ->> U: Display connection details (requested networks, scopes)<br/> Ask to select identities to share with Relying Party
+        S ->> U: Display connection details and requested scopes<br/> Ask to select identities to share with Relying Party
         alt Approved
             U ->> S: Select identities<br/>Approve request
             S ->> S: Store the granted permission scopes
@@ -152,9 +143,6 @@ Request
     "method": "icrc25_request_permission",
     "params": {
         "version": "1",
-        "networks": [{
-            "chainId": "icp:737ba355e855bd4b61279056603e0550"
-        }],
         "scopes": [{
           "method": "icrc25_canister_call"
         }],
@@ -170,9 +158,6 @@ Response
     "jsonrpc": "2.0",
     "result": {
         "version": "1",
-        "networks": [{
-            "chainId": "icp:737ba355e855bd4b61279056603e0550"
-        }],
         "scopes": [{
           "method": "icrc25_canister_call"
         }],
@@ -198,11 +183,6 @@ This message can be used by the relying party to request canister calls to be ex
 
 `version` (`text`): The version of the standard used. If the signer does not support the version of the request, it must send the `"VERSION_NOT_SUPPORTED"` error in response.
 
-`network`: Network details on which the call should be executed.
-- `chainId` (`text`) - The chain id of the network as described in the [CAIP-2](https://github.com/icvc/icp-namespace/blob/caip2/caip2.md) standard.
-- `name` (`text`, optional): An optional user-friendly name of the network.
-- `rpcUrl` (`text`, optional): An optional custom RPC URL associated with the network.
-
 `canisterId` (`text`): The id of the canister on which the call should be executed.
 
 `sender` (`text`): The principal requested to execute the call. Must be associated with one of the `identities` that the user has previously shared with the relying party in the `icrc25_request_permission` response, granting it `icrc25_canister_call` permission scope at the same time.
@@ -216,19 +196,7 @@ This message can be used by the relying party to request canister calls to be ex
 
 `version` (`text`): The version of the standard used. It must match the `version` from the request.
 
-`network`: Network details on which the call was executed.
-- `chainId` (`text`): The chain id of the network as described in the [CAIP-2](https://github.com/icvc/icp-namespace/blob/caip2/caip2.md) standard.
-- `name` (`text`, optional): An optional user-friendly name of the network.
-- `rpcUrl` (`text`, optional): An optional custom RPC URL associated with the network.
-
-`contentMap`: The actual request content as specified [here](https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-call).
-- `request_type` (`text`)
-- `sender` (`blob`)
-- `nonce` (`blob`, optional)
-- `ingress_expiry` (`nat`)
-- `canister_id` (`blob`)
-- `method_name` (`text`)
-- `arg` (`blob`)
+`contentMap` (`blob`): The CBOR-encoded content map of the actual request as specified [here](https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-call).
 
 `certificate` (`blob`): The certificate returned by the `read_state` call as specified [here](https://internetcomputer.org/docs/current/references/ic-interface-spec/#certificate). The value is CBOR-encoded.
 
@@ -237,16 +205,13 @@ This message can be used by the relying party to request canister calls to be ex
 While processing the request from the relying party, the signer can cancel it at any time by sending an [error](#errors) in response. In addition to the pre-defined JSON-RPC 2.0 errors, the following values are applicable:
 - `10001 Unknown error`
 - `20101 Version not supported`
-- `20201 Network not supported`
 - `30101 Permission not granted`
 - `30201 Action aborted`
-- `40001 Network error`
 #### Use-Case
 
 1. The relying party sends a `icrc25_canister_call` request to the signer.
 2. Upon receiving the request, the signer validates whether it can process the message.
     - If the request version is not supported by the signer, the signer sends a response with an error back to the relying party.
-    - If the network is not supported by the signer, the signer sends a response with an error back to the relying party.
     - If the relying party has not been granted the permission to request the action, the signer sends a response with an error back to the relying party.
 3. Next, the signer processes the message following the [ICRC-21](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/consent-msg.md) specification. If the target canister does not support ICRC-21, the signer should display a warning, try to decode the arguments by itself and display raw canister call details. If the arguments cannot be decoded, a proper warning must be displayed.
     - If the user approves the request:
@@ -257,7 +222,7 @@ While processing the request from the relying party, the signer can cancel it at
     - If the user rejects the request or if the signer fails to complete the requested action for any reason, the signer sends a response with an error back to the relying party.
 4. The relying party receives a response from the signer and processes it as follows:
     - On successful response: the relying party verifies whether the call performed by the signer was genuine and retrieves the result:
-        - The relying party retrieves the `contentMap` from the response, verifies that its values match the expectations and uses it to [calculate a request id](https://internetcomputer.org/docs/current/references/ic-interface-spec/#request-id).
+        - The relying party retrieves the CBOR-encoded `contentMap` from the response, verifies that its values match the expectations and uses it to [calculate a request id](https://internetcomputer.org/docs/current/references/ic-interface-spec/#request-id).
         - The relying party retrieves the CBOR-encoded [`certificate`](https://internetcomputer.org/docs/current/references/ic-interface-spec/#certificate) from the response, decodes it and validates its authenticity with regard to [the root of trust](https://internetcomputer.org/docs/current/references/ic-interface-spec/#root-of-trust).
             - If the validation process fails, the relying party rejects the response.
         - The relying party extracts the [request status](https://internetcomputer.org/docs/current/references/ic-interface-spec/#state-tree-request-status) from the `certificate`'s state tree.
@@ -281,8 +246,6 @@ sequenceDiagram
     RP ->> S: Request canister call
     alt Version is not supported
         S ->> RP: Error response: Version not supported (20101)
-    else Network is not supported
-        S ->> RP: Error reponse: Network not supported (20201)
     else Relying party has not been granted the `icrc25_canister_call` permission
         S ->> RP: Error response: Permission not granted (30101)
     else
@@ -322,13 +285,10 @@ Request
     "method": "icrc25_canister_call",
     "params": {
         "version": "1",
-        "network": {
-            "chainId": "icp:737ba355e855bd4b61279056603e0550",
-        },
-        "canisterId": "bkyz2-fmaaa-aaaaa-qaaaq-cai",
-        "sender": "2mdal-aedsb-hlpnv-qu3zl-ae6on-72bt5-fwha5-xzs74-5dkaz-dfywi-aqe",
+        "canisterId": "xhy27-fqaaa-aaaao-a2hlq-ca",
+        "sender": "b7gqo-ulk5n-2kpo7-oalt7-p2kyl-o4j5l-kiuwo-eeybr-dab4l-ur6up-pqe",
         "method": "transfer",
-        "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdrH2v4C9riZI1Ss2DBLYdFDnt53DN2OUDJIiEgQIAAOgH"
+        "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdV+ztKgq7E4l1ffuTuwEmw8AtYSjlrJ+WLO5ofQIAAMgB"
     }
 }
 ```
@@ -340,19 +300,8 @@ Response
     "jsonrpc": "2.0",
     "result": {
         "version": "1",
-        "network": {
-            "chainId": "icp:737ba355e855bd4b61279056603e0550",
-        },
-        "contentMap": {
-            "request_type": "call",
-            "sender": "g5BOt7awpvKwE85v9Bn0tjg7fMv86NQMjLiyAQI=",
-            "nonce": "AAABihipQ2wfDXuJIT9dtQ==",
-            "ingress_expiry": "1692631100652000000",
-            "canister_id": "gAAAAAAQAAEBAQ==",
-            "method_name": "transfer",
-            "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdrH2v4C9riZI1Ss2DBLYdFDnt53DN2OUDJIiEgQIAAOgH"
-        },
-        "certificate": "2dn3omR0cmVlgwGDAYIEWCDbGqoAWNjUIoTvYJXJ1d7kXYQxwJNfo38JT65LLVkZsoMBgwJOcmVxdWVzdF9zdGF0dXODAlgg7MfguoW+I0iJuMBdVigbtth22JBuAAqm0C39alKLmsqDAYMCRXJlcGx5ggNYq0RJREwBawK8igF9xf7SAXEBAAGWAUlDUkMtMiBBZ2VudCBlcnJvcjogKENhbmlzdGVyRXJyb3IsICJJQzA1MDM6IENhbmlzdGVyIHJ5amwzLXR5YWFhLWFhYWFhLWFhYWJhLWNhaSB0cmFwcGVkIGV4cGxpY2l0bHk6IElDUkMtMiBmZWF0dXJlcyBhcmUgbm90IGVuYWJsZWQgb24gdGhlIGxlZGdlci4iKYMCRnN0YXR1c4IDR3JlcGxpZWSCBFggD/rb0QsMZPXgOy0VFGgeQnUXoSwtK/M+hgO2pueq7UuDAYIEWCCPaMYe2OYoqQnR7mpSR6h2WzzA8byWm8yQKz1K6Y835IMCRHRpbWWCA0mgnuioz9nbvhdpc2lnbmF0dXJlWDCEOhywYNqcVJD3I1ZcEAfCw2FkwECK6qHzyPDuXetUHVLlRrezmD7iGK2eOP8krMw="
+        "contentMap": "2dn3p2NhcmdYTkRJREwEbXtuAGwCs7DawwNorYbKgwUBbAP7ygECot6U6wYB2KOMqA19AQMBHVfs7SoKuxOJdX37k7sBJsPALWEo5ayflizuaH0CAADIAWtjYW5pc3Rlcl9pZEoAAAAAAcDR1wEBbmluZ3Jlc3NfZXhwaXJ5GxeNX/65y4YAa21ldGhvZF9uYW1laHRyYW5zZmVyZW5vbmNlUFF4+hAimFhoqkdUcIchz0xscmVxdWVzdF90eXBlZGNhbGxmc2VuZGVyWB1q63Snu+4C5/fpWFu4nq1IpZxCYDEYA8XSPqPfAg==",
+        "certificate": "2dn3omR0cmVlgwGDAYIEWCAPzKZJY/emKhi2GGtBrnHh4cdttATd4+9GtJrNCBepb4MBgwJOcmVxdWVzdF9zdGF0dXODAYIEWCCCgynUaonrKCCywghWCSk9BeDqMoI4yf15nxyU/5JZv4MBggRYIDG7WdzQ9sGWI1MpxizUzxubsEBuNkTT94UOZ9USbzNvgwGCBFggawwbTHxnPUzBAUhWBRjk0nzPs2fPpJlaIYtj5AvcX+ODAYIEWCDiFLyaWuMWjtVurCQcSgny/cqfM8S6qrdihVq7nPz1FoMCWCD/8jdeccvqHVYf06Hw7qPXIDNimC1Uyf47VsvgqKpPiIMBgwJFcmVwbHmCA1RESURMAWsCvIoBfcX+0gFxAQAABIMCRnN0YXR1c4IDR3JlcGxpZWSCBFgg7qZngcNt2+B/RuF44W3LRsKWXG6QQg2L6GdZgJ6Nb3+DAYIEWCAx3tU/mhHfX+wDzF003eSJYN8Nebou8rTeGyxr/rUa1YMCRHRpbWWCA0nw9+r88fjXxhdpc2lnbmF0dXJlWDCXNshvwWG1jGViP7ELePGHCThBw9mts45FxIy4gZATkUEsPeJ6y+cjbn2REmB0Soo="
     }
 }
 ```
@@ -450,7 +399,6 @@ The error is an object comprising the `code`, `message` and optional `data` fiel
 | Code  | Message                | Meaning                                                                       | Data                                                                     |
 | ----- | ---------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
 | 20101 | Version not supported  | The version of the standard is not supported by the signer.                   | (`text`): The unsupported value                                          |
-| 20201 | Network not supported  | The network on which the action was requested is not supported by the signer. | A list of unsupported values: <ul> <li>(`text`): The chain id</li> </ul> |
 
 - User action (**code: `3xx01`**)
 
