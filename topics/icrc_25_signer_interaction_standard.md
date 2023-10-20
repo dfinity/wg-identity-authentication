@@ -95,7 +95,7 @@ While processing the request from the relying party, the signer can cancel it at
 3. The signer removes any unrecognized scopes from the list of requested scopes.
 4. Depending on the session state the signer either skips or displays the details of the to-be-established connection to the user:
     - If there is no ongoing session with the relying party:
-        - the signer presents the details of the to-be-established connection to the user and asks the user to select identities that will be paired in response. If the user has never interacted with this relying party before, the signer should display information explaining that the user is about to establish a connection with a new relying party.
+        - the signer presents the details of the to-be-established connection to the user. If the user has never interacted with this relying party before, the signer should display information explaining that the user is about to establish a connection with a new relying party.
 
       > **Note:** The signer should maintain a list of relying parties that are trusted by the user. It is recommended that signers assist users when deciding to grant permissions to new relying parties, e.g. by maintaining a list of well-known relying parties and displaying additional information about the relying party, such as its name, logo, etc., or in the case of an unknown relying party, by displaying a warning.
 
