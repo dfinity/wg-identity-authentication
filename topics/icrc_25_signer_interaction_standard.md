@@ -100,15 +100,16 @@ While processing the request from the relying party, the signer can cancel it at
     - If the request version is not supported by the signer, the signer sends a response with an error back to the relying party.
 3. The signer removes any unrecognized scopes from the list of requested scopes.
 4. Depending on the session state the signer either skips or displays the details of the to-be-established connection to the user:
-    - If there is no ongoing session with the relying party:
+    - If there is an active session with the relying party, skip to the next step, otherwise:
         - the signer presents the details of the to-be-established connection to the user. If the user has never interacted with this relying party before, the signer should display information explaining that the user is about to establish a connection with a new relying party.
+        - If the user approves the connection, the signer creates a new session for the relying party.
+            - Otherwise, the signer sends a response with an error back to the relying party and step 5 is skipped.
 
       > **Note:** The signer should maintain a list of relying parties that are trusted by the user. It is recommended that signers assist users when deciding to grant permissions to new relying parties, e.g. by maintaining a list of well-known relying parties and displaying additional information about the relying party, such as its name, logo, etc., or in the case of an unknown relying party, by displaying a warning.
-
-    - If there already is an active session with the relying party, the signer skips this step.
+      
 5. The signer displays the list of requested scopes to the user and asks the user to approve or reject the request. The user should also be allowed to approve only a subset of the requested scopes or add additional restrictions (see [optional scope restrictions](#optional-properties)).
     - If all requested scopes have already been granted, the signer may skip the user interaction and reply with the list of granted scopes immediately.
-    - If the user approves the request, the signer saves information about the granted permission scopes on the current session. If there is no active session, a new one must be created. Then the signer sends a successful response back to the relying party with the list of granted scopes.
+    - If the user approves the request, the signer saves information about the granted permission scopes on the current session. Then the signer sends a successful response back to the relying party with the list of granted scopes.
     - If the user rejects the request, the signer sends a response with an error back to the relying party.
 6. After receiving a response, the relying party may send additional messages depending on the granted scopes.
 
