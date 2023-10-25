@@ -44,6 +44,12 @@ Not all methods defined in this standard require a scope.
 Scopes are represented in JSON-RPC 2.0 messages as JSON objects with the following properties:
 - `method` (`text`): JSON-RPC 2.0 method the scope is associated with.
 
+#### Optional Properties
+- `targets` (`text` array): A list of target canister ids (textual representation) the scope is restricted to. If the list is not present, the scope applies to all canisters (i.e. the permission is not restricted).
+    - Applicable to the `icrc25_canister_call` scope.
+- `senders` (`text` array): A list of sender principal ids (textual representation) the scope is restricted to. If the list is not present, the scope applies to all senders (i.e. the permission is not restricted).
+    - Applicable to the `icrc25_canister_call` scope.
+
 ### List of Scopes
 
 This standard defines the following `method` values for scopes:
@@ -78,7 +84,7 @@ None
 
 `version` (`text`): The version of the standard used. It must match the `version` from the request.
 
-`scopes`: A list of permission [scope objects](#scope-objects) that the signer supports and the user has granted the relying party. This list includes all granted scopes on the current session.
+`scopes`: A list of permission [scope objects](#scope-objects) that the signer supports and the user has granted the relying party. This must be a subset of the `scopes` field from the original request. Additionally, scope restrictions must be the same or more restrictive than the ones requested by the relying party.
 
 #### Errors
 
@@ -100,9 +106,9 @@ While processing the request from the relying party, the signer can cancel it at
       > **Note:** The signer should maintain a list of relying parties that are trusted by the user. It is recommended that signers assist users when deciding to grant permissions to new relying parties, e.g. by maintaining a list of well-known relying parties and displaying additional information about the relying party, such as its name, logo, etc., or in the case of an unknown relying party, by displaying a warning.
 
     - If there already is an active session with the relying party, the signer skips this step.
-5. The signer displays the list of requested scopes to the user and asks the user to approve or reject the request. The user should also be allowed to approve only a subset of the requested scopes.
+5. The signer displays the list of requested scopes to the user and asks the user to approve or reject the request. The user should also be allowed to approve only a subset of the requested scopes or add additional restrictions (see [optional scope restrictions](#optional-properties)).
     - If all requested scopes have already been granted, the signer may skip the user interaction and reply with the list of granted scopes immediately.
-    - If the user approves the request, the signer saves information about the granted permission scopes on the current session. If there is no active session, a new one must be created. Then the signer sends a successful response back to the relying party with the list of all granted scopes on the current session.
+    - If the user approves the request, the signer saves information about the granted permission scopes on the current session. If there is no active session, a new one must be created. Then the signer sends a successful response back to the relying party with the list of granted scopes.
     - If the user rejects the request, the signer sends a response with an error back to the relying party.
 6. After receiving a response, the relying party may send additional messages depending on the granted scopes.
 
@@ -149,7 +155,8 @@ Request
                 "method": "icrc25_get_identities"
             },
             {
-                "method": "icrc25_canister_call"
+                "method": "icrc25_canister_call",
+                "targets": ["ryjl3-tyaaa-aaaaa-aaaba-cai"]
             }
         ]
     }
@@ -166,6 +173,11 @@ Response
         "scopes": [
             {
                 "method": "icrc25_get_identities"
+            },
+            {
+                "method": "icrc25_canister_call",
+                "targets": ["ryjl3-tyaaa-aaaaa-aaaba-cai"],
+                "senders": ["btbdd-ob3pe-dz6kv-7n4gh-k2xtm-xjthz-kcvpk-fwbnv-w5qbk-iqjm4-4qe"]
             }
         ]
     }
@@ -311,6 +323,7 @@ While processing the request from the relying party, the signer can cancel it at
 2. Upon receiving the request, the signer validates whether it can process the message.
     - If the request version is not supported by the signer, the signer sends a response with an error back to the relying party.
     - If the relying party has not been granted the permission to request the action, the signer sends a response with an error back to the relying party.
+        - The sender must make sure that the request complies with additional scope restrictions defined by the signer (if any), such as limitations on the target canister id or the sender principal, etc. 
 3. Next, the signer processes the message following the [ICRC-21](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/consent-msg.md) specification. If the target canister does not support ICRC-21, the signer should display a warning, try to decode the arguments by itself and display raw canister call details. If the arguments cannot be decoded, a strong warning must be displayed.
     - If the user approves the request:
         - The signer sends the call to the IC (in order to get a certified results, all calls, including queries, should be sent as `update` calls), retrieves its [content map](https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-call) and [calculates a request id](https://internetcomputer.org/docs/current/references/ic-interface-spec/#request-id) based on it.
@@ -347,7 +360,7 @@ sequenceDiagram
     RP ->> S: Request canister call
     alt Version is not supported
         S ->> RP: Error response: Version not supported (20101)
-    else Relying party has not been granted the `icrc25_canister_call` permission
+    else Relying party has not been granted the `icrc25_canister_call` permission scope<br>or the request does not comply with scope restrictions
         S ->> RP: Error response: Permission not granted (30101)
     else
         alt Canister supports ICRC-21
