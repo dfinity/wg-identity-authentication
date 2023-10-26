@@ -53,7 +53,7 @@ Scopes are represented in JSON-RPC 2.0 messages as JSON objects with the followi
 ### List of Scopes
 
 This standard defines the following `method` values for scopes:
-* `icrc25_get_identities`
+* `icrc25_managed_identities`
 * `icrc25_canister_call`
 
 This list may be extended by other standards.
@@ -153,7 +153,7 @@ Request
         "version": "1",
         "scopes": [
             {
-                "method": "icrc25_get_identities"
+                "method": "icrc25_managed_identities"
             },
             {
                 "method": "icrc25_canister_call",
@@ -173,7 +173,7 @@ Response
         "version": "1",
         "scopes": [
             {
-                "method": "icrc25_get_identities"
+                "method": "icrc25_managed_identities"
             },
             {
                 "method": "icrc25_canister_call",
@@ -264,13 +264,13 @@ Response
 }
 ```
 
-### `icrc25_get_identities`
+### `icrc25_managed_identities`
 
-The purpose of the `icrc25_get_identities` message is for the relying party to receive information about the identities managed by the signer.
+The purpose of the `icrc25_managed_identities` message is for the relying party to receive information about the identities managed by the signer.
 
 #### Prerequisites
 
-* Active session with granted scope `icrc25_get_identities`.
+* Active session with granted scope `icrc25_managed_identities`.
 
 #### Request
 
@@ -295,7 +295,7 @@ While processing the request from the relying party, the signer can cancel it at
 
 #### Use-Case
 
-1. The relying party sends a `icrc25_get_identities` request to the signer.
+1. The relying party sends a `icrc25_managed_identities` request to the signer.
 2. Upon receiving the message, the signer first checks if it can process the message.
     - If the request version is not supported by the signer, the signer sends a response with an error back to the relying party.
     - If the relying party has not been granted the permission to request the action, the signer sends a response with an error back to the relying party.
@@ -316,7 +316,7 @@ sequenceDiagram
     RP ->> S: Request identities
     alt Version is not supported
         S ->> RP: Error response: Version not supported (20101)
-    else Scope `icrc25_get_identities` not granted
+    else Scope `icrc25_managed_identities` not granted
         S ->> RP: Error response: Permission not granted (30101)
     else
         opt If not selected before on the active session 
@@ -336,7 +336,7 @@ Request
 {
     "id": 1,
     "jsonrpc": "2.0",
-    "method": "icrc25_get_identities",
+    "method": "icrc25_managed_identities",
     "params": {
         "version": "1",
         "challenge": "UjwgsORvEzp98TmB1cAIseNOoD9+GLyN/1DzJ5+jxZM="
