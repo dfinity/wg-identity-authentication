@@ -376,7 +376,7 @@ This message can be used by the relying party to request canister calls to be ex
 
 `canisterId` (`text`): The id of the canister on which the call should be executed.
 
-`sender` (`text`): The principal requested to execute the call.
+`sender` (`text`): The principal (textual representation) requested to execute the call.
 
 `method` (`text`): The name of the call method to be executed.
 
