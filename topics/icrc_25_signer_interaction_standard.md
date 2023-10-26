@@ -29,13 +29,13 @@ The transport channel is not required to provide confidentiality.
 
 ICRC-25 uses sessions to determine the lifetime of granted permission [scopes](#scopes). Permission scopes (see [`icrc25_request_permissions` message](#icrc25requestpermissions)) are granted for the duration of a single session only. 
 
-A session is established when the first permission request is granted. A session can be revoked by the relying party at any time by sending a [`icrc25_revoke_permission` message](#icrc25revokepermission) to the signer. The signer can also terminate the session at any time and should offer the user a method to do so.
+A session is established when the first permission request is granted. A session can be revoked by the relying party at any time by sending a [`icrc25_revoke_permissions` message](#icrc25revokepermissions) to the signer. The signer can also terminate the session at any time and should offer the user a method to do so.
 
 A session must be terminated automatically after a certain period of inactivity. The session might be extended automatically if the interaction between the relying party and the signer is still _actively_ ongoing when the default session timeout is reached. There must be a maximum session duration (regardless of activity).
 
 ## Scopes
 
-A scope is the permission to invoke specific JSON-RPC 2.0 method on the signer. A scope is identified by the `method` property which matches the `method` name of the JSON-RPC 2.0 call it relates to. The relying party requests scopes using the [`icrc25_request_permissions`](#icrc25requestpermissions) method and may revoke them using  [`icrc25_revoke_permission`](#icrc25revokepermission).
+A scope is the permission to invoke specific JSON-RPC 2.0 method on the signer. A scope is identified by the `method` property which matches the `method` name of the JSON-RPC 2.0 call it relates to. The relying party requests scopes using the [`icrc25_request_permissions`](#icrc25requestpermissions) method and may revoke them using  [`icrc25_revoke_permissions`](#icrc25revokepermissions).
 
 Not all methods defined in this standard require a scope.
 
@@ -501,7 +501,7 @@ Response
 }
 ```
 
-### `icrc25_revoke_permission`
+### `icrc25_revoke_permissions`
 
 The relying party can request to revoke all or a subset of the previously granted permission [scopes](#scopes). If all granted permission scopes are revoked, the session (if any) is terminated.
 
@@ -529,7 +529,7 @@ While processing the request from the relying party, the signer can cancel it at
 
 #### Use-Case
 
-1. The relying party sends a `icrc25_revoke_permission` request to the signer.
+1. The relying party sends a `icrc25_revoke_permissions` request to the signer.
 2. Upon receiving the request, the signer validates whether it can process the message.
     - If the request version is not supported by the signer, the signer sends a response with an error back to the relying party.
 3. Next, the signer revokes the requested permission scopes. If no scopes are provided, the signer revokes all granted permission scopes.
@@ -556,7 +556,7 @@ Request
 {
     "id": 1,
     "jsonrpc": "2.0",
-    "method": "icrc25_revoke_permission",
+    "method": "icrc25_revoke_permissions",
     "params": {
         "version": "1",
         "scopes": [{
