@@ -113,7 +113,7 @@ service : {
     // If the call is made with a non-anonymous identity, the response may be tailored to the identity.
     //
     // This is currently an update call. As soon as secure (replicated) query calls are available, this will be changed to such a replicated query call.
-    icrc21_consent_message: (icrc21_consent_message_request) -> (opt icrc21_consent_message_response);
+    icrc21_canister_call_consent_message: (icrc21_consent_message_request) -> (opt icrc21_consent_message_response);
 
     // Returns a list of supported standards related to consent messages that this canister implements.
     // The result should always have at least one entry: record { name = "ICRC-21"; url = "https://github.com/dfinity/wg-identity-authentication" }
