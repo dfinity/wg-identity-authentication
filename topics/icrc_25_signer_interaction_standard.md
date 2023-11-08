@@ -17,40 +17,40 @@
     * [List of Scopes](#list-of-scopes)
   * [Batch Calls](#batch-calls)
   * [Messages](#messages)
-    * [`icrc25_request_permissions`](#icrc25requestpermissions)
+    * [`icrc25_request_permissions`](#icrc25_request_permissions)
       * [Prerequisites](#prerequisites)
       * [Request](#request)
       * [Response](#response)
       * [Errors](#errors)
-      * [Use-Case](#use-case)
+      * [Message Processing](#message-processing)
       * [Example](#example)
-    * [`icrc25_granted_permissions`](#icrc25grantedpermissions)
+    * [`icrc25_granted_permissions`](#icrc25_granted_permissions)
       * [Prerequisites](#prerequisites-1)
       * [Request](#request-1)
       * [Response](#response-1)
       * [Errors](#errors-1)
-      * [Use-Case](#use-case-1)
+      * [Message Processing](#message-processing-1)
       * [Example](#example-1)
-    * [`icrc25_managed_identities`](#icrc25managedidentities)
+    * [`icrc25_managed_identities`](#icrc25_managed_identities)
       * [Prerequisites](#prerequisites-2)
       * [Request](#request-2)
       * [Response](#response-2)
       * [Errors](#errors-2)
-      * [Use-Case](#use-case-2)
+      * [Message Processing](#message-processing-2)
       * [Example](#example-2)
-    * [`icrc25_canister_call`](#icrc25canistercall)
+    * [`icrc25_canister_call`](#icrc25_canister_call)
       * [Prerequisites](#prerequisites-3)
       * [Request](#request-3)
       * [Response](#response-3)
       * [Errors](#errors-3)
-      * [Use-Case](#use-case-3)
+      * [Message Processing](#message-processing-3)
       * [Example](#example-3)
-    * [`icrc25_revoke_permissions`](#icrc25revokepermissions)
+    * [`icrc25_revoke_permissions`](#icrc25_revoke_permissions)
       * [Prerequisites](#prerequisites-4)
       * [Request](#request-4)
       * [Response](#response-4)
       * [Errors](#errors-4)
-      * [Use-Case](#use-case-4)
+      * [Message Processing](#message-processing-4)
       * [Example](#example-4)
   * [Errors](#errors-5)
     * [Version `1` errors (**code: `xxx01`**)](#version-1-errors-code-xxx01)
@@ -146,7 +146,7 @@ While processing the request from the relying party, the signer can cancel it at
 - `20101 Version not supported`
 - `30101 Permission not granted`
 
-#### Use-Case
+#### Message Processing
 
 1. The relying party sends a `icrc25_request_permissions` message to the signer.
 2. Upon receiving the message, the signer first checks if it can process the message.
@@ -262,7 +262,7 @@ While processing the request from the relying party, the signer can cancel it at
 - `10001 Unknown error`
 - `20101 Version not supported`
 
-#### Use-Case
+#### Message Processing
 
 1. The relying party sends a `icrc25_granted_permissions` message to the signer.
 2. Upon receiving the message, the signer first checks if it can process the message.
@@ -346,7 +346,7 @@ While processing the request from the relying party, the signer can cancel it at
 - `20101 Version not supported`
 - `30101 Permission not granted`
 
-#### Use-Case
+#### Message Processing
 
 1. The relying party sends a `icrc25_managed_identities` request to the signer.
 2. Upon receiving the message, the signer first checks if it can process the message.
@@ -451,7 +451,8 @@ While processing the request from the relying party, the signer can cancel it at
 - `20101 Version not supported`
 - `30101 Permission not granted`
 - `30201 Action aborted`
-#### Use-Case
+
+#### Message Processing
 
 1. The relying party sends a `icrc25_canister_call` request to the signer.
 2. Upon receiving the request, the signer validates whether it can process the message.
@@ -580,7 +581,7 @@ While processing the request from the relying party, the signer can cancel it at
 - `10001 Unknown Error`
 - `20101 Version not supported`
 
-#### Use-Case
+#### Message Processing
 
 1. The relying party sends a `icrc25_revoke_permissions` request to the signer.
 2. Upon receiving the request, the signer validates whether it can process the message.
