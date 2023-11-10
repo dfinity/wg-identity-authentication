@@ -20,7 +20,7 @@ For this standard to represent an [ICRC-25](https://github.com/dfinity/wg-identi
 
 ## Establishing a Communication Channel
 
-A window post message communication channel is initiated by the relying party. The relying party opens a new window and waits for the signer to send a message indicating that it is ready for interactions.
+A [window.postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) communication channel is initiated by the relying party. The relying party opens a new window and waits for the signer to send a message indicating that it is ready for interactions.
 The message is a [JSON-RPC 2.0](https://www.jsonrpc.org/specification) notification with the method `icrc29_ready` and no parameters:
 
 ```json
@@ -30,21 +30,22 @@ The message is a [JSON-RPC 2.0](https://www.jsonrpc.org/specification) notificat
 }
 ```
 
-After this message has been received, the relying party can send [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md) messages to the signer.
+After this message has been received, the relying party can send [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md) messages to the signer
+using the [window.postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) API.
 
 ## Authentication
 
-* The relying party can authenticate the signer by the origin of the window that it opens.
-* The singer can authenticate the relying party by the `origin` property of the `message` event that it received.
+* The relying party must authenticate the signer by the `origin` of the window that it opens.
+* The singer must authenticate the relying party by the `origin` property of the `message` event that it received.
 
 ## Sending Messages
 
 Messages are sent by calling `window.postMessage` on the signer window, or the `window.opener` respectively.
 When sending messages, the `targetOrigin` parameter must be set to the origin of the signer or relying party window.
 
-The relying party may close the signer window in between interactions. After sending a message, the relying party should
-wait for the signer to send a response before closing the window. If the window is closed before the signer has sent a response,
-the relying party must not make any assumptions about the state of the request.
+The relying party may close the signer window in between interactions. If the relying party wants to continue a session after having closed the window, it must again go through the process of [establishing a communication channel](#establishing-a-communication-channel). 
+
+After sending a message, the relying party should wait for the signer to send a response before closing the window. If the window is closed before the signer has sent a response, the relying party must not make any assumptions about the state of the request.
 
 ## Error Handling
 
