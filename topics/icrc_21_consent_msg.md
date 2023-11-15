@@ -86,14 +86,18 @@ type icrc21_error_info = record {
 };
 
 type icrc21_error = variant {
-    // The call is not allowed (i.e. because calls to this method are not supposed to be signed by end-users, the arguments exceed certain bounds, etc.)
-    Forbidden: icrc21_error_info;
-    // The call is malformed and would cause an error (i.e. the method does not exist, the arguments cannot be decoded, etc.).
-    MalformedCall: icrc21_error_info;
-    // The call does not have a consent message (yet). This error should be used by canister developers that want to gradually
-    // roll out support for the consent message interface. I.e. as a placeholder result for canister calls that will provide
-    // a consent message or a definitive error result (see above) in the future.
-    NotSupported: icrc21_error_info;
+    // The canister does not support this call (i.e. it will lead to a rejection or error response).
+    // Reasons might be (non-exhaustive list):
+    // * the canister call is malformed (e.g. wrong method name, argument cannot be decoded)
+    // * the arguments exceed certain bounds
+    UnsupportedCanisterCall: icrc21_error_info;
+
+    // The canister cannot produce a consent message for this call.
+    // Reasons might be (non-exhaustive list):
+    // * it is an internal call not intended for end-users
+    // * the canister developer has not yet implemented a consent message for this call
+    ConsentMessageUnavailable: icrc21_error_info;
+    
     // Any error not covered by the above variants.
     GenericError: icrc21_error_info;
 };
