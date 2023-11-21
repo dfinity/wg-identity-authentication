@@ -604,7 +604,7 @@ While processing the request from the relying party, the signer can cancel it at
 ```mermaid
 sequenceDiagram
     participant RP as Relying Party
-    participant S as signer
+    participant S as Signer
 
     RP ->> S: Revoke permission
     alt Version is not supported
