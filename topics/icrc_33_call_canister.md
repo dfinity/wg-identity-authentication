@@ -4,17 +4,19 @@
 [![Extension Badge](https://img.shields.io/badge/Extends-ICRC--25-ffcc222.svg)](./icrc_25_signer_interaction_standard.md)
 
 <!-- TOC -->
-* [ICRC-33: Call Canister Standard](#icrc-33-call-canister)
-    * [Summary](#summary)
-    * [Method](#method)
-    * [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
-        * [Example RPC Request ](#example-rpc-request-permission)
-    * [Request](#request)
-        * [Example RPC Request ](#example-rpc-request)
-    * [Response](#response)
-        * [Example RPC Response ](#example-rpc-response)
-    * [Message Processing](#message-processing)
-    * [Errors](#errors)
+* [ICRC-33: Call Canister](#icrc-33-call-canister)
+  * [Summary](#summary)
+  * [Method](#method)
+  * [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
+    * [Example RPC Request Permission](#example-rpc-request-permission)
+  * [`icrc25_supported_standards`](#icrc25_supported_standards)
+  * [Request](#request)
+    * [Example RPC Request](#example-rpc-request)
+  * [Response](#response)
+    * [Example RPC Response](#example-rpc-response)
+  * [Message Processing](#message-processing)
+  * [Errors](#errors)
+<!-- TOC -->
 
 ## Summary
 
@@ -53,6 +55,10 @@ This Method can be used by the relying party to request calls to 3rd party canis
     }
 }
 ```
+
+## `icrc25_supported_standards`
+
+An ICRC-25 compliant signer must implement the [icrc25_supported_standards](./icrc_25_signer_interaction_standard.md#icrc25_supported_standards) method which returns the list of supported standards. Any signer implementing ICRC-33 must include a record with the name field equal to "ICRC-33" in that list.
 
 ## Request
 
