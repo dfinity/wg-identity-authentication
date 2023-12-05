@@ -1,8 +1,6 @@
 # ICRC-25: Signer Interaction Standard
 
-| Status |
-|:------:|
-| Draft  |
+[![Generic badge](https://img.shields.io/badge/STATUS-DRAFT-ffcc00.svg)](https://shields.io/)
 
 <!-- TOC -->
 * [ICRC-25: Signer Interaction Standard](#icrc-25-signer-interaction-standard)
