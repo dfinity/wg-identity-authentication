@@ -22,7 +22,7 @@ The purpose of the `icrc31_list_identities` message is for the relying party to 
 
 **Name and Scope:** `icrc31_list_identities`
 
-**Prerequisite:** Active session with granted permission for method name/scope.
+**Prerequisite:** Active session with granted permission scope `icrc31_list_identities` or `*`.
 
 ### Request
 
