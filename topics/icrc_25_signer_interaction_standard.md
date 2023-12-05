@@ -98,7 +98,7 @@ Scopes are represented in JSON-RPC 2.0 messages as JSON objects with the followi
 
 ### Scope defined by this standard
 
-This standard defines the wildcard (`*) scope. Meaning that the relying party requests permission to invoke any method on the signer.
+This standard defines the wildcard (`*`) scope. It means that the relying party requests permission to invoke any method on the signer.
 
 **Example:**
 ```json
