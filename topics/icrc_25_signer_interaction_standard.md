@@ -86,7 +86,7 @@ A session must be terminated automatically after a certain period of inactivity.
 
 ## Scopes
 
-A scope is the permission to invoke a specific JSON-RPC 2.0 method on the signer. A scope is identified by the `method` property which matches the `method` name of the JSON-RPC 2.0 call it relates to. The relying party requests scopes using the [`icrc25_request_permissions`](#icrc25requestpermissions) method and may revoke them using  [`icrc25_revoke_permissions`](#icrc25revokepermissions).
+A scope is the permission to invoke a specific JSON-RPC 2.0 method on the signer. A scope is identified by the `method` property which matches the `method` name of the JSON-RPC 2.0 call it relates to. The relying party requests scopes using the [`icrc25_request_permissions`](#icrc25_request_permissions) method and may revoke them using  [`icrc25_revoke_permissions`](#icrc25_revoke_permissions).
 
 None of the methods defined in this standard require a scope.
 
