@@ -4,7 +4,7 @@
 [![Extention Badge](https://img.shields.io/badge/Extends-ICRC--25-ffcc222.svg)](./icrc_25_signer_interaction_standard.md)
 <!-- TOC -->
 
-- [ICRC-32: Get Delegation](#icrc-3x-get-delegation)
+- [ICRC-3x: Get Delegation](#icrc-3x-get-delegation)
   - [Summary](#summary)
   - [Method](#method)
   - [Request](#request)
