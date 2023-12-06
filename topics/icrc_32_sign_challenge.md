@@ -1,7 +1,7 @@
 # ICRC-32: Sign Challenge
 
 [![Status Badge](https://img.shields.io/badge/STATUS-DRAFT-ffcc00.svg)](https://github.com/orgs/dfinity/projects/31)
-[![Extention Badge](https://img.shields.io/badge/Extends-ICRC--25-ffcc222.svg)](./icrc_25_signer_interaction_standard.md)
+[![Extension Badge](https://img.shields.io/badge/Extends-ICRC--25-ffcc222.svg)](./icrc_25_signer_interaction_standard.md)
 
 <!-- TOC -->
 
@@ -50,7 +50,7 @@ The purpose of the `icrc32_sign_challenge` method is for the relying party to re
 
 `version` (`text`): The version of the standard used. It must match the `version` from the request.
 
-`identities`: A list of identities the user has selected to share with the relying party.
+`signedChallenge`: Object containing the signed challenge and related data to verify the signature.
 
 - `publicKey` (`blob`): The DER-encoded public key associated with the identity, derived in accordance with one of [the signature algorithms supported by the IC](https://internetcomputer.org/docs/current/references/ic-interface-spec/#signatures). The public key can be used to [derive a self-authenticating principal](https://internetcomputer.org/docs/current/references/ic-interface-spec/#principal).
 - `signature` (`blob`): The signature produced by signing the concatenation of the domain separator `\x13ic-signer-challenge` (UTF-8 encoded) and the challenge with the private key associated with the identity.
@@ -69,12 +69,11 @@ The purpose of the `icrc32_sign_challenge` method is for the relying party to re
   "jsonrpc": "2.0",
   "result": {
     "version": "1",
-    "identities": [
-      {
-        "publicKey": "MIIBIjANBgkqhkiG",
-        "signature": "MEUCIQDQ8Z3Z"
-      }
-    ]
+    // TODO: example response has to be updated
+    "signedChallenge": {
+      "publicKey": "MIIBIjANBgkqhkiG",
+      "signature": "MEUCIQDQ8Z3Z"
+    }
   }
 }
 ```
