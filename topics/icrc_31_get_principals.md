@@ -46,7 +46,7 @@ The purpose of the `icrc31_get_principals` message is for the relying party to r
 
 `version` (`text`): The version of the standard used. It must match the `version` from the request.
 
-`principals` (`text` array): A list of principalIds the user has selected to share with the relying party.
+`principals` (`text` array): A list of principals the user has selected to share with the relying party.
 
 ### Example RPC Response
 
