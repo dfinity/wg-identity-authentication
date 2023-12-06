@@ -1,4 +1,4 @@
-# ICRC-31: List Identities
+# ICRC-31: Get Principals
 
 [![Status Badge](https://img.shields.io/badge/STATUS-DRAFT-ffcc00.svg)](https://github.com/orgs/dfinity/projects/31)
 [![Extention Badge](https://img.shields.io/badge/Extends-ICRC--25-ffcc222.svg)](./icrc_25_signer_interaction_standard.md)
@@ -6,7 +6,7 @@
 
 <!-- TOC -->
 
-- [ICRC-31: List Idenities](#icrc-31-list-identities)
+- [ICRC-31: Get Principals](#icrc-31-get-principals)
     - [Summary](#summary)
     - [Method](#method)
     - [Request](#request)
@@ -17,13 +17,13 @@
 
 ## Summary
 
-The purpose of the `icrc31_list_identities` message is for the relying party to receive information about the identities managed by the signer.
+The purpose of the `icrc31_get_principals` message is for the relying party to receive information about the identities managed by the signer.
 
 ## Method
 
-**Name and Scope:** `icrc31_list_identities`
+**Name and Scope:** `icrc31_get_principals`
 
-**Prerequisite:** Active session with granted permission scope `icrc31_list_identities` or `*`.
+**Prerequisite:** Active session with granted permission scope `icrc31_get_principals` or `*`.
 
 ## Request
 
@@ -35,7 +35,7 @@ The purpose of the `icrc31_list_identities` message is for the relying party to 
 {
   "id": 1,
   "jsonrpc": "2.0",
-  "method": "icrc31_list_identities",
+  "method": "icrc31_get_principals",
   "params": {
     "version": "1"
   }
@@ -46,9 +46,7 @@ The purpose of the `icrc31_list_identities` message is for the relying party to 
 
 `version` (`text`): The version of the standard used. It must match the `version` from the request.
 
-`identities`: A list of identities the user has selected to share with the relying party.
-
-- `publicKey` (`blob`): The DER-encoded public key associated with the identity, derived in accordance with one of [the signature algorithms supported by the IC](https://internetcomputer.org/docs/current/references/ic-interface-spec/#signatures). The public key can be used to [derive a self-authenticating principal](https://internetcomputer.org/docs/current/references/ic-interface-spec/#principal).
+`principals` (`text` array): A list of principalIds the user has selected to share with the relying party.
 
 ### Example RPC Response
 
@@ -58,10 +56,10 @@ The purpose of the `icrc31_list_identities` message is for the relying party to 
   "jsonrpc": "2.0",
   "result": {
     "version": "1",
-    "identities": [
-      {
-        "publicKey": "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEOTdHYwpFTr/oPXOfLQcteymk8AQE41VwPQ1W7Xpm0Zt1AY4+5aOnMAbAIjXEchxPuGbPWqPqwntXMPs3w4rOaA=="
-      }
+    "principalIds": [
+      "gyu2j-2ni7o-o6yjt-n7lyh-x3sxq-zh7hp-sjvqe-t7oul-4eehb-2gvtt-jae",
+      "fwpnd-r2y37-lv4ue-vyo3g-4u7zt-f5ncq-2ytan-zjs7b-2ioqf-n7j6u-gqe",
+      "xnxbw-3qubw-pc2f7-6uu6l-sy7xq-ghk7l-mpxib-3ttyv-uw2x7-vfdhf-2ae"
     ]
   }
 }
