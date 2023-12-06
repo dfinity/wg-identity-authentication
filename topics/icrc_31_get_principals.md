@@ -56,7 +56,7 @@ The purpose of the `icrc31_get_principals` message is for the relying party to r
   "jsonrpc": "2.0",
   "result": {
     "version": "1",
-    "principalIds": [
+    "principals": [
       "gyu2j-2ni7o-o6yjt-n7lyh-x3sxq-zh7hp-sjvqe-t7oul-4eehb-2gvtt-jae",
       "fwpnd-r2y37-lv4ue-vyo3g-4u7zt-f5ncq-2ytan-zjs7b-2ioqf-n7j6u-gqe",
       "xnxbw-3qubw-pc2f7-6uu6l-sy7xq-ghk7l-mpxib-3ttyv-uw2x7-vfdhf-2ae"
