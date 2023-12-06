@@ -1,4 +1,4 @@
-# ICRC-32: Sign Challenge (ICRC-25 Extension)
+# ICRC-32: Sign Challenge
 
 [![Status Badge](https://img.shields.io/badge/STATUS-DRAFT-ffcc00.svg)](https://github.com/orgs/dfinity/projects/31)
 [![Extention Badge](https://img.shields.io/badge/Extends-ICRC--25-ffcc222.svg)](./icrc_25_signer_interaction_standard.md)
