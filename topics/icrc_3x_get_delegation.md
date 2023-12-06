@@ -1,7 +1,7 @@
 # ICRC-3x: Get Delegation (ICRC-25 Extension)
 
 [![Status Badge](https://img.shields.io/badge/STATUS-DRAFT-ffcc00.svg)](https://github.com/orgs/dfinity/projects/31)
-
+[![Extention Badge](https://img.shields.io/badge/Extends-ICRC--25-ffcc222.svg)](./icrc_25_signer_interaction_standard.md)
 <!-- TOC -->
 
 - [ICRC-32: Get Delegation](#icrc-3x-get-delegation)
