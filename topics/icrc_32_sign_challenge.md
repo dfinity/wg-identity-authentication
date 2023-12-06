@@ -23,7 +23,7 @@ The purpose of the `icrc32_sign_challenge` method is for the relying party to re
 
 **Name and Scope:** `icrc32_sign_challenge`
 
-**Prerequisite:** Active session with granted permission for method name/scope.
+**Prerequisite:** Active session with granted permission scope `icrc32_sign_challenge` or `*`.
 
 ## Request
 

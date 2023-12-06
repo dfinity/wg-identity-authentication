@@ -21,7 +21,7 @@ The purpose of the `icrc3x_get_delegation` method is for the relying party to re
 
 **Name and Scope:** `icrc3x_get_delegation`
 
-**Prerequisite:** Active session with granted permission for method name/scope.
+**Prerequisite:** Active session with granted permission scope `icrc3x_get_delegation` or `*`.
 
 ## Request
 
