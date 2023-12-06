@@ -7,8 +7,11 @@
 - [ICRC-32: Get Delegation](#icrc-3x-get-delegation)
   - [Summary](#summary)
   - [Method](#method)
-  - [Request](#request-params)
-  - [Response](#request-params)
+  - [Request](#request)
+    - [Example RPC Request ](#example-rpc-request)
+  - [Response](#response)
+    - [Example RPC Response ](#example-rpc-response)
+  - [Errors](#errors)
 
 ## Summary
 
@@ -20,11 +23,11 @@ The purpose of the `icrc3x_get_delegation` method is for the relying party to re
 
 **Prerequisite:** Active session with granted permission for method name/scope.
 
-## Request Params
+## Request
 
 **`version` (`text`):** The version of the standard used. If the signer does not support the version of the request, it must send the `"VERSION_NOT_SUPPORTED"` error in response.
 
-**Example RPC Request**:
+### Example RPC Request
 ```json
 {
     "id": 1,
@@ -48,7 +51,7 @@ The purpose of the `icrc3x_get_delegation` method is for the relying party to re
     - `targets` (`text` array): A list of target canister ids (textual representation) the delegation is restricted to making canister calls to. If the list is not present, the delegation applies to all canisters (i.e. it is not restricted).
 - `signature` (`blob`): Signature on the 32-byte representation-independent hash of the map contained in the delegation field as described in [IC interface specification, signatures section](https://internetcomputer.org/docs/current/references/ic-interface-spec/#signatures), using the 27 bytes `\x1Aic-request-auth-delegation` as the domain separator. 
 
-**Example RPC Response:**
+### Example RPC Response
 
 ```json
 {
@@ -63,3 +66,9 @@ The purpose of the `icrc3x_get_delegation` method is for the relying party to re
     ]
   }
 }
+
+```
+
+## Errors
+
+This standard does not define additional errors. See [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-4) for a list of errors that can be returned by all methods.

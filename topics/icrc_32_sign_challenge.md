@@ -8,8 +8,12 @@
 - [ICRC-32: Sign Challenge](#icrc-32-sign-challenge)
   - [Summary](#summary)
   - [Method](#method)
-  - [Request](#request-params)
-  - [Response](#request-params)
+  - [Request](#request)
+    - [Example RPC Request ](#example-rpc-request)
+  - [Response](#response)
+    - [Example RPC Response ](#example-rpc-response)
+  - [Message Processing](#message-processing)
+  - [Errors](#errors)
 
 ## Summary
 
@@ -50,7 +54,7 @@ The purpose of the `icrc32_sign_challenge` method is for the relying party to re
 - `publicKey` (`blob`): The DER-encoded public key associated with the identity, derived in accordance with one of [the signature algorithms supported by the IC](https://internetcomputer.org/docs/current/references/ic-interface-spec/#signatures). The public key can be used to [derive a self-authenticating principal](https://internetcomputer.org/docs/current/references/ic-interface-spec/#principal).
 - `signature` (`blob`): The signature produced by signing the concatenation of the domain separator `\x13ic-signer-challenge` (UTF-8 encoded) and the challenge with the private key associated with the identity.
 
-**Example RPC Response:**
+### Example RPC Response
 
 ```json
 {
@@ -68,7 +72,7 @@ The purpose of the `icrc32_sign_challenge` method is for the relying party to re
 }
 ```
 
-### Message Processing
+## Message Processing
 
 1. The relying party sends a `icrc31_list_identities` request to the signer.
 2. Upon receiving the message, the signer first checks if it can process the message.
@@ -109,3 +113,7 @@ sequenceDiagram
         RP ->> RP: Verify the signatures
     end
 ```
+
+## Errors
+
+This standard does not define additional errors. See [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-4) for a list of errors that can be returned by all methods.

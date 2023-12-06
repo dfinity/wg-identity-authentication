@@ -9,11 +9,11 @@
 - [ICRC-31: List Idenities](#icrc-31-list-identities)
     - [Summary](#summary)
     - [Method](#method)
-    - [Request](#request-2)
-    - [Response](#response-2)
-    - [Errors](#errors-2)
-    - [Message Processing](#message-processing-2)
-    - [Example](#example-2)
+    - [Request](#request)
+      - [Example RPC Request ](#example-rpc-request)
+    - [Response](#response)
+      - [Example RPC Response ](#example-rpc-response)
+    - [Errors](#errors)
 
 ## Summary
 
@@ -25,11 +25,11 @@ The purpose of the `icrc31_list_identities` message is for the relying party to 
 
 **Prerequisite:** Active session with granted permission scope `icrc31_list_identities` or `*`.
 
-### Request
+## Request
 
 **`version` (`text`):** The version of the standard used. If the signer does not support the version of the request, it must send the `"VERSION_NOT_SUPPORTED"` error in response.
 
-**Example RPC Request**:
+### Example RPC Request
 
 ```json
 {
@@ -42,7 +42,7 @@ The purpose of the `icrc31_list_identities` message is for the relying party to 
 }
 ```
 
-### Response
+## Response
 
 `version` (`text`): The version of the standard used. It must match the `version` from the request.
 
@@ -50,7 +50,7 @@ The purpose of the `icrc31_list_identities` message is for the relying party to 
 
 - `publicKey` (`blob`): The DER-encoded public key associated with the identity, derived in accordance with one of [the signature algorithms supported by the IC](https://internetcomputer.org/docs/current/references/ic-interface-spec/#signatures). The public key can be used to [derive a self-authenticating principal](https://internetcomputer.org/docs/current/references/ic-interface-spec/#principal).
 
-**Example RPC Response:**
+### Example RPC Response
 
 ```json
 {
@@ -66,3 +66,7 @@ The purpose of the `icrc31_list_identities` message is for the relying party to 
   }
 }
 ```
+
+## Errors
+
+This standard does not define additional errors. See [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-4) for a list of errors that can be returned by all methods.
