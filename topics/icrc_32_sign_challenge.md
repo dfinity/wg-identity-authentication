@@ -4,17 +4,16 @@
 [![Extension Badge](https://img.shields.io/badge/Extends-ICRC--25-ffcc222.svg)](./icrc_25_signer_interaction_standard.md)
 
 <!-- TOC -->
-
-- [ICRC-32: Sign Challenge](#icrc-32-sign-challenge)
-  - [Summary](#summary)
-  - [Method](#method)
-  - [Request](#request)
-    - [Example RPC Request ](#example-rpc-request)
-  - [Response](#response)
-    - [Example RPC Response ](#example-rpc-response)
-  - [Message Processing](#message-processing)
-  - [Errors](#errors)
-
+* [ICRC-32: Sign Challenge](#icrc-32-sign-challenge)
+  * [Summary](#summary)
+  * [Method](#method)
+  * [Request](#request)
+    * [Example RPC Request](#example-rpc-request)
+  * [Response](#response)
+    * [Example RPC Response](#example-rpc-response)
+  * [Message Processing](#message-processing)
+  * [Errors](#errors)
+<!-- TOC -->
 ## Summary
 
 The purpose of the `icrc32_sign_challenge` method is for the relying party to receive a cryptographic proof of ownership for the users identities.
@@ -24,6 +23,19 @@ The purpose of the `icrc32_sign_challenge` method is for the relying party to re
 **Name and Scope:** `icrc32_sign_challenge`
 
 **Prerequisite:** Active session with granted permission scope `icrc32_sign_challenge` or `*`.
+
+The scope `icrc32_sign_challenge` may be restricted to specific principals (textual representation):
+```JSON
+{
+    "name": "icrc32_sign_challenge",
+    "principals": [
+        "btbdd-ob3pe-dz6kv-7n4gh-k2xtm-xjthz-kcvpk-fwbnv-w5qbk-iqjm4-4qe",
+        "b7gqo-ulk5n-2kpo7-oalt7-p2kyl-o4j5l-kiuwo-eeybr-dab4l-ur6up-pqe"
+    ]
+}
+```
+
+If the `principals` list is not present, the scope applies to all principals (i.e. it is not restricted).
 
 ## Request
 
@@ -85,7 +97,7 @@ The purpose of the `icrc32_sign_challenge` method is for the relying party to re
 1. The relying party sends a `icrc32_sign_challenge` request to the signer.
 2. Upon receiving the message, the signer first checks if it can process the message.
     - If the request version is not supported by the signer, the signer sends a response with an error back to the relying party.
-    - If the relying party has not been granted the permission to request the action, the signer sends a response with an error back to the relying party.
+    - If the relying party has not been granted the permission to invoke the method for the specified principal, the signer sends a response with an error back to the relying party.
 3. The signer may ask the user to approve the request.
     - If the user does not approve the request, the signer sends a response with an error back to the relying party.
 4. The signer signs the challenge with the private keys associated with the identity corresponding to the given principal and sends a successful response with the signature (and optionally the associated `delegation`) back to the relying party.
@@ -110,7 +122,7 @@ sequenceDiagram
     RP ->> S: Request challenge signature
     alt Version is not supported
         S ->> RP: Error response: Version not supported (20101)
-    else Scope `icrc31_list_identities` not granted
+    else Scope `icrc32_sign_challenge` not granted for the principal
         S ->> RP: Error response: Permission not granted (30101)
     else
         S ->> U: Ask to approve sign challenge request

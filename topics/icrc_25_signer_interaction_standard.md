@@ -11,8 +11,7 @@
   * [Sessions](#sessions)
   * [Scopes](#scopes)
     * [Scope Objects](#scope-objects)
-      * [Optional Properties](#optional-properties)
-    * [List of Scopes](#list-of-scopes)
+    * [Scopes Defined by this Standard](#scopes-defined-by-this-standard)
   * [Batch Calls](#batch-calls)
   * [Methods](#methods)
     * [`icrc25_request_permissions`](#icrc25_request_permissions)
@@ -30,11 +29,11 @@
       * [Message Processing](#message-processing-1)
       * [Example](#example-1)
     * [`icrc25_canister_call`](#icrc25_canister_call)
-      * [Prerequisites](#prerequisites-3)
+      * [Prerequisites](#prerequisites-2)
       * [Request](#request-2)
       * [Response](#response-2)
       * [Errors](#errors-2)
-      * [Message Processing](#message-processing-3)
+      * [Message Processing](#message-processing-2)
       * [Example](#example-2)
     * [`icrc25_revoke_permissions`](#icrc25_revoke_permissions)
       * [Prerequisites](#prerequisites-3)
@@ -88,8 +87,9 @@ None of the methods defined in this standard require a scope.
 Scopes are represented in JSON-RPC 2.0 messages as JSON objects with the following properties:
 - `method` (`text`): JSON-RPC 2.0 method the scope is associated with.
 
+Extensions to this standard may define additional properties on scope objects.
 
-### Scope defined by this standard
+### Scopes Defined by this Standard
 
 This standard defines the wildcard (`*`) scope. It means that the relying party requests permission to invoke any method on the signer.
 
@@ -103,12 +103,14 @@ This standard defines the wildcard (`*`) scope. It means that the relying party 
         "version": "1",
         "scopes": [
             {
-                "method": "*",
+                "method": "*"
             }
         ]
     }
 }
 ```
+
+Extensions to this standard may define additional scopes.
 
 ## Batch Calls
 
