@@ -32,7 +32,7 @@ The purpose of the `icrc3x_get_delegation` method is for the relying party to re
 {
     "id": 1,
     "jsonrpc": "2.0",
-    "method": "icrc32_sign_challenge",
+    "method": "icrc3x_get_delegation",
     "params": {
         "version": "1",
     }
@@ -68,6 +68,9 @@ The purpose of the `icrc3x_get_delegation` method is for the relying party to re
 }
 
 ```
+## Message Processing
+
+TODO
 
 ## Errors
 
