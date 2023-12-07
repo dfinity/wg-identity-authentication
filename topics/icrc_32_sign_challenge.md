@@ -29,7 +29,7 @@ The purpose of the `icrc32_sign_challenge` method is for the relying party to re
 
 **`version` (`text`):** The version of the standard used. If the signer does not support the version of the request, it must send the `"VERSION_NOT_SUPPORTED"` error in response.
 
-**`principal` (`text`):** The identity to use to create the signature.
+**`principal` (`text`):** Principal (textual representation) corresponding to the identity that the signer should provide the challenge signature for.
 
 **`challenge` (`blob`):** A challenge used for the signer to sign in order to prove its access to the identity. The challenge should be an array of 32 cryptographically random bytes generated from a secure random source by the sender of the request.
 
