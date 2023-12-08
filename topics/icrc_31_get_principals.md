@@ -7,6 +7,8 @@
 * [ICRC-31: Get Principals](#icrc-31-get-principals)
   * [Summary](#summary)
   * [Method](#method)
+  * [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
+    * [Example RPC Request ](#example-rpc-request-permission)
   * [Request](#request)
     * [Example RPC Request](#example-rpc-request)
   * [Response](#response)
@@ -23,6 +25,27 @@ The purpose of the `icrc31_get_principals` message is for the relying party to r
 **Name and Scope:** `icrc31_get_principals`
 
 **Prerequisite:** Active session with granted permission scope `icrc31_get_principals` or `*`.
+
+## Scope (according to the [ICRC-25 standard](./icrc_25_signer_interaction_standard.md))
+
+**Scope:** `icrc31_get_principals` 
+
+### Example RPC Request Permission
+```json
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "icrc25_request_permissions",
+    "params": {
+        "version": "1",
+        "scopes": [
+            {
+                "method": "icrc31_get_principals",
+            }
+        ]
+    }
+}
+```
 
 ## Request
 
@@ -96,4 +119,4 @@ sequenceDiagram
 
 ## Errors
 
-This standard does not define additional errors. See [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-4) for a list of errors that can be returned by all methods.
+This standard does not define additional errors. See [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-3) for a list of errors that can be returned by all methods.

@@ -7,6 +7,8 @@
 - [ICRC-3x: Get Delegation](#icrc-3x-get-delegation)
   - [Summary](#summary)
   - [Method](#method)
+  - [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
+    - [Example RPC Request ](#example-rpc-request-permission)
   - [Request](#request)
     - [Example RPC Request ](#example-rpc-request)
   - [Response](#response)
@@ -22,6 +24,31 @@ The purpose of the `icrc3x_get_delegation` method is for the relying party to re
 **Name and Scope:** `icrc3x_get_delegation`
 
 **Prerequisite:** Active session with granted permission scope `icrc3x_get_delegation` or `*`.
+
+## Scope (according to the [ICRC-25 standard](./icrc_25_signer_interaction_standard.md))
+
+**Scope:** `icrc3x_get_delegation` 
+
+**Optional Properties:**
+- `targets` (`text` array): A list of target canister ids (textual representation) the scope is restricted to. If the list is not present, the scope applies to all canisters (i.e. the permission is not restricted).
+
+### Example RPC Request Permission
+```json
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "icrc25_request_permissions",
+    "params": {
+        "version": "1",
+        "scopes": [
+            {
+                "method": "icrc3x_get_delegation",
+                "targets": ["ryjl3-tyaaa-aaaaa-aaaba-cai"],
+            }
+        ]
+    }
+}
+```
 
 ## Request
 
@@ -74,4 +101,4 @@ TODO
 
 ## Errors
 
-This standard does not define additional errors. See [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-4) for a list of errors that can be returned by all methods.
+This standard does not define additional errors. See [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-3) for a list of errors that can be returned by all methods.
