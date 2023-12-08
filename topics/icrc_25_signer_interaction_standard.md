@@ -12,7 +12,6 @@
   * [Scopes](#scopes)
     * [Scope Objects](#scope-objects)
     * [Scopes Defined by this Standard](#scopes-defined-by-this-standard)
-  * [Batch Calls](#batch-calls)
   * [Extensions](#extensions)
   * [Methods](#methods)
     * [`icrc25_request_permissions`](#icrc25_request_permissions)
@@ -112,12 +111,6 @@ This standard defines the wildcard (`*`) scope. It means that the relying party 
 ```
 
 Extensions to this standard may define additional scopes.
-
-## Batch Calls
-
-JSON-RPC defines a [batch call](https://www.jsonrpc.org/specification#batch) as a JSON array of requests. All methods defined in this standard may also be invoked as part of a batch.
-
-If a signer receives a batch call, it must process each request sequentially in order of the id and reply with a batch response. Calls resulting in error responses do not prevent the processing of subsequent calls in the batch.
 
 ## Extensions
 
