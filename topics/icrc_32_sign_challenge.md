@@ -7,6 +7,8 @@
 * [ICRC-32: Sign Challenge](#icrc-32-sign-challenge)
   * [Summary](#summary)
   * [Method](#method)
+  * [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
+    * [Example RPC Request ](#example-rpc-request-permission)
   * [Request](#request)
     * [Example RPC Request](#example-rpc-request)
   * [Response](#response)
@@ -36,6 +38,28 @@ The scope `icrc32_sign_challenge` may be restricted to specific principals (text
 ```
 
 If the `principals` list is not present, the scope applies to all principals (i.e. it is not restricted).
+
+## Scope (according to the [ICRC-25 standard](./icrc_25_signer_interaction_standard.md))
+
+**Scope:** `icrc32_sign_challenge` 
+
+### Example RPC Request Permission
+```json
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "icrc25_request_permissions",
+    "params": {
+        "version": "1",
+        "scopes": [
+            {
+                "method": "icrc32_sign_challenge",
+            }
+        ]
+    }
+}
+```
+
 
 ## Request
 
@@ -135,4 +159,4 @@ sequenceDiagram
 
 ## Errors
 
-This standard does not define additional errors. See [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-4) for a list of errors that can be returned by all methods.
+This standard does not define additional errors. See [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-3) for a list of errors that can be returned by all methods.
