@@ -1,8 +1,6 @@
 # ICRC-25: Signer Interaction Standard
 
-| Status |
-|:------:|
-| Draft  |
+[![Status Badge](https://img.shields.io/badge/STATUS-DRAFT-ffcc00.svg)](https://github.com/orgs/dfinity/projects/31)
 
 <!-- TOC -->
 * [ICRC-25: Signer Interaction Standard](#icrc-25-signer-interaction-standard)
@@ -88,28 +86,36 @@ A session must be terminated automatically after a certain period of inactivity.
 
 ## Scopes
 
-A scope is the permission to invoke specific JSON-RPC 2.0 method on the signer. A scope is identified by the `method` property which matches the `method` name of the JSON-RPC 2.0 call it relates to. The relying party requests scopes using the [`icrc25_request_permissions`](#icrc25_request_permissions) method and may revoke them using  [`icrc25_revoke_permissions`](#icrc25_revoke_permissions).
+A scope is the permission to invoke a specific JSON-RPC 2.0 method on the signer. A scope is identified by the `method` property which matches the `method` name of the JSON-RPC 2.0 call it relates to. The relying party requests scopes using the [`icrc25_request_permissions`](#icrc25_request_permissions) method and may revoke them using  [`icrc25_revoke_permissions`](#icrc25_revoke_permissions).
 
-Not all methods defined in this standard require a scope.
+None of the methods defined in this standard require a scope.
 
 ### Scope Objects
 
 Scopes are represented in JSON-RPC 2.0 messages as JSON objects with the following properties:
 - `method` (`text`): JSON-RPC 2.0 method the scope is associated with.
 
-#### Optional Properties
-- `targets` (`text` array): Array of target canister ids (textual representation) the scope is restricted to. If not present, the scope applies to all canisters (i.e. the permission is not restricted).
-    - Applicable to the `icrc25_canister_call` scope.
-- `senders` (`text` array): Array of sender principal ids (textual representation) the scope is restricted to. If not present, the scope applies to all senders (i.e. the permission is not restricted).
-    - Applicable to the `icrc25_canister_call` scope.
 
-### List of Scopes
+### Scope defined by this standard
 
-This standard defines the following `method` values for scopes:
-* `icrc25_managed_identities`
-* `icrc25_canister_call`
+This standard defines the wildcard (`*`) scope. It means that the relying party requests permission to invoke any method on the signer.
 
-This list may be extended by other standards.
+**Example:**
+```json
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "icrc25_request_permissions",
+    "params": {
+        "version": "1",
+        "scopes": [
+            {
+                "method": "*",
+            }
+        ]
+    }
+}
+```
 
 ## Batch Calls
 
