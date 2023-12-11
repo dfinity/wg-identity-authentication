@@ -8,7 +8,7 @@
   * [Summary](#summary)
   * [Method](#method)
   * [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
-    * [Example RPC Request Permission](#example-rpc-request-permission)
+    * [Example Permission Request](#example-permission-request)
   * [`icrc25_supported_standards`](#icrc25_supported_standards)
   * [Request](#request)
     * [Example RPC Request](#example-rpc-request)
@@ -20,7 +20,7 @@
 
 ## Summary
 
-This Method can be used by the relying party to request calls to 3rd party canister executed by the signer using the selected or requested identity.
+This Method can be used by the relying party to request calls to 3rd party canister executed by the signer using the requested identity. In order to prevent misuse of this method all `icrc33_call_canister` requests are subject to user approval.
 
 ## Method
 
@@ -35,9 +35,9 @@ This Method can be used by the relying party to request calls to 3rd party canis
 
 **Optional Properties:**
 - `targets` (`text` array): A list of target canister ids (textual representation) the scope is restricted to. If the list is not present, the scope applies to all canisters (i.e. the permission is not restricted).
-- `senders` (`text` array): A list of sender principal ids (textual representation) the scope is restricted to. If the list is not present, the scope applies to all senders (i.e. the permission is not restricted).
+- `senders` (`text` array): A list of sender principal (textual representation) the scope is restricted to. If the list is not present, the scope applies to all senders (i.e. the permission is not restricted).
 
-### Example RPC Request Permission
+### Example Permission Request
 ```json
 {
     "id": 1,
@@ -184,8 +184,6 @@ sequenceDiagram
         end
     end
 ```
-
-
 
 ## Errors
 
