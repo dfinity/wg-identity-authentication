@@ -8,7 +8,8 @@
   * [Summary](#summary)
   * [Method](#method)
   * [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
-    * [Example RPC Request ](#example-rpc-request-permission)
+    * [Example RPC Request Permission](#example-rpc-request-permission)
+  * [`icrc25_supported_standards`](#icrc25_supported_standards)
   * [Request](#request)
     * [Example RPC Request](#example-rpc-request)
   * [Response](#response)
@@ -46,6 +47,10 @@ The purpose of the `icrc31_get_principals` message is for the relying party to r
     }
 }
 ```
+
+## `icrc25_supported_standards`
+
+An ICRC-25 compliant signer must implement the [icrc25_supported_standards](./icrc_25_signer_interaction_standard.md#icrc25_supported_standards) method which returns the list of supported standards. Any signer implementing ICRC-31 must include a record with the name field equal to "ICRC-31" in that list.
 
 ## Request
 

@@ -13,6 +13,7 @@
     * [Scope Objects](#scope-objects)
     * [Scopes Defined by this Standard](#scopes-defined-by-this-standard)
   * [Batch Calls](#batch-calls)
+  * [Extensions](#extensions)
   * [Methods](#methods)
     * [`icrc25_request_permissions`](#icrc25_request_permissions)
       * [Prerequisites](#prerequisites)
@@ -35,9 +36,16 @@
       * [Errors](#errors-2)
       * [Message Processing](#message-processing-2)
       * [Example](#example-2)
-  * [Errors](#errors-3)
+    * [`icrc25_supported_standards`](#icrc25_supported_standards)
+      * [Prerequisites](#prerequisites-3)
+      * [Request](#request-3)
+      * [Response](#response-3)
+      * [Errors](#errors-3)
+      * [Message Processing](#message-processing-3)
+      * [Example](#example-3)
+  * [Errors](#errors-4)
     * [Version `1` errors (**code: `xxx01`**)](#version-1-errors-code-xxx01)
-    * [Example](#example-3)
+    * [Example](#example-4)
 <!-- TOC -->
 
 ## Summary
@@ -110,6 +118,19 @@ Extensions to this standard may define additional scopes.
 JSON-RPC defines a [batch call](https://www.jsonrpc.org/specification#batch) as a JSON array of requests. All methods defined in this standard may also be invoked as part of a batch.
 
 If a signer receives a batch call, it must process each request sequentially in order of the id and reply with a batch response. Calls resulting in error responses do not prevent the processing of subsequent calls in the batch.
+
+## Extensions
+
+This standard is the signer interaction _base_ standard. As such it intentionally excludes all methods that could be handled by an extension, for example:
+
+- Getting principals: [ICRC-31](./icrc_31_get_principals.md)
+- Proving ownership of principals: [ICRC-32](./icrc_32_sign_challenge.md)
+- Canister calls: [ICRC-33](./icrc_33_call_canister.md)
+
+This allows signer developers to choose which extensions they want to support and only implement those.
+
+The standard defines the `icrc25_supported_standards` endpoint to accommodate these and other future extensions.
+This endpoint returns names of all specifications (e.g., `"ICRC-31"`) implemented by the signer.
 
 ## Methods
 
@@ -385,6 +406,91 @@ Response
         "version": "1",
         "scopes": []
     }
+}
+```
+
+### `icrc25_supported_standards`
+
+The relying party can query the list of standards supported by the signer.
+
+#### Prerequisites
+
+None
+
+#### Request
+
+`version` (`text`): The version of the standard used. If the signer does not support the version of the request, it must send the `"VERSION_NOT_SUPPORTED"` error in response.
+
+#### Response
+
+`version` (`text`): The version of the standard used. It must match the `version` from the request.
+
+`suportedStandards`: Array of standards the signer implements.
+  - `name` (`text`): The name of the standard.
+  - `url` (`text`): Link to the standard.
+
+#### Errors
+
+While processing the request from the relying party, the signer can cancel it at any time by sending an [error](#errors) in response. In addition to the pre-defined JSON-RPC 2.0 errors ([-32600 to -32603 and -32700](https://www.jsonrpc.org/specification#error_object)), the following values are applicable:
+- `10001 Unknown Error`
+- `20101 Version not supported`
+
+#### Message Processing
+
+1. The relying party sends a `icrc25_supported_standards` request to the signer.
+2. Upon receiving the request, the signer validates whether it can process the message.
+    - If the request version is not supported by the signer, the signer sends a response with an error back to the relying party.
+3. The signer sends a response back to the relying party with the list of supported standards.
+   - The list must always at least include ICRC-25.
+
+```mermaid
+sequenceDiagram
+    participant RP as Relying Party
+    participant S as Signer
+
+    RP ->> S: Revoke supported standards
+    alt Version is not supported
+        S ->> RP: Error response: Version not supported (20101)
+    else
+        S ->> RP: Reply with supported standards
+    end
+```
+
+#### Example
+
+Request
+```json
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "icrc25_supported_standards",
+    "params": {
+        "version": "1",
+        "scopes": [{
+          "method": "icrc25_canister_call"
+        }]
+    }
+}
+```
+
+Response
+```json
+{
+  "id": 1,
+  "jsonrpc": "2.0",
+  "result": {
+    "version": "1",
+    "supportedStandards": [
+      {
+        "name": "ICRC-25",
+        "url": "https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md"
+      },
+      {
+        "name": "ICRC-31",
+        "url": "https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_31_get_principals.md"
+      }
+    ]
+  }
 }
 ```
 
