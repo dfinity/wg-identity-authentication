@@ -8,7 +8,7 @@
   * [Summary](#summary)
   * [Method](#method)
   * [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
-    * [Example RPC Request Permission](#example-rpc-request-permission)
+    * [Example Permission Request](#example-permission-request)
   * [`icrc25_supported_standards`](#icrc25_supported_standards)
   * [Request](#request)
     * [Example RPC Request](#example-rpc-request)
@@ -23,7 +23,7 @@ The purpose of the `icrc31_get_principals` message is for the relying party to r
 
 ## Method
 
-**Name and Scope:** `icrc31_get_principals`
+**Name:** `icrc31_get_principals`
 
 **Prerequisite:** Active session with granted permission scope `icrc31_get_principals` or `*`.
 
@@ -31,7 +31,7 @@ The purpose of the `icrc31_get_principals` message is for the relying party to r
 
 **Scope:** `icrc31_get_principals` 
 
-### Example RPC Request Permission
+### Example Permission Request
 ```json
 {
     "id": 1,
@@ -41,7 +41,7 @@ The purpose of the `icrc31_get_principals` message is for the relying party to r
         "version": "1",
         "scopes": [
             {
-                "method": "icrc31_get_principals",
+                "method": "icrc31_get_principals"
             }
         ]
     }

@@ -8,7 +8,7 @@
   * [Summary](#summary)
   * [Method](#method)
   * [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
-    * [Example RPC Request Permission](#example-rpc-request-permission)
+    * [Example Permission Requests](#example-permission-requests)
   * [`icrc25_supported_standards`](#icrc25_supported_standards)
   * [Request](#request)
     * [Example RPC Request](#example-rpc-request)
@@ -23,28 +23,37 @@ The purpose of the `icrc32_sign_challenge` method is for the relying party to re
 
 ## Method
 
-**Name and Scope:** `icrc32_sign_challenge`
+**Name:** `icrc32_sign_challenge`
 
 **Prerequisite:** Active session with granted permission scope `icrc32_sign_challenge` or `*`.
-
-The scope `icrc32_sign_challenge` may be restricted to specific principals (textual representation):
-```JSON
-{
-    "name": "icrc32_sign_challenge",
-    "principals": [
-        "btbdd-ob3pe-dz6kv-7n4gh-k2xtm-xjthz-kcvpk-fwbnv-w5qbk-iqjm4-4qe",
-        "b7gqo-ulk5n-2kpo7-oalt7-p2kyl-o4j5l-kiuwo-eeybr-dab4l-ur6up-pqe"
-    ]
-}
-```
-
-If the `principals` list is not present, the scope applies to all principals (i.e. it is not restricted).
+* This scope may be restricted to specific principals.
 
 ## Scope (according to the [ICRC-25 standard](./icrc_25_signer_interaction_standard.md))
 
-**Scope:** `icrc32_sign_challenge` 
+**Scope:** `icrc32_sign_challenge`
 
-### Example RPC Request Permission
+**Optional Properties:**
+- `principals` (`text` array): A list of principals (textual representation) the scope is restricted to. If the list is not present, the scope applies to all senders (i.e. the permission is not restricted).
+
+### Example Permission Requests
+
+No restriction:
+```json
+{
+    "id": 1,
+    "jsonrpc": "2.0",
+    "method": "icrc25_request_permissions",
+    "params": {
+        "version": "1",
+        "scopes": [
+            {
+                "method": "icrc32_sign_challenge"
+            }
+        ]
+    }
+}
+```
+With restriction:
 ```json
 {
     "id": 1,
@@ -55,6 +64,10 @@ If the `principals` list is not present, the scope applies to all principals (i.
         "scopes": [
             {
                 "method": "icrc32_sign_challenge",
+                "principals": [
+                    "btbdd-ob3pe-dz6kv-7n4gh-k2xtm-xjthz-kcvpk-fwbnv-w5qbk-iqjm4-4qe",
+                    "b7gqo-ulk5n-2kpo7-oalt7-p2kyl-o4j5l-kiuwo-eeybr-dab4l-ur6up-pqe"
+                ]
             }
         ]
     }
