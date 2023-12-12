@@ -79,8 +79,6 @@ type icrc21_consent_info = record {
 };
 
 type icrc21_error_info = record {
-    // Machine parsable error. Can be chosen by the target canister but should indicate the error category.
-    error_code: nat;
     // Human readable technical description of the error intended for developers, not the end-user.
     description: text;
 };
@@ -90,16 +88,27 @@ type icrc21_error = variant {
     // Reasons might be (non-exhaustive list):
     // * the canister call is malformed (e.g. wrong method name, argument cannot be decoded)
     // * the arguments exceed certain bounds
-    UnsupportedCanisterCall: icrc21_error_info;
+    //
+    // It is up to the developer to decide whether they want to provide more information about the error using the
+    // optional icrc21_error_info record.
+    UnsupportedCanisterCall: opt icrc21_error_info;
 
     // The canister cannot produce a consent message for this call.
     // Reasons might be (non-exhaustive list):
     // * it is an internal call not intended for end-users
     // * the canister developer has not yet implemented a consent message for this call
-    ConsentMessageUnavailable: icrc21_error_info;
-    
+    //
+    // It is up to the developer to decide whether they want to provide more information about the error using the
+    // optional icrc21_error_info record.
+    ConsentMessageUnavailable: opt icrc21_error_info;
+
     // Any error not covered by the above variants.
-    GenericError: icrc21_error_info;
+    GenericError: record {
+       // Machine parsable error. Can be chosen by the target canister but should indicate the error category.
+       error_code: nat;
+       // Human readable technical description of the error intended for developers, not the end-user.
+       description: text;
+   };
 };
 
 type icrc21_consent_message_response = variant {
@@ -111,13 +120,12 @@ type icrc21_consent_message_response = variant {
 
 service : {
     // Returns a human-readable consent message for the given canister call.
-    // The return type is `opt` to allow future extension of the consent_message_response variant.
-    // (see recommendation here: https://internetcomputer.org/docs/current/references/candid-ref#type-variant--n--t--)
+    //
     // This call must not require authentication (i.e. must be available for the anonymous sender).
     // If the call is made with a non-anonymous identity, the response may be tailored to the identity.
     //
     // This is currently an update call. As soon as secure (replicated) query calls are available, this will be changed to such a replicated query call.
-    icrc21_canister_call_consent_message: (icrc21_consent_message_request) -> (opt icrc21_consent_message_response);
+    icrc21_canister_call_consent_message: (icrc21_consent_message_request) -> (icrc21_consent_message_response);
 
     // Returns a list of supported standards related to consent messages that this canister implements.
     // The result should always have at least one entry: record { name = "ICRC-21"; url = "https://github.com/dfinity/wg-identity-authentication" }
