@@ -89,18 +89,16 @@ type icrc21_error = variant {
     // * the canister call is malformed (e.g. wrong method name, argument cannot be decoded)
     // * the arguments exceed certain bounds
     //
-    // It is up to the developer to decide whether they want to provide more information about the error using the
-    // optional icrc21_error_info record.
-    UnsupportedCanisterCall: opt icrc21_error_info;
+    // The developer should provide more information about the error using the description in icrc21_error_info.
+    UnsupportedCanisterCall: icrc21_error_info;
 
     // The canister cannot produce a consent message for this call.
     // Reasons might be (non-exhaustive list):
     // * it is an internal call not intended for end-users
     // * the canister developer has not yet implemented a consent message for this call
     //
-    // It is up to the developer to decide whether they want to provide more information about the error using the
-    // optional icrc21_error_info record.
-    ConsentMessageUnavailable: opt icrc21_error_info;
+    // The developer should provide more information about the error using the description in icrc21_error_info.
+    ConsentMessageUnavailable: icrc21_error_info;
 
     // Any error not covered by the above variants.
     GenericError: record {
