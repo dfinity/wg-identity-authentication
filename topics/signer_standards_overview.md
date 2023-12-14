@@ -9,6 +9,9 @@ The following ICRC standards are relevant in this context:
 * [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md): Signer Interaction Standard
 * ICRC-27: ICRC-25 Extension for ICRC-1 ledger subaccounts
 * [ICRC-29](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_29_window_post_message_transport.md): PostMessage Transport Standard for ICRC-25
+* [ICRC-31](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_31_get_principals.md): Get Principals (ICRC-25 Extension)
+* [ICRC-32](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_32_sign_challenge.md): Sign Challenge (ICRC-25 Extension)
+* [ICRC-33](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_33_call_canister.md): Call Canister (ICRC-25 Extension)
 
 The following diagram presents the interactions between the different components (see [terminology](#terminology)) and shows which standards cover the respective parts of the interactions:
 
@@ -80,59 +83,24 @@ This section lists the use cases that are covered by the standards.
 
 In this use case the relying party does not require signing canister calls, but only information about the identities (and potentially subaccounts) managed by the signer.
 
-To exchange this information, the relying party establishes a connection with the signer and requests the information using the permission request as specified by [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md). The information that is shared this way is subject to user approval on the signer side.
+To exchange this information, the relying party establishes a connection with the signer and requests the information using the appropriate messages, such as `icrc31_get_principals` message as specified by [ICRC-31](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_31_get_principals.md). The information that is shared this way is subject to user approval on the signer side.
 
 Currently, the following information can be shared:
-* The list of identities managed by the signer, as specified by [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md)
+* The list of identities managed by the signer, as specified by [ICRC-31](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_31_get_principals.md).
 * The list of ICRC-1 subaccounts associated with the identities managed by the signer, as specified by ICRC-27
 
-More extensions to the permission request (similar to ICRC-27) can be added in the future.
-
-The following diagram shows a simplified flow (see [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md) for the full flow):
-
-```mermaid
-sequenceDiagram
-    participant RP as Relying Party
-    participant S as Signer
-    participant U as User
-
-    RP ->> S: Request permission / information
-    S ->> U: Display connection details (requested networks, scopes)<br/> Ask to select information to share with Relying Party
-    U ->> S: Select information<br/>Approve request
-    S ->> S: Store the granted permission scopes
-    S ->> RP: Permission / information response
-```
+More extensions can be added in the future.
 
 ### Use Case 2: Relying Party Initiated Transaction Approval Flow
 
 In this use case the relying party initiates canister calls (transactions) on behalf of an identity controlled by a singer.
 The user can approve or reject the transaction on the signer UI. After user approval, the signer signs the call and submits it to the IC. Upon receiving the result of the canister call, the signer must forward the result to the relying party.
 
-This flow is the main use case for [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md). It offers an alternative interaction model to the currently used session delegations.
+This flow (described in [ICRC-33](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_33_call_canister.md)) is one of the main use cases for [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md). It offers an alternative interaction model to the currently used session delegations.
 In particular, it allows multiple relying parties to securely interact with the IC using the same signer controlled identity
 without being restricted to a disjoint set of target canisters.
 
 In the future, batch transactions could be a possible extensions to this flow.
-
-The following diagram shows a simplified flow (see [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md) and [ICRC-21](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_21_consent_msg.md) for the full flow):
-
-```mermaid
-sequenceDiagram
-    participant RP as Relying Party
-    participant S as Signer
-    participant U as User
-    participant C as Target Canister
-
-    RP ->> S: Request canister call
-    S ->> C: Request consent message
-    C ->> S: Consent message response
-    S ->> U: Display consent message<br>(Transaction details)
-    U ->> S: Approve request
-    S ->> C: Submit canister call
-    S ->> S: Poll for canister call result
-    S ->> U: Display success message
-    S ->> RP: Canister call response
-```
 
 ## Signer Architecture
 
@@ -175,7 +143,7 @@ This indirection is required because of the different trust models for external 
 * An external party always communicates with a single, untrusted boundary node.
   Therefore, the responses are certified by the subnet to prove authenticity.
 
-[ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md) requires the certified response to be relayed to the relying party as the signer is not trusted by the relying
+[ICRC-33](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_33_call_canister.md) requires the certified response to be relayed to the relying party as the signer is not trusted by the relying
 party.
 
 The above approach also sidesteps another issues that arise from holding assets using a canister id principal:
@@ -183,8 +151,8 @@ calling untrusted canisters is generally unsafe as it can prevent upgrades of th
 
 #### Air-Gapped Signers
 
-An air-gapped signer is a signer that is not connected to the internet. As [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md) requires signers to have a connection
-to the IC, air-gapped signers are only supported by the standards if they provide a chain-connected component as well.
+An air-gapped signer is a signer that is not connected to the internet. As [ICRC-33](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_33_call_canister.md) requires signers to have a connection
+to the IC, air-gapped signers are only supported by this extension standard if they provide a chain-connected component as well.
 
 The chain-connected component must be trusted by the user.
 
