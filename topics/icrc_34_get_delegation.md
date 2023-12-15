@@ -1,10 +1,11 @@
-# ICRC-3x: Get Delegation
+# ICRC-34: Get Delegation
 
 [![Status Badge](https://img.shields.io/badge/STATUS-DRAFT-ffcc00.svg)](https://github.com/orgs/dfinity/projects/31)
-[![Extension Badge](https://img.shields.io/badge/Extends-ICRC--25-ffcc222.svg)](./icrc_25_signer_interaction_standard.md)
+[![Extension Badge](https://img.shields.io/badge/EXTENDS-ICRC--25-ffcc222.svg)](./icrc_25_signer_interaction_standard.md)
+
 <!-- TOC -->
 
-- [ICRC-3x: Get Delegation](#icrc-3x-get-delegation)
+- [ICRC-34: Get Delegation](#icrc-34-get-delegation)
   - [Summary](#summary)
   - [Method](#method)
   - [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
@@ -17,17 +18,17 @@
 
 ## Summary
 
-The purpose of the `icrc3x_get_delegation` method is for the relying party to receive delegation identity.
+The purpose of the `icrc34_get_delegation` method is for the relying party to receive delegation identity.
 
 ## Method
 
-**Name and Scope:** `icrc3x_get_delegation`
+**Name and Scope:** `icrc34_get_delegation`
 
-**Prerequisite:** Active session with granted permission scope `icrc3x_get_delegation` or `*`.
+**Prerequisite:** Active session with granted permission scope `icrc34_get_delegation` or `*`.
 
 ## Scope (according to the [ICRC-25 standard](./icrc_25_signer_interaction_standard.md))
 
-**Scope:** `icrc3x_get_delegation` 
+**Scope:** `icrc34_get_delegation` 
 
 **Optional Properties:**
 - `targets` (`text` array): A list of target canister ids (textual representation) the scope is restricted to. If the list is not present, the scope applies to all canisters (i.e. the permission is not restricted).
@@ -42,7 +43,7 @@ The purpose of the `icrc3x_get_delegation` method is for the relying party to re
         "version": "1",
         "scopes": [
             {
-                "method": "icrc3x_get_delegation",
+                "method": "icrc34_get_delegation",
                 "targets": ["ryjl3-tyaaa-aaaaa-aaaba-cai"],
             }
         ]
@@ -59,7 +60,7 @@ The purpose of the `icrc3x_get_delegation` method is for the relying party to re
 {
     "id": 1,
     "jsonrpc": "2.0",
-    "method": "icrc3x_get_delegation",
+    "method": "icrc34_get_delegation",
     "params": {
         "version": "1",
     }
