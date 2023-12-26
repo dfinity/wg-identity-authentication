@@ -138,6 +138,6 @@ Roughly speaking, in the perspective of ICRC-35, the II provides other web-servi
 
 In other words, ICRC-35 is nothing new in terms of technology. It is just a new perspective on something we already use for a while.
 
-Here is the [draft specification](../README.md) for ICRC-35. And, more importantly, here is a [reference implementation](https://github.com/seniorjoinu/icrc35/tree/main) of this protocol, which is fully documented and already [published](https://www.npmjs.com/package/icrc-35) to NPM. To see how you could use the implementation in the context of a real application, see the [example project](https://github.com/seniorjoinu/icrc35/tree/main/example).
+Here is the [draft specification](../README.md) for ICRC-35. And, more importantly, here is a [reference implementation](https://github.com/seniorjoinu/icrc35/tree/main) of this protocol, which is slightly documented and already [published](https://www.npmjs.com/package/icrc-35) to NPM. To see how you could use the implementation in the context of a real application, see the [example project](https://github.com/seniorjoinu/icrc35/tree/main/example).
 
 *By the way, [MSQ](https://msq.tech) already implements ICRC-35. We provide two functions for other web-services: user authorization (similar to II, but with MetaMask magic) and ICRC-1 payments. Our use-case is a proof that ICRC-35 is truly party-agnostic. In our case, any other web-service is able to integrate with it, despite MSQ being an extension (a Snap) for another browser extension (MetaMask).*
