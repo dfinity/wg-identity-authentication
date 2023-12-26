@@ -91,9 +91,9 @@ This sequence diagram specifies how exactly peers communicate in order to comple
 
 ![handshake phase sequence diagram](./icrc-35-handshake.drawio.png)
 
-1. The parent peer MUST initiate the handshake by opening a new browser window, with an URL obtained by contatenating the child peer's origin and the `/icrc-35` pathname.
+1. The parent peer MUST initiate the handshake by opening a new browser window, with an URL obtained by contatenating the child peer's origin and the `/icrc35` pathname.
 2. Since the parent peer knows the child peer's origin in advance, it SHOULD remember this origin and SHOULD ignore messages coming from any other source.
-3. Once loaded, a script at child peer's `/icrc-35` pathname MUST generate a secret and send it as a part of `HandshakeInit` message to the opener of its window.
+3. Once loaded, a script at child peer's `/icrc35` pathname MUST generate a secret and send it as a part of `HandshakeInit` message to the opener of its window.
 4. Once the parent peer receives the `HandshakeInit` message, it MUST immediately reply to it with `HandshakeComplete` message, containing the received secret.
 5. Once the child peer receives the `HandshakeComplete` message, it MUST compare the received secret with the generated one and, if identical, remember the origin of the parent peer and from this point ignore messages comming from other sources.
 
@@ -120,7 +120,7 @@ type HandshakeCompleteMessage = {
 **Parent peer origin**: `https://example-parent.com`
 **Child peer origin**: `https://example-child.com`
 
-1. The parent window opens a child window at `https://example-child.com/icrc-35`, and remembers `https://example-child.com` as `peerOrigin`.
+1. The parent window opens a child window at `https://example-child.com/icrc35`, and remembers `https://example-child.com` as `peerOrigin`.
 2. The child sends the following message to `window.opener`:
 
     ```javascript
