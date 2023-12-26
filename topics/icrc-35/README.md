@@ -169,7 +169,7 @@ During the interaction phase two concurrent processes are happening:
 
 As was previosly mentioned, there are two models in which the exchange could happen: fire-and-forget and request-response. The implementation SHOULD allow these models to be freely mixed during the same communication session. It MAY be possible to send and process multiple messages concurrently (with respect to JS's execution model): a peer should be able to send a request and, before awaiting for the response, send a fire-and-forget message, for example.
 
-Peers distinguish between different models by the shape of the sent/received message. Message payload MUST be sent between browser windows as-is: without any additional encoding or encryption. The maximum message size limit MAY be set by an individual implementation. Such an implementation MAY also make use of `Transferrable` objects in order to provide better performance while sending heavy objects (for example, media content).
+Peers distinguish between different models by the shape of the sent/received message. Message payload MUST be sent between browser windows as-is: without any additional encoding or encryption. The maximum message size limit MAY be set by an individual implementation. Such an implementation MAY also make use of `Transferable` objects in order to provide better performance while sending heavy objects (for example, media content).
 
 ##### 4.2.1.1 Fire-and-forget model
 
