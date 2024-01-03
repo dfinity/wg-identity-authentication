@@ -221,10 +221,10 @@ Request
         "version": "1",
         "scopes": [
             {
-                "method": "icrc25_managed_identities"
+                "method": "icrc31_get_principals"
             },
             {
-                "method": "icrc25_canister_call",
+                "method": "icrc33_canister_call",
                 "targets": ["ryjl3-tyaaa-aaaaa-aaaba-cai"]
             }
         ]
@@ -241,10 +241,10 @@ Response
         "version": "1",
         "scopes": [
             {
-                "method": "icrc25_managed_identities"
+                "method": "icrc31_get_principals"
             },
             {
-                "method": "icrc25_canister_call",
+                "method": "icrc33_canister_call",
                 "targets": ["ryjl3-tyaaa-aaaaa-aaaba-cai"],
                 "senders": ["btbdd-ob3pe-dz6kv-7n4gh-k2xtm-xjthz-kcvpk-fwbnv-w5qbk-iqjm4-4qe"]
             }
@@ -320,10 +320,10 @@ Response
         "version": "1",
         "scopes": [
             {
-                "method": "icrc25_get_identities"
+                "method": "icrc31_get_principals"
             },
             {
-                "method": "icrc25_canister_call",
+                "method": "icrc33_canister_call",
                 "targets": ["ryjl3-tyaaa-aaaaa-aaaba-cai"],
                 "senders": ["btbdd-ob3pe-dz6kv-7n4gh-k2xtm-xjthz-kcvpk-fwbnv-w5qbk-iqjm4-4qe"]
             }
@@ -391,7 +391,7 @@ Request
     "params": {
         "version": "1",
         "scopes": [{
-          "method": "icrc25_canister_call"
+          "method": "icrc33_canister_call"
         }]
     }
 }
@@ -465,10 +465,7 @@ Request
     "jsonrpc": "2.0",
     "method": "icrc25_supported_standards",
     "params": {
-        "version": "1",
-        "scopes": [{
-          "method": "icrc25_canister_call"
-        }]
+        "version": "1"
     }
 }
 ```
