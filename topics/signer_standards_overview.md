@@ -5,13 +5,14 @@ It explains the motivation behind the standards and how they relate to each othe
 
 The following ICRC standards are relevant in this context:
 * The [Internet Computer Interface Specification](https://internetcomputer.org/docs/current/references/ic-interface-spec/), specifically the [HTTPs interface](https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-interface)
-* [ICRC-21](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_21_consent_msg.md): Canister Call Consent Messages
-* [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md): Signer Interaction Standard
+* [ICRC-21](icrc_21_consent_msg.md): Canister Call Consent Messages
+* [ICRC-25](icrc_25_signer_interaction_standard.md): Signer Interaction Standard
 * ICRC-27: ICRC-25 Extension for ICRC-1 ledger subaccounts
-* [ICRC-29](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_29_window_post_message_transport.md): PostMessage Transport Standard for ICRC-25
-* [ICRC-31](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_31_get_principals.md): Get Principals (ICRC-25 Extension)
-* [ICRC-32](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_32_sign_challenge.md): Sign Challenge (ICRC-25 Extension)
-* [ICRC-33](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_33_call_canister.md): Call Canister (ICRC-25 Extension)
+* [ICRC-29](icrc_29_window_post_message_transport.md): PostMessage Transport Standard for ICRC-25
+* [ICRC-31](icrc_31_get_principals.md): Get Principals (ICRC-25 Extension)
+* [ICRC-32](icrc_32_sign_challenge.md): Sign Challenge (ICRC-25 Extension)
+* [ICRC-33](icrc_33_call_canister.md): Call Canister (ICRC-25 Extension)
+* [ICRC-39](icrc_39_batch_calling.md): Batch Calling (ICRC-25 Extension)
 
 The following diagram presents the interactions between the different components (see [terminology](#terminology)) and shows which standards cover the respective parts of the interactions:
 
