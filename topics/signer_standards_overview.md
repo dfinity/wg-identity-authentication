@@ -16,7 +16,7 @@ The following ICRC standards are relevant in this context:
 
 The following diagram presents the interactions between the different components (see [terminology](#terminology)) and shows which standards cover the respective parts of the interactions:
 
-![Visalization showing which part of the interactions between relying party, signer and target canister are covered by which standard.](../diagrams/signer_standards_overview.svg "Signer Standards Overview")
+![Visualization showing which part of the interactions between relying party, signer and target canister are covered by which standard.](../diagrams/signer_standards_overview.svg "Signer Standards Overview")
 
 ## Terminology
 
@@ -58,6 +58,22 @@ If these standards are adopted, the vision is to foster a vibrant and diverse ec
 can interact with each other, _without_ having to specifically integrate with any particular component (or even know
 about each others existence prior to the interaction). To help with this, services maintained by DFINITY will be upgraded
 to support these standards, when they are adopted.
+
+## Delegation Identities vs Signer Identities
+
+The signer standards are meant as an extension of the current delegation based model (and not as a replacement). There is a lot of value in having authenticated sessions and being able to make many transactions non-interactively, leveraging the high throughput of the IC.
+
+However, for security critical / high-value transactions and for interactions that require a stable identity across applications the signer standards provide a better alternative.
+
+![Visualization showing how a dapp should interact with the IC given a delegation identity and a signer identity](../diagrams/delegation-identity-vs-signer-identity.png "Delegation Identity vs Signer Identity")
+
+|                     | **Delegation Identity**                                                                                                                               | **Signer Identity**                                                                                                                                                                                                                                      |
+|---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| User Experience     | <ul><li>within dapp context</li><li>without user interaction</li></ul>                                                                                | <ul><li>context switch to signer</li><li>user approval for every transaction</li></ul>                                                                                                                                                                   |
+| Recommended usage   | <ul><li>maintaining session state</li><li>actions that require a high volume of canister calls</li><li>applications specific business logic</li></ul> | <ul><li>security critical transaction</li><li>transferable asset transactions</li><li>infrequent actions that relate directly to a user action</li></ul>                                                                                                 |
+| Examples            | <ul><li>retrieve application specific user data</li><li>poll for notifications</li><li>update application specific data</li></ul>                     | <ul><li>transfer of currencies (ICP, ckBTC, Cycles, ...)</li><li>creating and managing neurons (increase stake, disburse maturity, change disolve delay...)</li><li>Creating and managing canisters (changing controllers, installing code...)</li></ul> |
+| Security Properties | <ul><li>under dapp control</li><li>not visible to the user</li><li>time limited</li><li>unrevokable</li></ul>                                         | <ul><li>under signer control</li><li>explicit user interaction</li><li>one-off approvals</li><li>defense in depth mechanism against dapp session hijacking</li></ul>                                                                                     |
+
 
 ## Trust Assumptions
 This section explains the trust assumptions that are made by the standards. In the context of these standards, one party
