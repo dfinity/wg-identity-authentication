@@ -23,13 +23,12 @@
 
 ## Summary
 
-The purpose of the `icrc27_get_subaccounts` message is for the relying party to receive subaccounts for a given identity
+The purpose of the `icrc27_get_icrc1_subaccounts` message is for the relying party to receive subaccounts for a given identity
 managed by the signer.
 
 There are many types of signers:
 
 - Signers that support many different standards
-- Signers that support multiple networks
 - Signers that keep a list of subaccounts per ledger
 - Signers that keep a list of subaccounts used across all ledgers
 
@@ -52,15 +51,15 @@ Example usages:
 
 ## Method
 
-**Name:** `icrc27_get_subaccounts`
+**Name:** `icrc27_get_icrc1_subaccounts`
 
-**Prerequisite:** Active session with granted permission scope `icrc27_get_subaccounts` and `icrc31_get_principals`, or `*`.
+**Prerequisite:** Active session with granted permission scope `icrc27_get_icrc1_subaccounts` and `icrc31_get_principals`, or `*`.
 
 * This scope may be restricted to specific principals.
 
 ## Scope (according to the [ICRC-25 standard](./icrc_25_signer_interaction_standard.md))
 
-**Scope:** `icrc27_get_subaccounts`
+**Scope:** `icrc27_get_icrc1_subaccounts`
 
 **Optional Properties:**
 
@@ -78,7 +77,7 @@ Example usages:
     "version": "1",
     "scopes": [
       {
-        "method": "icrc27_get_subaccounts",
+        "method": "icrc27_get_icrc1_subaccounts",
         "principals": [
           "btbdd-ob3pe-dz6kv-7n4gh-k2xtm-xjthz-kcvpk-fwbnv-w5qbk-iqjm4-4qe",
           "b7gqo-ulk5n-2kpo7-oalt7-p2kyl-o4j5l-kiuwo-eeybr-dab4l-ur6up-pqe"
@@ -109,7 +108,7 @@ for.
 {
   "id": 1,
   "jsonrpc": "2.0",
-  "method": "icrc27_get_subaccounts",
+  "method": "icrc27_get_icrc1_subaccounts",
   "params": {
     "version": "1",
     "principal": "btbdd-ob3pe-dz6kv-7n4gh-k2xtm-xjthz-kcvpk-fwbnv-w5qbk-iqjm4-4qe"
@@ -152,7 +151,7 @@ for.
 
 ## Message Processing
 
-1. The relying party sends a `icrc27_get_subaccounts` request to the signer.
+1. The relying party sends a `icrc27_get_icrc1_subaccounts` request to the signer.
 2. Upon receiving the message, the signer first checks if it can process the message.
     - If the request version is not supported by the signer, the signer sends a response with an error back to the
       relying party.
@@ -171,7 +170,7 @@ sequenceDiagram
     RP ->> S: Request subaccounts
     alt Version is not supported
         S ->> RP: Error response: Version not supported (20101)
-    else Scope `icrc31_get_principals` not granted
+    else Scope `icrc27_get_icrc1_subaccounts` not granted
         S ->> RP: Error response: Permission not granted (30101)
     else
         opt If not preselected
