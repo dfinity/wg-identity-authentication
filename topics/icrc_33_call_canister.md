@@ -119,18 +119,22 @@ An ICRC-25 compliant signer must implement the [icrc25_supported_standards](./ic
 2. Upon receiving the request, the signer validates whether it can process the message.
     - If the request version is not supported by the signer, the signer sends a response with an error back to the relying party.
     - If the relying party has not been granted the permission to request the action, the signer sends a response with an error back to the relying party.
-        - The sender must make sure that the request complies with additional scope restrictions defined by the signer (if any), such as limitations on the target canister id or the sender principal, etc. 
-3. Next, the signer processes the message following the [ICRC-21](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/consent-msg.md) specification. If the target canister does not support ICRC-21, the signer should display a warning, try to decode the arguments by itself and display raw canister call details. If the arguments cannot be decoded, a strong warning must be displayed.
-    - If the user approves the request:
-        - The signer sends the call to the IC (in order to get a certified results, all calls, including queries, should be sent as `update` calls), retrieves its [content map](https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-call) and [calculates a request id](https://internetcomputer.org/docs/current/references/ic-interface-spec/#request-id) based on it.
-            - The signer continues to call `read_state` for the calculated request id until [the status of the call](https://internetcomputer.org/docs/current/references/ic-interface-spec/#state-tree-request-status) indicates that the call has been processed (succesfully or not).
-                - If the status of the call is `replied`, `rejected` or `done`, the signer retrieves the CBOR-encoded [certificate](https://internetcomputer.org/docs/current/references/ic-interface-spec/#certificate) from [the `read_state` response](https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-read-state) and sends it together with the content map in response back to the relying party.
-            - If the status of the HTTP response for submitting the call to the IC is _not_ `202 Accepted` (indicating the call failed), the signer sends a response with an error back to the relying party.
-    - If the user rejects the request or if the signer fails to complete the requested action for any reason, the signer sends a response with an error back to the relying party.
-
-    > **Note:** Unlike other methods defined in this standard, user approval for the `icrc33_call_canister` method must never be skipped! The reason for this is that the canister call might not be idempotent and thus submitting a call twice might have undesired consequences.
-
-4. The relying party receives a response from the signer and processes it as follows:
+        - The sender must make sure that the request complies with additional scope restrictions defined by the signer (if any), such as limitations on the target canister id or the sender principal, etc.
+3. The signer tries to retrieve and verify the consent message according to the [ICRC-21](icrc_21_consent_msg.md) specification. If the target canister does not support ICRC-21 consent messages for the given canister call, the signer may proceed in one of following ways:
+   * The signer rejects the request and sends a response with the error code 20201 back to the relying party. Step 4 is skipped.
+   * The signer displays a warning, tries to decode the arguments by itself and displays raw canister call details. If the arguments cannot be decoded, a strong warning must be displayed.
+      > **Note:** Signing canister calls without an ICRC-21 consent message is dangerous! Signing canister calls solely based on the decoded arguments might yield unexpected results. Strong technical knowledge is required to understand the consequences of such actions. Blind signing of canister calls (without even decoding the arguments) is not recommended and requires complete trust in the relying party.
+       > 
+       > Singing canister calls without an ICRC-21 consent message must be disabled by default. The signer must explain the dangers to the user and ask explicitly to enable this feature.
+4. Next, the signer displays the transaction details to the user and prompts for approval:
+    >    **Note:** User approval for the `icrc33_call_canister` method must never be skipped! The reason for this is that the canister call might not be idempotent and thus submitting a call more than once might have undesired consequences.
+   - If the user approves the request:
+       - The signer sends the call to the IC (in order to get certified results, all calls, including queries, should be sent as `update` calls), retrieves its [content map](https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-call) and [calculates a request id](https://internetcomputer.org/docs/current/references/ic-interface-spec/#request-id) based on it.
+           - The signer continues to call `read_state` for the calculated request id until [the status of the call](https://internetcomputer.org/docs/current/references/ic-interface-spec/#state-tree-request-status) indicates that the call has been processed (succesfully or not).
+               - If the status of the call is `replied`, `rejected` or `done`, the signer retrieves the CBOR-encoded [certificate](https://internetcomputer.org/docs/current/references/ic-interface-spec/#certificate) from [the `read_state` response](https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-read-state) and sends it together with the content map in response back to the relying party.
+           - If the status of the HTTP response for submitting the call to the IC is _not_ `202 Accepted` (indicating the call failed), the signer sends a response with an error back to the relying party.
+   - If the user rejects the request or if the signer fails to complete the requested action for any reason, the signer sends a response with an error back to the relying party.
+5. The relying party receives a response from the signer and processes it as follows:
     - On successful response: the relying party verifies whether the call performed by the signer was genuine and retrieves the result:
         - The relying party retrieves the CBOR-encoded `contentMap` from the response, verifies that its values match the expectations and uses it to [calculate a request id](https://internetcomputer.org/docs/current/references/ic-interface-spec/#request-id).
         - The relying party retrieves the CBOR-encoded [`certificate`](https://internetcomputer.org/docs/current/references/ic-interface-spec/#certificate) from the response, decodes it and validates its authenticity with regard to [the root of trust](https://internetcomputer.org/docs/current/references/ic-interface-spec/#root-of-trust).
@@ -161,9 +165,12 @@ sequenceDiagram
     else
         alt Canister supports ICRC-21
             Note over S,C: Follow the ICRC-21 standard
-        else Canister does not support ICRC-21
+        else Canister does not support ICRC-21 and signer does not support blind signing
+            S ->> RP: Error response: No consent message (20201)
+            Note over RP,S: Abort interaction, do not proceed further.
+        else Canister does not support ICRC-21 and signer supports blind signing
             S ->> U: Display warning and canister call details (canisterId, sender, method, arg)
-            Note over S,U: The warning should inform the user that the canister does not support ICRC-21<br/>The arguments should be decoded, otherwise another warning must be displayed
+            Note over S,U: The warning must inform the user that the canister does not support ICRC-21<br/>The arguments should be decoded, otherwise a stronger warning must be displayed
         end
         alt Approved
             U ->> S: Approve request
@@ -189,5 +196,8 @@ sequenceDiagram
 
 See [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-3) for a list of errors that can be returned by all methods.
 
-While processing the request from the relying party, the signer can cancel it at any time by sending an [error](#errors) in response. In addition to the pre-defined JSON-RPC 2.0 errors ([-32600 to -32603 and -32700](https://www.jsonrpc.org/specification#error_object)), the following values are applicable:
-- `30201 Action aborted`
+This standard defines the following additional errors:
+
+| Code  | Message            | Meaning                                                                                                                      | Data |
+|-------|--------------------|------------------------------------------------------------------------------------------------------------------------------|------|
+| 20201 | No consent message | The signer has rejected the request because the target canister does not support ICRC-21 consent messages for the given call | N/A  |
