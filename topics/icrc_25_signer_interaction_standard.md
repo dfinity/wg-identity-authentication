@@ -486,7 +486,7 @@ Response
 
 ## Errors
 
-The error is an object comprising the `code`, `message` and optional `data` fields as described in the [JSON-RPC 2.0 Specification](https://www.jsonrpc.org/specification#error_object). In addition the the pre-defined errors, the following values are supported:
+The error is an object comprising the `code`, `message` and optional `data` fields as described in the [JSON-RPC 2.0 Specification](https://www.jsonrpc.org/specification#error_object). In addition to the pre-defined errors, the following values are defined applying to all methods (including extension standards):
 
 ### Version `1` errors (**code: `xxx01`**)
 - General (**code: `1xx01`**)
@@ -503,10 +503,10 @@ The error is an object comprising the `code`, `message` and optional `data` fiel
 
 - User action (**code: `3xx01`**)
 
-| Code  | Message                | Meaning                              | Data |
-| ----- | ---------------------- | ------------------------------------ | ---- |
-| 30101 | Permission not granted | The signer has rejected the request. | N/A  |
-| 30201 | Action aborted         | The user has canceled the action.    | N/A  |
+| Code  | Message                | Meaning                                                              | Data |
+| ----- | ---------------------- |----------------------------------------------------------------------| ---- |
+| 30101 | Permission not granted | The signer has rejected the request due to insufficient permissions. | N/A  |
+| 30201 | Action aborted         | The user has canceled the action.                                    | N/A  |
 
 - Network (**code: `4xx01`**)
 
