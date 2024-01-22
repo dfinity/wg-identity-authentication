@@ -1,3 +1,7 @@
+# ICRC-25 Criticism and ICRC-35 Rationale
+
+*22 Jan 2024*
+
 ## Setting the goals right
 
 Every project starts with clearly defined goals. In our scenario, it seems like our goal is **to enable interoperability of web-services on the IC**. So web-services could integrate with each other, build on top of each other extending the functionality available to the end user and reducing their own complexities. In other words, our goal is to enable the Open Internet Services vision, that was introduced by the Foundation years ago.

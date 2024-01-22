@@ -2,13 +2,13 @@
 
 | Status |
 |--|
-| Draft |
+| Draft / [Reference Implementation](https://github.com/seniorjoinu/icrc35) |
 
 ## 1 Scope
 
 ### 1.1 General
 
-This specification defines a [postMessage API](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) based protocol for web-service interoperability. This protocol provides a flexible and efficient way for web-services to exchange messages with each other, allowing them to extend functionality of each other in a controlled way.
+This specification defines a [postMessage API](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) based protocol for web-service interoperability. This protocol provides a flexible and efficient way for web-services to exchange messages with each other, allowing them to extend functionality of each other in a controlled way. In a more abstract perspective, this protocol introduces a new kind of APIs - `Webpage APIs`, which can be used by web-services to interact with each other. With this new kind of APIs, web-services don't integrate with each other, by calling each other's servers, but by calling each other's webpages.
 
 The protocol can be used by any web-service, regardless of its internal design, used technologies or other integration techniques, on-chain and off-chain.
 
@@ -59,7 +59,7 @@ Currently, the whole Web3 community is locked in a dilemma where in order to all
 
 ICRC-35 (this specification) proposes a different solution, which could in short be expressed the following way: if signers cause problems for interoperability, let's design an interoperability protocol that does not rely on signers at all. Such a solution would allow web-services to integrate directly to each other, completely decoupling them from signers, and allowing users to freely use signers of their choice, switching between them depending on the web-service they're currently interacting with.
 
-![icrc-35 complete example with authorization](./icrc-35-complete.drawio.png)
+![icrc-35 complete example with authorization](../diagrams/icrc-35/icrc-35-complete.drawio.png)
 
 ICRC-35 is inspired by the integration technique used at Internet Identity. This specification generalizes and describes the technique, providing necessary basis for other applications to interop with each other the same way IC dapps currently interop with the II.
 
@@ -77,8 +77,8 @@ The protocol consists of two phases:
 During this phase peers authenticate each other and create a reliable connection. The handshake is a three step process:
 
 1. **Child peer window creation** - when a peer (usually, SC) opens a new browser window to be able to exchange messages with another peer (usually, SP).
-2. **Handshake Initialization** - when the child peer window sends a message with a secret code to its parent peer window.
-3. **Handshake Completion** - when the parent peer window echoes the secret code back to the child peer.
+2. **Handshake Initialization** - when the child peer window sends a "ready"-message to its parent peer window.
+3. **Handshake Completion** - when the parent peer window replies back to the child peer.
 
 Completion of these steps provides the following guarantees:
 
@@ -89,29 +89,25 @@ Completion of these steps provides the following guarantees:
 
 This sequence diagram specifies how exactly peers communicate in order to complete the handshake phase.
 
-![handshake phase sequence diagram](./icrc-35-handshake.drawio.png)
+![handshake phase sequence diagram](../diagrams/icrc-35/icrc-35-handshake.drawio.png)
 
 1. The parent peer MUST initiate the handshake by opening a new browser window, with an URL obtained by contatenating the child peer's origin and the `/icrc-35` pathname.
 2. Since the parent peer knows the child peer's origin in advance, it SHOULD remember this origin and SHOULD ignore messages coming from any other source.
-3. Once loaded, a script at child peer's `/icrc-35` pathname MUST generate a secret and send it as a part of `HandshakeInit` message to the opener of its window.
-4. Once the parent peer receives the `HandshakeInit` message, it MUST immediately reply to it with `HandshakeComplete` message, containing the received secret.
-5. Once the child peer receives the `HandshakeComplete` message, it MUST compare the received secret with the generated one and, if identical, remember the origin of the parent peer and from this point ignore messages comming from other sources.
+3. Once loaded, a script at child peer's `/icrc-35` pathname MUST send `HandshakeInit` message to the opener of its window.
+4. Once the parent peer receives the `HandshakeInit` message, it MUST immediately reply to it with `HandshakeComplete` message.
+5. Once the child peer receives the `HandshakeComplete` message, it MUST remember the origin of the parent peer and from this point ignore messages comming from other sources.
 
 #### 4.1.2 Data Structures
 
 ```typescript
-type Secret = Uint8Array; // 32 bytes
-
 type HandshakeInitMessage = {
     domain: 'icrc-35';
     kind: 'HandshakeInit';
-    secret: Secret;
 }
 
 type HandshakeCompleteMessage = {
     domain: 'icrc-35';
     kind: 'HandshakeComplete';
-    secret: Secret;
 }
 ```
 
@@ -126,8 +122,7 @@ type HandshakeCompleteMessage = {
     ```javascript
     {
         domain: 'icrc-35',
-        kind: 'HandshakeInit',
-        secret: new Uint8Array([1, 2, 3, 4, ..., 32]),
+        kind: 'HandshakeInit'
     }
     ```
 
@@ -136,12 +131,11 @@ type HandshakeCompleteMessage = {
     ```javascript
     {
         domain: 'icrc-35',
-        kind: 'HandshakeComplete',
-        secret: new Uint8Array([1, 2, 3, 4, ..., 32]),
+        kind: 'HandshakeComplete'
     }
     ```
 
-4. The child receives this message, compares the secret with the sent one and remembers `https://example-parent.com` as `peerOrigin`.
+4. The child receives this message and remembers `https://example-parent.com` as `peerOrigin`.
 5. The Handshake Phase is over, moving on to the Interaction Phase.
 
 #### 4.1.4 Importance of handshake
@@ -187,7 +181,7 @@ This model is intentionally designed to be as simple as possible, so it could be
 
 This model works the following way:
 
-![request response sequence diagram](./icrc-35-request-response.drawio.png)
+![request response sequence diagram](../diagrams/icrc-35/icrc-35-request-response.drawio.png)
 
 The sequence diagram above is self-explanatory. An initiator peer MUST generate a `requestId` (UUID string) which is used by the other peer to mark the response, when it comes back. A peer SHOULD ignore any incoming response with an unkonwn `requestId`.
 
@@ -263,7 +257,7 @@ Let's now go through a complete example of business data exchange between two pe
 
 ##### 4.2.4.2 Flow
 
-![business data exchange example sequence diagram](./icrc-35-business-msg-exchange.drawio.png)
+![business data exchange example sequence diagram](./diagrams/icrc-35/icrc-35-business-msg-exchange.drawio.png)
 
 1. `https://photoshop.ic` sends a `FileSaveInitRequest` message to `https://dropbox.ic` asking to save the user's file.
 2. `https://dropbox.ic` redirects the user to a page that is responsible for guiding users through the file saving flow. This page renders the details of to-be-performed file transfer, asking the user to confirm it.
@@ -298,4 +292,4 @@ type FileDescriptor = {
 
 ## 5 Conclusion
 
-ICRC-35 standard provides a flexible, simple and extensible way for web-services to interact with each other. Service providers may use it in order to implement a brand new very powerful business model. Service consumers may use it to save time and money, by integrating with web-services which provide the needed functionality instead of implementing it in-house.
+ICRC-35 standard provides a flexible, simple and extensible way for web-services to interact with each other via the new abstraction - `Webpage APIs`. These new APIs provide a different set of features and guarantees, than the traditional APIs, which in future may unlock new incredible use-cases to be implemented easily.
