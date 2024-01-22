@@ -5,17 +5,18 @@ It explains the motivation behind the standards and how they relate to each othe
 
 The following ICRC standards are relevant in this context:
 * The [Internet Computer Interface Specification](https://internetcomputer.org/docs/current/references/ic-interface-spec/), specifically the [HTTPs interface](https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-interface)
-* [ICRC-21](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_21_consent_msg.md): Canister Call Consent Messages
-* [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md): Signer Interaction Standard
-* ICRC-27: ICRC-25 Extension for ICRC-1 ledger subaccounts
-* [ICRC-29](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_29_window_post_message_transport.md): PostMessage Transport Standard for ICRC-25
-* [ICRC-31](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_31_get_principals.md): Get Principals (ICRC-25 Extension)
-* [ICRC-32](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_32_sign_challenge.md): Sign Challenge (ICRC-25 Extension)
-* [ICRC-33](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_33_call_canister.md): Call Canister (ICRC-25 Extension)
+* [ICRC-21](icrc_21_consent_msg.md): Canister Call Consent Messages
+* [ICRC-25](icrc_25_signer_interaction_standard.md): Signer Interaction Standard
+* [ICRC-27](icrc_27_get_icrc_1_subaccounts.md): Get ICRC-1 ledger accounts (ICRC-25 Extension)
+* [ICRC-29](icrc_29_window_post_message_transport.md): PostMessage Transport Standard for ICRC-25
+* [ICRC-31](icrc_31_get_principals.md): Get Principals (ICRC-25 Extension)
+* [ICRC-32](icrc_32_sign_challenge.md): Sign Challenge (ICRC-25 Extension)
+* [ICRC-33](icrc_33_call_canister.md): Call Canister (ICRC-25 Extension)
+* [ICRC-39](icrc_39_batch_calling.md): Batch Calling (ICRC-25 Extension)
 
 The following diagram presents the interactions between the different components (see [terminology](#terminology)) and shows which standards cover the respective parts of the interactions:
 
-![Visalization showing which part of the interactions between relying party, signer and target canister are covered by which standard.](../diagrams/signer_standards_overview.svg "Signer Standards Overview")
+![Visualization showing which part of the interactions between relying party, signer and target canister are covered by which standard.](../diagrams/signer_standards_overview.svg "Signer Standards Overview")
 
 ## Terminology
 
@@ -57,6 +58,22 @@ If these standards are adopted, the vision is to foster a vibrant and diverse ec
 can interact with each other, _without_ having to specifically integrate with any particular component (or even know
 about each others existence prior to the interaction). To help with this, services maintained by DFINITY will be upgraded
 to support these standards, when they are adopted.
+
+## Delegation Identities vs Signer Identities
+
+The signer standards are meant as an extension of the current delegation based model (and not as a replacement). There is a lot of value in having authenticated sessions and being able to make many transactions non-interactively, leveraging the high throughput of the IC.
+
+However, for security critical / high-value transactions and for interactions that require a stable identity across applications the signer standards provide a better alternative.
+
+![Visualization showing how a dapp should interact with the IC given a delegation identity and a signer identity](../diagrams/delegation-identity-vs-signer-identity.png "Delegation Identity vs Signer Identity")
+
+|                     | **Delegation Identity**                                                                                                                               | **Signer Identity**                                                                                                                                                                                                                                      |
+|---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| User Experience     | <ul><li>within dapp context</li><li>without user interaction</li></ul>                                                                                | <ul><li>context switch to signer</li><li>user approval for every transaction</li></ul>                                                                                                                                                                   |
+| Recommended usage   | <ul><li>maintaining session state</li><li>actions that require a high volume of canister calls</li><li>applications specific business logic</li></ul> | <ul><li>security critical transaction</li><li>transferable asset transactions</li><li>infrequent actions that relate directly to a user action</li></ul>                                                                                                 |
+| Examples            | <ul><li>retrieve application specific user data</li><li>poll for notifications</li><li>update application specific data</li></ul>                     | <ul><li>transfer of currencies (ICP, ckBTC, Cycles, ...)</li><li>creating and managing neurons (increase stake, disburse maturity, change disolve delay...)</li><li>Creating and managing canisters (changing controllers, installing code...)</li></ul> |
+| Security Properties | <ul><li>under dapp control</li><li>not visible to the user</li><li>time limited</li><li>unrevokable</li></ul>                                         | <ul><li>under signer control</li><li>explicit user interaction</li><li>one-off approvals</li><li>defense in depth mechanism against dapp session hijacking</li></ul>                                                                                     |
+
 
 ## Trust Assumptions
 This section explains the trust assumptions that are made by the standards. In the context of these standards, one party

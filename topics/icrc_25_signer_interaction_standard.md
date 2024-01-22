@@ -12,7 +12,6 @@
   * [Scopes](#scopes)
     * [Scope Objects](#scope-objects)
     * [Scopes Defined by this Standard](#scopes-defined-by-this-standard)
-  * [Batch Calls](#batch-calls)
   * [Extensions](#extensions)
   * [Methods](#methods)
     * [`icrc25_request_permissions`](#icrc25_request_permissions)
@@ -112,12 +111,6 @@ This standard defines the wildcard (`*`) scope. It means that the relying party 
 ```
 
 Extensions to this standard may define additional scopes.
-
-## Batch Calls
-
-JSON-RPC defines a [batch call](https://www.jsonrpc.org/specification#batch) as a JSON array of requests. All methods defined in this standard may also be invoked as part of a batch.
-
-If a signer receives a batch call, it must process each request sequentially in order of the id and reply with a batch response. Calls resulting in error responses do not prevent the processing of subsequent calls in the batch.
 
 ## Extensions
 
@@ -221,10 +214,10 @@ Request
         "version": "1",
         "scopes": [
             {
-                "method": "icrc25_managed_identities"
+                "method": "icrc31_get_principals"
             },
             {
-                "method": "icrc25_canister_call",
+                "method": "icrc33_canister_call",
                 "targets": ["ryjl3-tyaaa-aaaaa-aaaba-cai"]
             }
         ]
@@ -241,10 +234,10 @@ Response
         "version": "1",
         "scopes": [
             {
-                "method": "icrc25_managed_identities"
+                "method": "icrc31_get_principals"
             },
             {
-                "method": "icrc25_canister_call",
+                "method": "icrc33_canister_call",
                 "targets": ["ryjl3-tyaaa-aaaaa-aaaba-cai"],
                 "senders": ["btbdd-ob3pe-dz6kv-7n4gh-k2xtm-xjthz-kcvpk-fwbnv-w5qbk-iqjm4-4qe"]
             }
@@ -320,10 +313,10 @@ Response
         "version": "1",
         "scopes": [
             {
-                "method": "icrc25_get_identities"
+                "method": "icrc31_get_principals"
             },
             {
-                "method": "icrc25_canister_call",
+                "method": "icrc33_canister_call",
                 "targets": ["ryjl3-tyaaa-aaaaa-aaaba-cai"],
                 "senders": ["btbdd-ob3pe-dz6kv-7n4gh-k2xtm-xjthz-kcvpk-fwbnv-w5qbk-iqjm4-4qe"]
             }
@@ -391,7 +384,7 @@ Request
     "params": {
         "version": "1",
         "scopes": [{
-          "method": "icrc25_canister_call"
+          "method": "icrc33_canister_call"
         }]
     }
 }
@@ -465,10 +458,7 @@ Request
     "jsonrpc": "2.0",
     "method": "icrc25_supported_standards",
     "params": {
-        "version": "1",
-        "scopes": [{
-          "method": "icrc25_canister_call"
-        }]
+        "version": "1"
     }
 }
 ```
@@ -496,7 +486,7 @@ Response
 
 ## Errors
 
-The error is an object comprising the `code`, `message` and optional `data` fields as described in the [JSON-RPC 2.0 Specification](https://www.jsonrpc.org/specification#error_object). In addition the the pre-defined errors, the following values are supported:
+The error is an object comprising the `code`, `message` and optional `data` fields as described in the [JSON-RPC 2.0 Specification](https://www.jsonrpc.org/specification#error_object). In addition to the pre-defined errors, the following values are defined applying to all methods (including extension standards):
 
 ### Version `1` errors (**code: `xxx01`**)
 - General (**code: `1xx01`**)
@@ -513,10 +503,10 @@ The error is an object comprising the `code`, `message` and optional `data` fiel
 
 - User action (**code: `3xx01`**)
 
-| Code  | Message                | Meaning                              | Data |
-| ----- | ---------------------- | ------------------------------------ | ---- |
-| 30101 | Permission not granted | The signer has rejected the request. | N/A  |
-| 30201 | Action aborted         | The user has canceled the action.    | N/A  |
+| Code  | Message                | Meaning                                                              | Data |
+| ----- | ---------------------- |----------------------------------------------------------------------| ---- |
+| 30101 | Permission not granted | The signer has rejected the request due to insufficient permissions. | N/A  |
+| 30201 | Action aborted         | The user has canceled the action.                                    | N/A  |
 
 - Network (**code: `4xx01`**)
 
