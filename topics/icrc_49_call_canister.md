@@ -1,10 +1,10 @@
-# ICRC-33: Call Canister
+# ICRC-49: Call Canister
 
 [![Status Badge](https://img.shields.io/badge/STATUS-DRAFT-ffcc00.svg)](https://github.com/orgs/dfinity/projects/31)
 [![Extension Badge](https://img.shields.io/badge/Extends-ICRC--25-ffcc222.svg)](./icrc_25_signer_interaction_standard.md)
 
 <!-- TOC -->
-* [ICRC-33: Call Canister](#icrc-33-call-canister)
+* [ICRC-49: Call Canister](#icrc-49-call-canister)
   * [Summary](#summary)
   * [Method](#method)
   * [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
@@ -20,18 +20,18 @@
 
 ## Summary
 
-This Method can be used by the relying party to request calls to 3rd party canister executed by the signer using the requested identity. In order to prevent misuse of this method all `icrc33_call_canister` requests are subject to user approval.
+This Method can be used by the relying party to request calls to 3rd party canister executed by the signer using the requested identity. In order to prevent misuse of this method all `icrc49_call_canister` requests are subject to user approval.
 
 ## Method
 
-**Name:** `icrc33_call_canister`
+**Name:** `icrc49_call_canister`
 
-**Prerequisite:** Active session with granted permission scope `icrc33_call_canister` or `*`.
+**Prerequisite:** Active session with granted permission scope `icrc49_call_canister` or `*`.
   * This scope may be restricted to specific target canister ids and/or sender principals.
 
 ## Scope (according to the [ICRC-25 standard](./icrc_25_signer_interaction_standard.md))
 
-**Scope:** `icrc33_call_canister` 
+**Scope:** `icrc49_call_canister` 
 
 **Optional Properties:**
 - `targets` (`text` array): A list of target canister ids (textual representation) the scope is restricted to. If the list is not present, the scope applies to all canisters (i.e. the permission is not restricted).
@@ -47,7 +47,7 @@ This Method can be used by the relying party to request calls to 3rd party canis
         "version": "1",
         "scopes": [
             {
-                "method": "icrc33_call_canister",
+                "method": "icrc49_call_canister",
                 "targets": ["ryjl3-tyaaa-aaaaa-aaaba-cai"],
                 "senders": ["ryjl3-tyaaa-aaaaa-aaaba-cai"]
             }
@@ -58,7 +58,7 @@ This Method can be used by the relying party to request calls to 3rd party canis
 
 ## `icrc25_supported_standards`
 
-An ICRC-25 compliant signer must implement the [icrc25_supported_standards](./icrc_25_signer_interaction_standard.md#icrc25_supported_standards) method which returns the list of supported standards. Any signer implementing ICRC-33 must include a record with the name field equal to "ICRC-33" in that list.
+An ICRC-25 compliant signer must implement the [icrc25_supported_standards](./icrc_25_signer_interaction_standard.md#icrc25_supported_standards) method which returns the list of supported standards. Any signer implementing ICRC-49 must include a record with the name field equal to "ICRC-49" in that list.
 
 ## Request
 
@@ -78,7 +78,7 @@ An ICRC-25 compliant signer must implement the [icrc25_supported_standards](./ic
 {
     "id": 1,
     "jsonrpc": "2.0",
-    "method": "icrc33_call_canister",
+    "method": "icrc49_call_canister",
     "params": {
         "version": "1",
         "canisterId": "xhy27-fqaaa-aaaao-a2hlq-ca",
@@ -115,7 +115,7 @@ An ICRC-25 compliant signer must implement the [icrc25_supported_standards](./ic
 
 ## Message Processing
 
-1. The relying party sends a `icrc33_call_canister` request to the signer.
+1. The relying party sends a `icrc49_call_canister` request to the signer.
 2. Upon receiving the request, the signer validates whether it can process the message.
     - If the request version is not supported by the signer, the signer sends a response with an error back to the relying party.
     - If the relying party has not been granted the permission to request the action, the signer sends a response with an error back to the relying party.
@@ -127,7 +127,7 @@ An ICRC-25 compliant signer must implement the [icrc25_supported_standards](./ic
        > 
        > Singing canister calls without an ICRC-21 consent message must be disabled by default. The signer must explain the dangers to the user and ask explicitly to enable this feature.
 4. Next, the signer displays the transaction details to the user and prompts for approval:
-    >    **Note:** User approval for the `icrc33_call_canister` method must never be skipped! The reason for this is that the canister call might not be idempotent and thus submitting a call more than once might have undesired consequences.
+    >    **Note:** User approval for the `icrc49_call_canister` method must never be skipped! The reason for this is that the canister call might not be idempotent and thus submitting a call more than once might have undesired consequences.
    - If the user approves the request:
        - The signer sends the call to the IC (in order to get certified results, all calls, including queries, should be sent as `update` calls), retrieves its [content map](https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-call) and [calculates a request id](https://internetcomputer.org/docs/current/references/ic-interface-spec/#request-id) based on it.
            - The signer continues to call `read_state` for the calculated request id until [the status of the call](https://internetcomputer.org/docs/current/references/ic-interface-spec/#state-tree-request-status) indicates that the call has been processed (succesfully or not).
@@ -160,7 +160,7 @@ sequenceDiagram
     RP ->> S: Request canister call
     alt Version is not supported
         S ->> RP: Error response: Version not supported (20101)
-    else Relying party has not been granted the `icrc33_call_canister` permission scope<br>or the request does not comply with scope restrictions
+    else Relying party has not been granted the `icrc49_call_canister` permission scope<br>or the request does not comply with scope restrictions
         S ->> RP: Error response: Permission not granted (30101)
     else
         alt Canister supports ICRC-21
