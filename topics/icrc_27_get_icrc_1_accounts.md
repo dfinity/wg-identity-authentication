@@ -4,22 +4,24 @@
 [![Extension Badge](https://img.shields.io/badge/Extends-ICRC--25-ffcc222.svg)](./icrc_25_signer_interaction_standard.md)
 
 <!-- TOC -->
+
 * [ICRC-27: Get ICRC-1 Accounts](#icrc-27-get-icrc-1-accounts)
-  * [Summary](#summary)
-  * [Use-Case](#use-case)
-  * [Method](#method)
-  * [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
-    * [Example Permission Request](#example-permission-request)
-  * [`icrc25_supported_standards`](#icrc25_supported_standards)
-  * [Request](#request)
-    * [Example RPC Request](#example-rpc-request)
-  * [Response](#response)
-    * [Example RPC Response](#example-rpc-response)
-  * [Message Processing](#message-processing)
-  * [Errors](#errors)
-  * [Ledger index canister accounts](#ledger-index-canister-accounts)
-  * [Default subaccount](#default-subaccount)
-  * [Other ledger standards](#other-ledger-standards)
+    * [Summary](#summary)
+    * [Use-Case](#use-case)
+    * [Method](#method)
+    * [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
+        * [Example Permission Request](#example-permission-request)
+    * [`icrc25_supported_standards`](#icrc25_supported_standards)
+    * [Request](#request)
+        * [Example RPC Request](#example-rpc-request)
+    * [Response](#response)
+        * [Example RPC Response](#example-rpc-response)
+    * [Message Processing](#message-processing)
+    * [Errors](#errors)
+    * [Ledger index canister accounts](#ledger-index-canister-accounts)
+    * [Default subaccount](#default-subaccount)
+    * [Other ledger standards](#other-ledger-standards)
+
 <!-- TOC -->
 
 ## Summary
@@ -87,16 +89,6 @@ to "ICRC-27" in that list.
 **`version` (`text`):** The version of the standard used. If the signer does not support the version of the request, it
 must send the `"VERSION_NOT_SUPPORTED"` error in response.
 
-**`interactive` (`bool`):**
-
-- `true` request user to (re-)select list of ICRC-1 accounts to share with relying party.
-- `false` request list of previously selected ICRC-1 accounts without user interaction. If a user did not previously
-  select any ICRC-1 accounts, an empty list should be returned since user interaction in the ledger should be avoided.
-
-Signers MUST support interactive `false` and MAY support interactive `true`, since some signers might not support user
-interaction and e.g. always return a default list of ICRC-1 accounts. The relying party is able to non interactively
-refresh the list of ICRC-1 accounts to keep it up to date with the signer e.g. the accounts could change over time.
-
 ### Example RPC Request
 
 ```json
@@ -151,9 +143,10 @@ refresh the list of ICRC-1 accounts to keep it up to date with the signer e.g. t
       relying party.
     - If the relying party has not been granted the permission to invoke the method for the specified principal, the
       signer sends a response with an error back to the relying party.
-3. The signer may ask the user to select which ICRC-1 accounts to share with the relying party
-    - This step may be skipped if the accounts have been selected before on the active session.
-4. The signer sends a response to the relying party with the list of accounts selected by the user.
+3. The signer MUST always prompt the user to select which ICRC-1 accounts to share with the relying party
+    - This step MAY only be skipped if the signer does not support user interaction, it MUST not be skipped by e.g.
+      returning previously selected ICRC-1 accounts.
+4. The signer sends a response to the relying party with the list of ICRC-1 accounts selected by the user.
 
 ```mermaid
 sequenceDiagram
@@ -166,10 +159,8 @@ sequenceDiagram
     else Scope `icrc27_get_icrc1_subaccounts` not granted
         S ->> RP: Error response: Permission not granted (30101)
     else
-        opt `interactive` is `true`
-            S ->> U: Prompt to select ICRC-1 accounts
-            U ->> S: Select ICRC-1 accounts
-        end
+        S ->> U: Prompt to select ICRC-1 accounts
+        U ->> S: Select ICRC-1 accounts
         S ->> RP: List of ICRC-1 accounts
     end
 ```
@@ -182,14 +173,16 @@ list of errors that can be returned by all methods.
 ## Ledger index canister accounts
 
 Since the ICRC-1 ledger index canister is able to return all subaccounts for a given principal one could argue that the
-ICRC-27 standard can be replaced by requesting the principals with the [ICRC-31](./icrc_31_get_principals.md) standard and using the index canister to
+ICRC-27 standard can be replaced by requesting the principals with the [ICRC-31](./icrc_31_get_principals.md) standard
+and using the index canister to
 look up the subaccounts.
 
 But, this is not recommended for relying parties in most use cases for the following reasons:
 
 - There's no way of knowing about new unused accounts within the ledger
 - The user might not want to use some of these accounts
-- The principals returned by [ICRC-31](./icrc_31_get_principals.md) might not be the same principals that the signer uses for ICRC-1 accounts
+- The principals returned by [ICRC-31](./icrc_31_get_principals.md) might not be the same principals that the signer
+  uses for ICRC-1 accounts
 - The signer might not control the ICRC-1 accounts directly but indirectly has access to a limited set of subaccounts in
   e.g. a canister that holds funds for multiple users sharing the same principal.
 
