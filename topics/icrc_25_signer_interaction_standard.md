@@ -118,7 +118,7 @@ This standard is the signer interaction _base_ standard. As such it intentionall
 
 - Getting principals: [ICRC-31](./icrc_31_get_principals.md)
 - Proving ownership of principals: [ICRC-32](./icrc_32_sign_challenge.md)
-- Canister calls: [ICRC-33](./icrc_33_call_canister.md)
+- Canister calls: [ICRC-49](./icrc_49_call_canister.md)
 
 This allows signer developers to choose which extensions they want to support and only implement those.
 
@@ -217,7 +217,7 @@ Request
                 "method": "icrc31_get_principals"
             },
             {
-                "method": "icrc33_canister_call",
+                "method": "icrc49_call_canister",
                 "targets": ["ryjl3-tyaaa-aaaaa-aaaba-cai"]
             }
         ]
@@ -237,7 +237,7 @@ Response
                 "method": "icrc31_get_principals"
             },
             {
-                "method": "icrc33_canister_call",
+                "method": "icrc49_call_canister",
                 "targets": ["ryjl3-tyaaa-aaaaa-aaaba-cai"],
                 "senders": ["btbdd-ob3pe-dz6kv-7n4gh-k2xtm-xjthz-kcvpk-fwbnv-w5qbk-iqjm4-4qe"]
             }
@@ -316,7 +316,7 @@ Response
                 "method": "icrc31_get_principals"
             },
             {
-                "method": "icrc33_canister_call",
+                "method": "icrc49_call_canister",
                 "targets": ["ryjl3-tyaaa-aaaaa-aaaba-cai"],
                 "senders": ["btbdd-ob3pe-dz6kv-7n4gh-k2xtm-xjthz-kcvpk-fwbnv-w5qbk-iqjm4-4qe"]
             }
@@ -384,7 +384,7 @@ Request
     "params": {
         "version": "1",
         "scopes": [{
-          "method": "icrc33_canister_call"
+          "method": "icrc49_call_canister"
         }]
     }
 }
