@@ -106,6 +106,7 @@ must send the `"VERSION_NOT_SUPPORTED"` error in response.
 
 **`accounts` (`vec`):** List of ICRC-1 accounts.
 
+- `principal` (`text`): Principal (textual representation) used to derive the account identity.
 - `subaccount` (`blob`): Subaccount bytes used to derive the account identity, this is 32 bytes as defined in
   the ICRC-1 ledger standard.
 - `canisterIds` (`opt vec principal`): Optional list of ledger canister ids for this account, account is
@@ -122,6 +123,7 @@ must send the `"VERSION_NOT_SUPPORTED"` error in response.
     "version": "1",
     "accounts": [
       {
+        "principal": "gyu2j-2ni7o-o6yjt-n7lyh-x3sxq-zh7hp-sjvqe-t7oul-4eehb-2gvtt-jae",
         "subaccount": "0000000000000000000000000000000000000000000000000000000000e73f5c",
         "canisterIds": [
           "ryjl3-tyaaa-aaaaa-aaaba-cai"
