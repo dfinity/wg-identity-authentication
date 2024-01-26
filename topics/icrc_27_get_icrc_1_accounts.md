@@ -182,14 +182,14 @@ list of errors that can be returned by all methods.
 ## Ledger index canister accounts
 
 Since the ICRC-1 ledger index canister is able to return all subaccounts for a given principal one could argue that the
-ICRC-27 standard can be replaced by requesting the principals with the ICRC-31 standard and using the index canister to
+ICRC-27 standard can be replaced by requesting the principals with the [ICRC-31](./icrc_31_get_principals.md) standard and using the index canister to
 look up the subaccounts.
 
 But, this is not recommended for relying parties in most use cases for the following reasons:
 
 - There's no way of knowing about new unused accounts within the ledger
 - The user might not want to use some of these accounts
-- The principals returned by ICRC-31 might not be the same principals that the signer uses for ICRC-1 accounts
+- The principals returned by [ICRC-31](./icrc_31_get_principals.md) might not be the same principals that the signer uses for ICRC-1 accounts
 - The signer might not control the ICRC-1 accounts directly but indirectly has access to a limited set of subaccounts in
   e.g. a canister that holds funds for multiple users sharing the same principal.
 
