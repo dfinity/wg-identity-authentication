@@ -7,12 +7,12 @@ The following ICRC standards are relevant in this context:
 * The [Internet Computer Interface Specification](https://internetcomputer.org/docs/current/references/ic-interface-spec/), specifically the [HTTPs interface](https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-interface)
 * [ICRC-21](icrc_21_consent_msg.md): Canister Call Consent Messages
 * [ICRC-25](icrc_25_signer_interaction_standard.md): Signer Interaction Standard
-* ICRC-27: ICRC-25 Extension for ICRC-1 ledger subaccounts
+* [ICRC-27](icrc_27_get_icrc_1_subaccounts.md): Get ICRC-1 ledger accounts (ICRC-25 Extension)
 * [ICRC-29](icrc_29_window_post_message_transport.md): PostMessage Transport Standard for ICRC-25
 * [ICRC-31](icrc_31_get_principals.md): Get Principals (ICRC-25 Extension)
 * [ICRC-32](icrc_32_sign_challenge.md): Sign Challenge (ICRC-25 Extension)
-* [ICRC-33](icrc_33_call_canister.md): Call Canister (ICRC-25 Extension)
 * [ICRC-39](icrc_39_batch_calling.md): Batch Calling (ICRC-25 Extension)
+* [ICRC-49](icrc_49_call_canister.md): Call Canister (ICRC-25 Extension)
 
 The following diagram presents the interactions between the different components (see [terminology](#terminology)) and shows which standards cover the respective parts of the interactions:
 
@@ -113,7 +113,7 @@ More extensions can be added in the future.
 In this use case the relying party initiates canister calls (transactions) on behalf of an identity controlled by a singer.
 The user can approve or reject the transaction on the signer UI. After user approval, the signer signs the call and submits it to the IC. Upon receiving the result of the canister call, the signer must forward the result to the relying party.
 
-This flow (described in [ICRC-33](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_33_call_canister.md)) is one of the main use cases for [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md). It offers an alternative interaction model to the currently used session delegations.
+This flow (described in [ICRC-49](icrc_49_call_canister.md)) is one of the main use cases for [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md). It offers an alternative interaction model to the currently used session delegations.
 In particular, it allows multiple relying parties to securely interact with the IC using the same signer controlled identity
 without being restricted to a disjoint set of target canisters.
 
@@ -160,7 +160,7 @@ This indirection is required because of the different trust models for external 
 * An external party always communicates with a single, untrusted boundary node.
   Therefore, the responses are certified by the subnet to prove authenticity.
 
-[ICRC-33](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_33_call_canister.md) requires the certified response to be relayed to the relying party as the signer is not trusted by the relying
+[ICRC-49](icrc_49_call_canister.md) requires the certified response to be relayed to the relying party as the signer is not trusted by the relying
 party.
 
 The above approach also sidesteps another issues that arise from holding assets using a canister id principal:
@@ -168,7 +168,7 @@ calling untrusted canisters is generally unsafe as it can prevent upgrades of th
 
 #### Air-Gapped Signers
 
-An air-gapped signer is a signer that is not connected to the internet. As [ICRC-33](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_33_call_canister.md) requires signers to have a connection
+An air-gapped signer is a signer that is not connected to the internet. As [ICRC-49](icrc_49_call_canister.md) requires signers to have a connection
 to the IC, air-gapped signers are only supported by this extension standard if they provide a chain-connected component as well.
 
 The chain-connected component must be trusted by the user.
