@@ -4,24 +4,22 @@
 [![Extension Badge](https://img.shields.io/badge/Extends-ICRC--25-ffcc222.svg)](./icrc_25_signer_interaction_standard.md)
 
 <!-- TOC -->
-
 * [ICRC-27: Get ICRC-1 Accounts](#icrc-27-get-icrc-1-accounts)
-    * [Summary](#summary)
-    * [Use-Case](#use-case)
-    * [Method](#method)
-    * [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
-        * [Example Permission Request](#example-permission-request)
-    * [`icrc25_supported_standards`](#icrc25_supported_standards)
-    * [Request](#request)
-        * [Example RPC Request](#example-rpc-request)
-    * [Response](#response)
-        * [Example RPC Response](#example-rpc-response)
-    * [Message Processing](#message-processing)
-    * [Errors](#errors)
-    * [Ledger index canister accounts](#ledger-index-canister-accounts)
-    * [Default subaccount](#default-subaccount)
-    * [Other ledger standards](#other-ledger-standards)
-
+  * [Summary](#summary)
+  * [Use-Case](#use-case)
+  * [Method](#method)
+  * [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
+    * [Example Permission Request](#example-permission-request)
+  * [`icrc25_supported_standards`](#icrc25_supported_standards)
+  * [Request](#request)
+    * [Example RPC Request](#example-rpc-request)
+  * [Response](#response)
+    * [Example RPC Response](#example-rpc-response)
+  * [Message Processing](#message-processing)
+  * [Errors](#errors)
+  * [Ledger index canister accounts](#ledger-index-canister-accounts)
+  * [Default subaccount](#default-subaccount)
+  * [Other ledger standards](#other-ledger-standards)
 <!-- TOC -->
 
 ## Summary
