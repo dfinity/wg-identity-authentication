@@ -521,7 +521,7 @@ The error is an object comprising the `code`, `message` and optional `data` fiel
     "id": 1,
     "jsonrpc": "2.0",
     "error": {
-        "code": "10001",
+        "code": 10001,
         "message": "Unknown error"
     }
 }
