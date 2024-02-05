@@ -169,8 +169,9 @@ sequenceDiagram
 
     Note over RP, S: Interactions follow ICRC-25 standard
     RP ->> S: Request canister call
-    S ->> T: Request consent message
+    S ->> T: Consent message request
     T ->> S: Consent message response
+    S ->> S: Validate consent message
     alt Received consent message
         S ->> U: Display consent message
     else No consent message
@@ -194,7 +195,7 @@ sequenceDiagram
    * `icrc21_consent_message_request.arg` must match the canister call argument.
    * The `icrc21_consent_message` canister call must be made to the target canister.
    * The response to the `icrc21_consent_message` canister call (fetched using `read_state`) must be delivered in a valid certificate (see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification)).
-   * The decoded response must not be `null` and match the `icrc21_consent_message_response.valid` variant.
+   * The decoded response must not be `null` and match the `icrc21_consent_message_response::OK` variant.
 3. The consent message is presented to the user.
 4. User approval:
    * If the user approves the canister call, continue with step 5.
@@ -220,9 +221,9 @@ sequenceDiagram
 
     Note over RP, S: Interactions follow ICRC-25 standard
     RP ->> S: Request canister call
-    S ->> T: Request consent message
+    S ->> T: Consent message request
     T ->> S: Consent message response
-    S ->> CS: - Canister call request<br>- Consent message
+    S ->> CS: - Canister call request<br>- Consent message request and response
     CS ->> CS: Validate consent message
     alt Received consent message
         CS ->> U: Display consent message
@@ -252,7 +253,7 @@ sequenceDiagram
       * The `icrc21_consent_message` request `canister_id` must match the target canister id.
    2. The consent message response must be certified and valid:
       * The response to the `icrc21_consent_message` canister call must be provided in a valid certificate (see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification)).
-      * The decoded response must not be `null` and match the `icrc21_consent_message_response.valid` variant.
+      * The decoded response must not be `null` and match the `icrc21_consent_message_response::Ok` variant.
    3. The consent message response certificate `time` must be recent with respect to the `ingress_expiry` of the canister call.
    4. The consent message user preferences must match the user preferences of the signer. In particular, the consent message must be in a language understood by the user.
 5. If validation is successful, the consent message is presented to the user.
