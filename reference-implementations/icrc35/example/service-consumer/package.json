@@ -1,0 +1,20 @@
+{
+  "name": "example-icrc35-service-consumer",
+  "version": "0.1.0",
+  "module": "./dist/esm/index",
+  "types": "./dist/esm/index.d.ts",
+  "scripts": {
+    "dev": "vite --mode dev",
+    "build": "vite build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "vite": "5.0.8"
+  },
+  "dependencies": {
+    "icrc-35": "workspace:*",
+    "example-icrc35-shared-library": "workspace:*"
+  }
+}
