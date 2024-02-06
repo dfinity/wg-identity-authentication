@@ -24,7 +24,7 @@ One window is a parent, because it opens another window to talk to. So another w
 
 "dependencies": {
     ...
-    "icrc35": "^0.2"
+    "icrc-35": "^0.2"
     ...
 }
 ```
