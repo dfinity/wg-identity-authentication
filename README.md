@@ -39,6 +39,8 @@ Meetings happen every two weeks. All meeting recordings can be found [this googl
 
 Please consult the [working group calendar](https://calendar.google.com/calendar/u/0?cid=Y19jZ29lcTkxN3JwZWFwN3ZzZTNpczFobDMxMEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t) ([browser view](https://calendar.google.com/calendar/embed?src=c_cgoeq917rpeap7vse3is1hl310%40group.calendar.google.com&ctz=Europe%2FZurich)) for the next meeting date.
 
+We also have a discord channel for the working group. Please join the [Identity and Wallet Standards](https://discord.gg/pgsR7ksV) channel.
+
 ## Contributing
 
 Everyone is welcome to join the public meetings of the working group.
