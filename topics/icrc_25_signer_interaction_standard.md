@@ -473,11 +473,11 @@ Response
     "supportedStandards": [
       {
         "name": "ICRC-25",
-        "url": "https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md"
+        "url": "https://github.com/dfinity/ICRC/blob/main/ICRCs/ICRC-25/ICRC-25.md"
       },
       {
         "name": "ICRC-31",
-        "url": "https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_31_get_principals.md"
+        "url": "https://github.com/dfinity/ICRC/blob/main/ICRCs/ICRC-31/ICRC-31.md"
       }
     ]
   }
