@@ -10,9 +10,9 @@
   * [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
     * [Example Permission Request](#example-permission-request)
   * [`icrc25_supported_standards`](#icrc25_supported_standards)
-  * [Request](#request)
+  * [Request Params](#request-params)
     * [Example RPC Request](#example-rpc-request)
-  * [Response](#response)
+  * [Result](#result)
     * [Example RPC Response](#example-rpc-response)
   * [Message Processing](#message-processing)
   * [Errors](#errors)
@@ -60,9 +60,7 @@ This Method can be used by the relying party to request calls to 3rd party canis
 
 An ICRC-25 compliant signer must implement the [icrc25_supported_standards](./icrc_25_signer_interaction_standard.md#icrc25_supported_standards) method which returns the list of supported standards. Any signer implementing ICRC-49 must include a record with the name field equal to "ICRC-49" in that list.
 
-## Request
-
-**`version` (`text`):** The version of the standard used. If the signer does not support the version of the request, it must send the `"VERSION_NOT_SUPPORTED"` error in response.
+## Request Params
 
 **`canisterId` (`text`):** The id of the canister on which the call should be executed.
 
@@ -80,7 +78,6 @@ An ICRC-25 compliant signer must implement the [icrc25_supported_standards](./ic
     "jsonrpc": "2.0",
     "method": "icrc49_call_canister",
     "params": {
-        "version": "1",
         "canisterId": "xhy27-fqaaa-aaaao-a2hlq-ca",
         "sender": "b7gqo-ulk5n-2kpo7-oalt7-p2kyl-o4j5l-kiuwo-eeybr-dab4l-ur6up-pqe",
         "method": "transfer",
@@ -91,9 +88,7 @@ An ICRC-25 compliant signer must implement the [icrc25_supported_standards](./ic
 
 
 
-## Response
-
-**`version` (`text`):** The version of the standard used. It must match the `version` from the request.
+## Result
 
 **`contentMap` (`blob`):** The CBOR-encoded content map of the actual request as specified [here](https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-call).
 
@@ -106,7 +101,6 @@ An ICRC-25 compliant signer must implement the [icrc25_supported_standards](./ic
     "id": 1,
     "jsonrpc": "2.0",
     "result": {
-        "version": "1",
         "contentMap": "2dn3p2NhcmdYTkRJREwEbXtuAGwCs7DawwNorYbKgwUBbAP7ygECot6U6wYB2KOMqA19AQMBHVfs7SoKuxOJdX37k7sBJsPALWEo5ayflizuaH0CAADIAWtjYW5pc3Rlcl9pZEoAAAAAAcDR1wEBbmluZ3Jlc3NfZXhwaXJ5GxeNX/65y4YAa21ldGhvZF9uYW1laHRyYW5zZmVyZW5vbmNlUFF4+hAimFhoqkdUcIchz0xscmVxdWVzdF90eXBlZGNhbGxmc2VuZGVyWB1q63Snu+4C5/fpWFu4nq1IpZxCYDEYA8XSPqPfAg==",
         "certificate": "2dn3omR0cmVlgwGDAYIEWCAPzKZJY/emKhi2GGtBrnHh4cdttATd4+9GtJrNCBepb4MBgwJOcmVxdWVzdF9zdGF0dXODAYIEWCCCgynUaonrKCCywghWCSk9BeDqMoI4yf15nxyU/5JZv4MBggRYIDG7WdzQ9sGWI1MpxizUzxubsEBuNkTT94UOZ9USbzNvgwGCBFggawwbTHxnPUzBAUhWBRjk0nzPs2fPpJlaIYtj5AvcX+ODAYIEWCDiFLyaWuMWjtVurCQcSgny/cqfM8S6qrdihVq7nPz1FoMCWCD/8jdeccvqHVYf06Hw7qPXIDNimC1Uyf47VsvgqKpPiIMBgwJFcmVwbHmCA1RESURMAWsCvIoBfcX+0gFxAQAABIMCRnN0YXR1c4IDR3JlcGxpZWSCBFgg7qZngcNt2+B/RuF44W3LRsKWXG6QQg2L6GdZgJ6Nb3+DAYIEWCAx3tU/mhHfX+wDzF003eSJYN8Nebou8rTeGyxr/rUa1YMCRHRpbWWCA0nw9+r88fjXxhdpc2lnbmF0dXJlWDCXNshvwWG1jGViP7ELePGHCThBw9mts45FxIy4gZATkUEsPeJ6y+cjbn2REmB0Soo="
     }
@@ -117,11 +111,10 @@ An ICRC-25 compliant signer must implement the [icrc25_supported_standards](./ic
 
 1. The relying party sends a `icrc49_call_canister` request to the signer.
 2. Upon receiving the request, the signer validates whether it can process the message.
-    - If the request version is not supported by the signer, the signer sends a response with an error back to the relying party.
     - If the relying party has not been granted the permission to request the action, the signer sends a response with an error back to the relying party.
         - The sender must make sure that the request complies with additional scope restrictions defined by the signer (if any), such as limitations on the target canister id or the sender principal, etc.
 3. The signer tries to retrieve and verify the consent message according to the [ICRC-21](icrc_21_consent_msg.md) specification. If the target canister does not support ICRC-21 consent messages for the given canister call, the signer may proceed in one of following ways:
-   * The signer rejects the request and sends a response with the error code 20201 back to the relying party. Step 4 is skipped.
+   * The signer rejects the request and sends a response with the error code 2001 back to the relying party. Step 4 is skipped.
    * The signer displays a warning, tries to decode the arguments by itself and displays raw canister call details. If the arguments cannot be decoded, a strong warning must be displayed.
       > **Note:** Signing canister calls without an ICRC-21 consent message is dangerous! Signing canister calls solely based on the decoded arguments might yield unexpected results. Strong technical knowledge is required to understand the consequences of such actions. Blind signing of canister calls (without even decoding the arguments) is not recommended and requires complete trust in the relying party.
        > 
@@ -158,15 +151,13 @@ sequenceDiagram
     participant C as Target Canister
 
     RP ->> S: Request canister call
-    alt Version is not supported
-        S ->> RP: Error response: Version not supported (20101)
-    else Relying party has not been granted the `icrc49_call_canister` permission scope<br>or the request does not comply with scope restrictions
-        S ->> RP: Error response: Permission not granted (30101)
+    alt Relying party has not been granted the `icrc49_call_canister` permission scope<br>or the request does not comply with scope restrictions
+        S ->> RP: Error response: Permission not granted (3000)
     else
         alt Canister supports ICRC-21
             Note over S,C: Follow the ICRC-21 standard
         else Canister does not support ICRC-21 and signer does not support blind signing
-            S ->> RP: Error response: No consent message (20201)
+            S ->> RP: Error response: No consent message (2001)
             Note over RP,S: Abort interaction, do not proceed further.
         else Canister does not support ICRC-21 and signer supports blind signing
             S ->> U: Display warning and canister call details (canisterId, sender, method, arg)
@@ -183,11 +174,11 @@ sequenceDiagram
                 RP ->> RP: Retrieve the result
             else Call failed
                 S ->> U: Display failure message
-                S ->> RP: Error response: Network error (40001) | Unknown error (10001)
+                S ->> RP: Error response: Network error (4000) | Generic error (1000)
             end
         else Rejected
             U ->> S: Reject request
-            S ->> RP: Error response: Action aborted (30201)
+            S ->> RP: Error response: Action aborted (3001)
         end
     end
 ```
@@ -198,6 +189,6 @@ See [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-3) for a list of e
 
 This standard defines the following additional errors:
 
-| Code  | Message            | Meaning                                                                                                                      | Data |
-|-------|--------------------|------------------------------------------------------------------------------------------------------------------------------|------|
-| 20201 | No consent message | The signer has rejected the request because the target canister does not support ICRC-21 consent messages for the given call | N/A  |
+| Code | Message            | Meaning                                                                                                                      | Data |
+|------|--------------------|------------------------------------------------------------------------------------------------------------------------------|------|
+| 2001 | No consent message | The signer has rejected the request because the target canister does not support ICRC-21 consent messages for the given call | N/A  |
