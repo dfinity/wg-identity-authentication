@@ -1,0 +1,15 @@
+{
+  "name": "example-icrc35-shared-library",
+  "version": "0.1.0",
+  "module": "./dist/esm/index",
+  "types": "./dist/esm/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.esm.json"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "icrc-35": "workspace:*"
+  }
+}
