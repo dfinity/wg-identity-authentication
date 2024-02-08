@@ -10,9 +10,9 @@
   * [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
     * [Example Permission Request](#example-permission-request)
   * [`icrc25_supported_standards`](#icrc25_supported_standards)
-  * [Request](#request)
+  * [Request Params](#request-params)
     * [Example RPC Request](#example-rpc-request)
-  * [Response](#response)
+  * [Result](#result)
     * [Example RPC Response](#example-rpc-response)
   * [Message Processing](#message-processing)
   * [Errors](#errors)
@@ -38,7 +38,6 @@ The purpose of the `icrc31_get_principals` message is for the relying party to r
     "jsonrpc": "2.0",
     "method": "icrc25_request_permissions",
     "params": {
-        "version": "1",
         "scopes": [
             {
                 "method": "icrc31_get_principals"
@@ -52,9 +51,9 @@ The purpose of the `icrc31_get_principals` message is for the relying party to r
 
 An ICRC-25 compliant signer must implement the [icrc25_supported_standards](./icrc_25_signer_interaction_standard.md#icrc25_supported_standards) method which returns the list of supported standards. Any signer implementing ICRC-31 must include a record with the name field equal to "ICRC-31" in that list.
 
-## Request
+## Request Params
 
-**`version` (`text`):** The version of the standard used. If the signer does not support the version of the request, it must send the `"VERSION_NOT_SUPPORTED"` error in response.
+None
 
 ### Example RPC Request
 
@@ -62,16 +61,11 @@ An ICRC-25 compliant signer must implement the [icrc25_supported_standards](./ic
 {
   "id": 1,
   "jsonrpc": "2.0",
-  "method": "icrc31_get_principals",
-  "params": {
-    "version": "1"
-  }
+  "method": "icrc31_get_principals"
 }
 ```
 
-## Response
-
-`version` (`text`): The version of the standard used. It must match the `version` from the request.
+## Result
 
 `principals` (`text` array): A list of principals (textual representation) the user has selected to share with the relying party.
 
@@ -82,7 +76,6 @@ An ICRC-25 compliant signer must implement the [icrc25_supported_standards](./ic
   "id": 1,
   "jsonrpc": "2.0",
   "result": {
-    "version": "1",
     "principals": [
       "gyu2j-2ni7o-o6yjt-n7lyh-x3sxq-zh7hp-sjvqe-t7oul-4eehb-2gvtt-jae",
       "fwpnd-r2y37-lv4ue-vyo3g-4u7zt-f5ncq-2ytan-zjs7b-2ioqf-n7j6u-gqe",
@@ -96,10 +89,9 @@ An ICRC-25 compliant signer must implement the [icrc25_supported_standards](./ic
 
 1. The relying party sends a `icrc31_get_principals` request to the signer.
 2. Upon receiving the message, the signer first checks if it can process the message.
-    - If the request version is not supported by the signer, the signer sends a response with an error back to the relying party.
     - If the relying party has not been granted the permission to invoke the method for the specified principal, the signer sends a response with an error back to the relying party.
-3. The signer may ask the user to select which identities to share with the relying party
-    - This step may be skipped if the identities have been selected before on the active session.
+3. The signer asks the user to select which identities to share with the relying party.
+    - If the user has already selected identities on the current session before, the signer may preselect them. User interaction must not be skipped as this method is used by relying parties to prompt the user to update / change the selection.
 4. The signer sends a response to the relying party with the list of principals corresponding to the selected identities.
 
 ```mermaid
@@ -109,15 +101,11 @@ sequenceDiagram
     participant U as User
 
     RP ->> S: Request principals
-    alt Version is not supported
-        S ->> RP: Error response: Version not supported (20101)
-    else Scope `icrc31_get_principals` not granted
-        S ->> RP: Error response: Permission not granted (30101)
+    alt Scope `icrc31_get_principals` not granted
+        S ->> RP: Error response: Permission not granted (3000)
     else
-        opt If not preselected
-            S ->> U: Prompt to select identities
-            U ->> S: Select identities
-        end
+        S ->> U: Prompt to select identities
+        U ->> S: Select identities
         S ->> RP: Principals corresponding to the selected identities
     end
 ```
