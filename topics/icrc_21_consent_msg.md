@@ -126,7 +126,9 @@ service : {
     icrc21_canister_call_consent_message: (icrc21_consent_message_request) -> (icrc21_consent_message_response);
 
     // Returns a list of supported standards related to consent messages that this canister implements.
-    // The result should always have at least one entry: record { name = "ICRC-21"; url = "https://github.com/dfinity/wg-identity-authentication" }
+    // The result should always have at least one entry:
+    // record { name = "ICRC-21"; url = "https://github.com/dfinity/ICRC/blob/main/ICRCs/ICRC-21/ICRC-21.md" }
+    //
     // This query call must not require authentication.
     icrc21_supported_standards : () -> (vec record { name : text; url : text }) query;
 }
