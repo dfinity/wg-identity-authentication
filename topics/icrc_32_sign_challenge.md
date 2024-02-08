@@ -10,9 +10,9 @@
   * [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
     * [Example Permission Requests](#example-permission-requests)
   * [`icrc25_supported_standards`](#icrc25_supported_standards)
-  * [Request](#request)
+  * [Request Params](#request-params)
     * [Example RPC Request](#example-rpc-request)
-  * [Response](#response)
+  * [Result](#result)
     * [Example RPC Response](#example-rpc-response)
   * [Message Processing](#message-processing)
   * [Errors](#errors)
@@ -44,7 +44,6 @@ No restriction:
     "jsonrpc": "2.0",
     "method": "icrc25_request_permissions",
     "params": {
-        "version": "1",
         "scopes": [
             {
                 "method": "icrc32_sign_challenge"
@@ -60,7 +59,6 @@ With restriction:
     "jsonrpc": "2.0",
     "method": "icrc25_request_permissions",
     "params": {
-        "version": "1",
         "scopes": [
             {
                 "method": "icrc32_sign_challenge",
@@ -78,9 +76,7 @@ With restriction:
 
 An ICRC-25 compliant signer must implement the [icrc25_supported_standards](./icrc_25_signer_interaction_standard.md#icrc25_supported_standards) method which returns the list of supported standards. Any signer implementing ICRC-32 must include a record with the name field equal to "ICRC-32" in that list.
 
-## Request
-
-**`version` (`text`):** The version of the standard used. If the signer does not support the version of the request, it must send the `"VERSION_NOT_SUPPORTED"` error in response.
+## Request Params
 
 **`principal` (`text`):** Principal (textual representation) corresponding to the identity that the signer should provide the challenge signature for.
 
@@ -94,16 +90,13 @@ An ICRC-25 compliant signer must implement the [icrc25_supported_standards](./ic
   "jsonrpc": "2.0",
   "method": "icrc32_sign_challenge",
   "params": {
-    "version": "1",
     "principal": "rwlgt-iiaaa-aaaaa-aaaaa-cai",
     "challenge": "UjwgsORvEzp98TmB1cAIseNOoD9+GLyN/1DzJ5+jxZM="
   }
 }
 ```
 
-## Response
-
-`version` (`text`): The version of the standard used. It must match the `version` from the request.
+## Result
 
 `signedChallenge`: Object containing the signed challenge and related data to verify the signature.
 
@@ -124,7 +117,6 @@ An ICRC-25 compliant signer must implement the [icrc25_supported_standards](./ic
   "id": 1,
   "jsonrpc": "2.0",
   "result": {
-    "version": "1",
     // TODO: example response has to be updated
     "signedChallenge": {
       "publicKey": "MIIBIjANBgkqhkiG",
@@ -138,7 +130,6 @@ An ICRC-25 compliant signer must implement the [icrc25_supported_standards](./ic
 
 1. The relying party sends a `icrc32_sign_challenge` request to the signer.
 2. Upon receiving the message, the signer first checks if it can process the message.
-    - If the request version is not supported by the signer, the signer sends a response with an error back to the relying party.
     - If the relying party has not been granted the permission to invoke the method for the specified principal, the signer sends a response with an error back to the relying party.
 3. The signer may ask the user to approve the request.
     - If the user does not approve the request, the signer sends a response with an error back to the relying party.
@@ -162,10 +153,8 @@ sequenceDiagram
     participant U as User
 
     RP ->> S: Request challenge signature
-    alt Version is not supported
-        S ->> RP: Error response: Version not supported (20101)
-    else Scope `icrc32_sign_challenge` not granted for the principal
-        S ->> RP: Error response: Permission not granted (30101)
+    alt Scope `icrc32_sign_challenge` not granted for the principal
+        S ->> RP: Error response: Permission not granted (3000)
     else
         S ->> U: Ask to approve sign challenge request
         U ->> S: Approve sign challenge request
