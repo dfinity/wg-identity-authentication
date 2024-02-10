@@ -1,0 +1,5 @@
+packages:
+  - "impl"
+  - "example/shared"
+  - "example/service-provider"
+  - "example/service-consumer"

@@ -16,34 +16,33 @@
   * [Methods](#methods)
     * [`icrc25_request_permissions`](#icrc25_request_permissions)
       * [Prerequisites](#prerequisites)
-      * [Request](#request)
-      * [Response](#response)
+      * [Request Params](#request-params)
+      * [Result](#result)
       * [Errors](#errors)
       * [Message Processing](#message-processing)
       * [Example](#example)
     * [`icrc25_granted_permissions`](#icrc25_granted_permissions)
       * [Prerequisites](#prerequisites-1)
-      * [Request](#request-1)
-      * [Response](#response-1)
+      * [Request Params](#request-params-1)
+      * [Result](#result-1)
       * [Errors](#errors-1)
       * [Message Processing](#message-processing-1)
       * [Example](#example-1)
     * [`icrc25_revoke_permissions`](#icrc25_revoke_permissions)
       * [Prerequisites](#prerequisites-2)
-      * [Request](#request-2)
-      * [Response](#response-2)
+      * [Request Params](#request-params-2)
+      * [Result](#result-2)
       * [Errors](#errors-2)
       * [Message Processing](#message-processing-2)
       * [Example](#example-2)
     * [`icrc25_supported_standards`](#icrc25_supported_standards)
       * [Prerequisites](#prerequisites-3)
-      * [Request](#request-3)
-      * [Response](#response-3)
+      * [Request Params](#request-params-3)
+      * [Result](#result-3)
       * [Errors](#errors-3)
       * [Message Processing](#message-processing-3)
       * [Example](#example-3)
   * [Errors](#errors-4)
-    * [Version `1` errors (**code: `xxx01`**)](#version-1-errors-code-xxx01)
     * [Example](#example-4)
 <!-- TOC -->
 
@@ -100,7 +99,6 @@ This standard defines the wildcard (`*`) scope. It means that the relying party 
     "jsonrpc": "2.0",
     "method": "icrc25_request_permissions",
     "params": {
-        "version": "1",
         "scopes": [
             {
                 "method": "*"
@@ -118,7 +116,7 @@ This standard is the signer interaction _base_ standard. As such it intentionall
 
 - Getting principals: [ICRC-31](./icrc_31_get_principals.md)
 - Proving ownership of principals: [ICRC-32](./icrc_32_sign_challenge.md)
-- Canister calls: [ICRC-33](./icrc_33_call_canister.md)
+- Canister calls: [ICRC-49](./icrc_49_call_canister.md)
 
 This allows signer developers to choose which extensions they want to support and only implement those.
 
@@ -135,32 +133,25 @@ The purpose of the `icrc25_request_permissions` method is for the relying party 
 
 None
 
-#### Request
-
-`version` (`text`): The version of the standard used. If the signer does not support the version of the request, it must send the `"VERSION_NOT_SUPPORTED"` error in response.
+#### Request Params
 
 `scopes`: Array of permission [scope objects](#scope-objects) the relying party requires. If the signer does not support a requested scope, it should ignore that particular scope and proceed as if the `scopes` array did not include that object.
 
-#### Response
-
-`version` (`text`): The version of the standard used. It must match the `version` from the request.
+#### Result
 
 `scopes`: Array of permission [scope objects](#scope-objects) that the signer supports and the user has granted the relying party. This must be a subset of the `scopes` field from the original request. Additionally, scope restrictions must be the same or more restrictive than the ones requested by the relying party.
 
 #### Errors
 
 While processing the request from the relying party, the signer can cancel it at any time by sending an [error](#errors) in response. In addition to the pre-defined JSON-RPC 2.0 errors ([-32600 to -32603 and -32700](https://www.jsonrpc.org/specification#error_object)), the following values are applicable:
-- `10001 Unknown error`
-- `20101 Version not supported`
-- `30101 Permission not granted`
+- `1000 Generic error`
+- `3000 Permission not granted`
 
 #### Message Processing
 
 1. The relying party sends a `icrc25_request_permissions` message to the signer.
-2. Upon receiving the message, the signer first checks if it can process the message.
-    - If the request version is not supported by the signer, the signer sends a response with an error back to the relying party.
-3. The signer removes any unrecognized scopes from the array of requested scopes.
-4. Depending on the session state the signer either skips or displays the details of the to-be-established connection to the user:
+2. The signer removes any unrecognized scopes from the array of requested scopes.
+3. Depending on the session state the signer either skips or displays the details of the to-be-established connection to the user:
     - If there is an active session with the relying party, skip to the next step, otherwise:
         - the signer presents the details of the to-be-established connection to the user. If the user has never interacted with this relying party before, the signer should display information explaining that the user is about to establish a connection with a new relying party.
         - If the user approves the connection, the signer creates a new session for the relying party.
@@ -168,11 +159,11 @@ While processing the request from the relying party, the signer can cancel it at
 
       > **Note:** The signer should maintain a list of relying parties that are trusted by the user. It is recommended that signers assist users when deciding to grant permissions to new relying parties, e.g. by maintaining a list of well-known relying parties and displaying additional information about the relying party, such as its name, logo, etc., or in the case of an unknown relying party, by displaying a warning.
       
-5. The signer displays the requested scopes to the user and asks the user to approve or reject the request. The user should also be allowed to approve only a subset of the requested scopes or add additional restrictions (see [optional scope restrictions](#optional-properties)).
+4. The signer displays the requested scopes to the user and asks the user to approve or reject the request. The user should also be allowed to approve only a subset of the requested scopes or add additional restrictions (see [optional scope restrictions](#optional-properties)).
     - If all requested scopes have already been granted, the signer may skip the user interaction and reply with the array of granted scopes immediately.
     - If the user approves the request, the signer saves information about the granted permission scopes on the current session. Then the signer sends a successful response back to the relying party with the array of granted scopes.
     - If the user rejects the request, the signer sends a response with an error back to the relying party.
-6. After receiving a response, the relying party may send additional messages depending on the granted scopes.
+5. After receiving a response, the relying party may send additional messages depending on the granted scopes.
 
 ```mermaid
 sequenceDiagram
@@ -181,24 +172,14 @@ sequenceDiagram
     participant U as User
 
     RP ->> S: Request permission
-    alt Version is not supported
-        S ->> RP: Error response: Version not supported (20101)
-    else
-        opt If there is no active session<br>with the relying party
-            S ->> U: Show connection details
-        end
-        alt Approved
-            Note over S,U: If either approval is not given,<br>jump to "Rejected" branch
-            U ->> S: Approve connection or existing session
-            S ->> U: Display requested scopes
-
-            U ->> S: Approve request
-            S ->> S: Store the granted permission scopes
-            S ->> RP: Permission response
-        else Rejected
-            U ->> S: Reject request
-            S ->> RP: Error response: Permission not granted (30101)
-        end
+    S ->> U: Show relying party details<br>and requested permissions
+    alt Approved
+        U ->> S: Approve request
+        S ->> S: Store the granted permission scopes
+        S ->> RP: Permission response
+    else Rejected
+        U ->> S: Reject request
+        S ->> RP: Error response: Permission not granted (3000)
     end
 ```
 
@@ -211,13 +192,12 @@ Request
     "jsonrpc": "2.0",
     "method": "icrc25_request_permissions",
     "params": {
-        "version": "1",
         "scopes": [
             {
                 "method": "icrc31_get_principals"
             },
             {
-                "method": "icrc33_canister_call",
+                "method": "icrc49_call_canister",
                 "targets": ["ryjl3-tyaaa-aaaaa-aaaba-cai"]
             }
         ]
@@ -231,13 +211,12 @@ Response
     "id": 1,
     "jsonrpc": "2.0",
     "result": {
-        "version": "1",
         "scopes": [
             {
                 "method": "icrc31_get_principals"
             },
             {
-                "method": "icrc33_canister_call",
+                "method": "icrc49_call_canister",
                 "targets": ["ryjl3-tyaaa-aaaaa-aaaba-cai"],
                 "senders": ["btbdd-ob3pe-dz6kv-7n4gh-k2xtm-xjthz-kcvpk-fwbnv-w5qbk-iqjm4-4qe"]
             }
@@ -254,28 +233,23 @@ The purpose of the `icrc25_granted_permissions` method is for the relying party 
 
 None
 
-#### Request
+#### Request Params
 
-`version` (`text`): The version of the standard used. If the signer does not support the version of the request, it must send the `"VERSION_NOT_SUPPORTED"` error in response.
+None
 
-#### Response
-
-`version` (`text`): The version of the standard used. It must match the `version` from the request.
+#### Result
 
 `scopes`: Array of permission [scope objects](#scope-objects) that the signer supports and the user has previously granted to the relying party during the active session.
 
 #### Errors
 
 While processing the request from the relying party, the signer can cancel it at any time by sending an [error](#errors) in response. In addition to the pre-defined JSON-RPC 2.0 errors ([-32600 to -32603 and -32700](https://www.jsonrpc.org/specification#error_object)), the following values are applicable:
-- `10001 Unknown error`
-- `20101 Version not supported`
+- `1000 Generic error`
 
 #### Message Processing
 
 1. The relying party sends a `icrc25_granted_permissions` message to the signer.
-2. Upon receiving the message, the signer first checks if it can process the message.
-    - If the request version is not supported by the signer, the signer sends a response with an error back to the relying party.
-3. The signer replies with the granted [permission scopes](#scopes) that are active on the current session, if any.
+2. The signer replies with the granted [permission scopes](#scopes) that are active on the current session, if any.
 
 ```mermaid
 sequenceDiagram
@@ -283,11 +257,7 @@ sequenceDiagram
     participant S as Signer
 
     RP ->> S: Query granted permissions
-    alt Version is not supported
-        S ->> RP: Error response: Version not supported (20101)
-    else
-        S ->> RP: Granted permissions response
-    end
+    S ->> RP: Granted permissions response
 ```
 
 #### Example
@@ -297,10 +267,7 @@ Request
 {
     "id": 1,
     "jsonrpc": "2.0",
-    "method": "icrc25_granted_permissions",
-    "params": {
-        "version": "1"
-    }
+    "method": "icrc25_granted_permissions"
 }
 ```
 
@@ -310,13 +277,12 @@ Response
     "id": 1,
     "jsonrpc": "2.0",
     "result": {
-        "version": "1",
         "scopes": [
             {
                 "method": "icrc31_get_principals"
             },
             {
-                "method": "icrc33_canister_call",
+                "method": "icrc49_call_canister",
                 "targets": ["ryjl3-tyaaa-aaaaa-aaaba-cai"],
                 "senders": ["btbdd-ob3pe-dz6kv-7n4gh-k2xtm-xjthz-kcvpk-fwbnv-w5qbk-iqjm4-4qe"]
             }
@@ -333,31 +299,24 @@ The relying party can request to revoke all or a subset of the previously grante
 
 None
 
-#### Request
-
-`version` (`text`): The version of the standard used. If the signer does not support the version of the request, it must send the `"VERSION_NOT_SUPPORTED"` error in response.
+#### Request Params
 
 `scopes` (optional): Array of permission [scope objects](#scope-objects) the relying party wants to revoke. If empty or undefined, the signer revokes all granted permission scopes and terminates the session. If the signer does not recognize a provided scope, or if it has not been granted on the current session, it should ignore that particular scope and proceed as if the `scopes` array did not include that object.
 
-#### Response
-
-`version` (`text`): The version of the standard used. It must match the `version` from the request.
+#### Result
 
 `scopes`: Array of [scope objects](#scope-objects) that remain granted on the current session (if any) after applying the revocation. May be empty.
 
 #### Errors
 
 While processing the request from the relying party, the signer can cancel it at any time by sending an [error](#errors) in response. In addition to the pre-defined JSON-RPC 2.0 errors ([-32600 to -32603 and -32700](https://www.jsonrpc.org/specification#error_object)), the following values are applicable:
-- `10001 Unknown Error`
-- `20101 Version not supported`
+- `1000 Generic error`
 
 #### Message Processing
 
 1. The relying party sends a `icrc25_revoke_permissions` request to the signer.
-2. Upon receiving the request, the signer validates whether it can process the message.
-    - If the request version is not supported by the signer, the signer sends a response with an error back to the relying party.
-3. Next, the signer revokes the requested permission scopes. If no scopes are provided, the signer revokes all granted permission scopes.
-4. The signer sends a response back to the relying party with the array of remaining permission scopes. If no scopes remain granted, the signer terminates the session.
+2. Next, the signer revokes the requested permission scopes. If no scopes are provided, the signer revokes all granted permission scopes.
+3. The signer sends a response back to the relying party with the array of remaining permission scopes. If no scopes remain granted, the signer terminates the session.
 
 ```mermaid
 sequenceDiagram
@@ -365,12 +324,8 @@ sequenceDiagram
     participant S as Signer
 
     RP ->> S: Revoke permission
-    alt Version is not supported
-        S ->> RP: Error response: Version not supported (20101)
-    else
-        S ->> S: Revoke the permission scopes
-        S ->> RP: Reply with remaining permission scopes
-    end
+    S ->> S: Revoke the permission scopes
+    S ->> RP: Reply with remaining permission scopes
 ```
 
 #### Example
@@ -382,9 +337,8 @@ Request
     "jsonrpc": "2.0",
     "method": "icrc25_revoke_permissions",
     "params": {
-        "version": "1",
         "scopes": [{
-          "method": "icrc33_canister_call"
+          "method": "icrc49_call_canister"
         }]
     }
 }
@@ -396,7 +350,6 @@ Response
     "id": 1,
     "jsonrpc": "2.0",
     "result": {
-        "version": "1",
         "scopes": []
     }
 }
@@ -410,13 +363,11 @@ The relying party can query the list of standards supported by the signer.
 
 None
 
-#### Request
+#### Request Params
 
-`version` (`text`): The version of the standard used. If the signer does not support the version of the request, it must send the `"VERSION_NOT_SUPPORTED"` error in response.
+None
 
-#### Response
-
-`version` (`text`): The version of the standard used. It must match the `version` from the request.
+#### Result
 
 `suportedStandards`: Array of standards the signer implements.
   - `name` (`text`): The name of the standard.
@@ -425,15 +376,12 @@ None
 #### Errors
 
 While processing the request from the relying party, the signer can cancel it at any time by sending an [error](#errors) in response. In addition to the pre-defined JSON-RPC 2.0 errors ([-32600 to -32603 and -32700](https://www.jsonrpc.org/specification#error_object)), the following values are applicable:
-- `10001 Unknown Error`
-- `20101 Version not supported`
+- `1000 Generic error`
 
 #### Message Processing
 
 1. The relying party sends a `icrc25_supported_standards` request to the signer.
-2. Upon receiving the request, the signer validates whether it can process the message.
-    - If the request version is not supported by the signer, the signer sends a response with an error back to the relying party.
-3. The signer sends a response back to the relying party with the list of supported standards.
+2. The signer sends a response back to the relying party with the list of supported standards.
    - The list must always at least include ICRC-25.
 
 ```mermaid
@@ -442,11 +390,7 @@ sequenceDiagram
     participant S as Signer
 
     RP ->> S: Revoke supported standards
-    alt Version is not supported
-        S ->> RP: Error response: Version not supported (20101)
-    else
-        S ->> RP: Reply with supported standards
-    end
+    S ->> RP: Reply with supported standards
 ```
 
 #### Example
@@ -456,10 +400,7 @@ Request
 {
     "id": 1,
     "jsonrpc": "2.0",
-    "method": "icrc25_supported_standards",
-    "params": {
-        "version": "1"
-    }
+    "method": "icrc25_supported_standards"
 }
 ```
 
@@ -469,15 +410,14 @@ Response
   "id": 1,
   "jsonrpc": "2.0",
   "result": {
-    "version": "1",
     "supportedStandards": [
       {
         "name": "ICRC-25",
-        "url": "https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md"
+        "url": "https://github.com/dfinity/ICRC/blob/main/ICRCs/ICRC-25/ICRC-25.md"
       },
       {
         "name": "ICRC-31",
-        "url": "https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_31_get_principals.md"
+        "url": "https://github.com/dfinity/ICRC/blob/main/ICRCs/ICRC-31/ICRC-31.md"
       }
     ]
   }
@@ -488,31 +428,30 @@ Response
 
 The error is an object comprising the `code`, `message` and optional `data` fields as described in the [JSON-RPC 2.0 Specification](https://www.jsonrpc.org/specification#error_object). In addition to the pre-defined errors, the following values are defined applying to all methods (including extension standards):
 
-### Version `1` errors (**code: `xxx01`**)
-- General (**code: `1xx01`**)
+- General (**code: `1xxx`**)
 
-| Code  | Message       | Meaning                | Data |
-| ----- | ------------- | ---------------------- | ---- |
-| 10001 | Unknown error | The reason is unknown. | N/A  |
+| Code | Message       | Meaning                                                          | Data                                                       |
+|------|---------------|------------------------------------------------------------------|------------------------------------------------------------|
+| 1000 | Generic error | Generic error not fitting another, more specific error category. | (`text`): description of the error intended for developers |
 
-- Not supported (**code: `2xx01`**)
+- Not supported (**code: `2xxx`**)
 
-| Code  | Message                | Meaning                                                                       | Data                                                                     |
-| ----- | ---------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| 20101 | Version not supported  | The version of the standard is not supported by the signer.                   | (`text`): The unsupported value                                          |
+| Code | Message       | Meaning                                       | Data                                                       |
+|------|---------------|-----------------------------------------------|------------------------------------------------------------|
+| 2000 | Not supported | The operation is not supported by the signer. | (`text`): description of the error intended for developers |
 
-- User action (**code: `3xx01`**)
+- User action (**code: `3xxx`**)
 
-| Code  | Message                | Meaning                                                              | Data |
-| ----- | ---------------------- |----------------------------------------------------------------------| ---- |
-| 30101 | Permission not granted | The signer has rejected the request due to insufficient permissions. | N/A  |
-| 30201 | Action aborted         | The user has canceled the action.                                    | N/A  |
+| Code | Message                | Meaning                                                              | Data |
+|------|------------------------|----------------------------------------------------------------------|------|
+| 3000 | Permission not granted | The signer has rejected the request due to insufficient permissions. | N/A  |
+| 3001 | Action aborted         | The user has canceled the action.                                    | N/A  |
 
-- Network (**code: `4xx01`**)
+- Network (**code: `4xxx`**)
 
-| Code  | Message                | Meaning                  | Data                                                                                                                            |
-| ----- | ---------------------- | -------------------------| ------------------------------------------------------------------------------------------------------------------------------- |
-| 40001 | Network error          | The network call failed. | (optional) Error details: <ul> <li>`status` (`int`): HTTP status code</li> <li>`message` (`text`, optional): message</li> </ul> |
+| Code | Message       | Meaning                  | Data                                                                                                                            |
+|------|---------------|--------------------------|---------------------------------------------------------------------------------------------------------------------------------|
+| 4000 | Network error | The network call failed. | (optional) Error details: <ul> <li>`status` (`int`): HTTP status code</li> <li>`message` (`text`, optional): message</li> </ul> |
 
 ### Example
 
@@ -521,8 +460,9 @@ The error is an object comprising the `code`, `message` and optional `data` fiel
     "id": 1,
     "jsonrpc": "2.0",
     "error": {
-        "code": "10001",
-        "message": "Unknown error"
+        "code": 1000,
+        "message": "Generic error",
+        "description": "The signer has encountered an internal error while processing the request."
     }
 }
 ```
