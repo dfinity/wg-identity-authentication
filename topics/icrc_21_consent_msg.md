@@ -99,6 +99,14 @@ type icrc21_error = variant {
     //
     // The developer should provide more information about the error using the description in icrc21_error_info.
     ConsentMessageUnavailable: icrc21_error_info;
+    
+    // The canister did not provide a consent message for because payment was missing or insufficient.
+    //
+    // This error is used to account for payment extensions to be added in the future:
+    // While small consent messages are easy and cheap to provide, this might not generally be the case for all consent
+    // messages. To avoid future breaking changes, when introducing a payment flow, this error is already introduced
+    // even though there no standardized payment flow yet.
+    PaymentRequired: icrc21_error_info;
 
     // Any error not covered by the above variants.
     GenericError: record {
