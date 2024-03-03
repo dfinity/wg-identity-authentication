@@ -6,10 +6,9 @@
 <!-- TOC -->
 * [ICRC-28: Trusted Origins](#icrc-28-trusted-origins)
   * [Summary](#summary)
-  * [Origin](#origin)
-  * [Get trusted origins](#get-trusted-origins)
-    * [Canister metadata](#canister-metadata)
-    * [Canister method](#canister-method)
+  * [Identify](#identify)
+  * [Verify](#verify)
+    * [icrc28_get_trusted_origins](#icrc28_get_trusted_origins)
   * [Use-Cases](#use-cases)
     * [Hot Signer Use-Case](#hot-signer-use-case)
     * [Cold Signer Use-Case](#cold-signer-use-case)
@@ -17,18 +16,37 @@
 
 ## Summary
 
-Relying parties wants to request delegations from signers that can make authenticated calls to their own canisters,
-while at the same time still requiring user approval to make authenticated calls to canisters it doesn't own.
+When a relying party wants to authenticate as a user, it uses a session key (e.g., Ed25519 or ECDSA), and by way of the
+authentication flow ([ICRC-34](./icrc_34_get_global_delegation.md) or [ICRC-57](./icrc_57_get_session_delegation.md))
+obtains a delegation chain that allows the session key to sign for the user's global or session identity.
 
-**Example**
+In case the global authentication flow ([ICRC-34](./icrc_34_get_global_delegation.md)) is used, a delegation chain for
+the user's global identity is obtained. Since a global identity is not scoped per relying party, canisters from other
+relying parties can be called on behalf of the user without user approval unless the delegation chain is restricted.
 
-- DSCVR requests a delegation that can make authenticated calls to its own canisters: dscvr_can_1 and dscvr_can_2
-- When DSCVR wants the user to transfer tokens, it will need to request the user's approval in a signer prompt
+Therefore, a signer **MUST** restrict the delegation chain for the user's global identity to a set of canister
+targets that trust the relying party that requested the delegation chain. This standard describes how a canister can
+indicate that a relying party is trusted.
 
-For a signer to verify if a relying party should receive a delegation for a given list of canister targets,
-it will need to check for each canister target if the relying party is trusted.
+For canisters that don't trust the relying party, [ICRC-49](./icrc_49_call_canister.md) can still be used to make
+canister calls that require user approval.
 
-## Origin
+Since canisters from one relying party will not trust another relying party to make calls on behalf of the user without
+approval, a delegation chain for a global identity is as a result always restricted to a relying party's own canisters.
+
+It's recommended to use a user's session identity ([ICRC-34](./icrc_34_get_global_delegation.md)) for most use cases
+instead. Since it does not require to be trusted by canisters of other relying parties to make calls on behalf of the
+user without approval. Also, since it's not restricted by a list of canister targets, it's compatible with multi
+canister architectures like e.g. OpenChat which has a per-user canister. Lastly, since the session identity is scoped
+per relying party, the user is anonymous between different relying parties.
+
+**Examples**
+
+1. Relying party obtains a delegation chain for a session identity to call its own or other relying party's canisters.
+2. Relying party obtains a delegation chain for a global identity to call its own canisters.
+3. Relying party wants the user to transfer tokens, so it requests the user's approval in a signer prompt.
+
+## Identify
 
 The window origin (as defined in https://developer.mozilla.org/en-US/docs/Glossary/Origin) is used to identify one
 relying party from another.
@@ -42,25 +60,15 @@ the origin of the relying party.
 
 The origin **MUST** be identified in a trustable way by the signer for example through `postMessage`.
 
-## Get trusted origins
+## Verify
 
-A canister **MUST** make both a metadata entry and a canister method available, both **MUST** return the same list of
-trusted origins.
+When the signer receives a delegation chain request for a global identity, it must verify that the canisters targets
+trust the relying party making the request. The signer can use the following method to get a list of trusted origins for
+each canister target and then verify if the relying party is within each list.
 
-### Canister metadata
+### icrc28_get_trusted_origins
 
-Allows for tooling to pull the list of trusted origins out of the state tree from metadata
-section `icp:public icrc28_trusted_origins`.
-
-This is the recommended approach for signers since it does not require a canister call to each delegation target
-canister.
-Instead, it can get the trusted origins from the metadata section and verify the certificate.
-
-### Canister method
-
-Returns list of trusted origins.
-
-This an alternative approach for canisters that want to get the list of trusted origins.
+Returns a list of origins trusted by the canister.
 
 ```
 icrc28_get_trusted_origins : () -> (vec text);
@@ -144,7 +152,8 @@ sequenceDiagram
 4. The cold signer component validates the delegation request:
     1. The metadata responses must match the delegation request targets:
     2. The metadata responses must be certified and valid:
-        * The `icp:public trusted_origins` metadata must be provided in a valid certificate (see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification)).
+        * The `icp:public trusted_origins` metadata must be provided in a valid certificate (
+          see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification)).
         * The time of all metadata responses must all be within the same reasonable time range.
         * The `icp:public trusted_origins` metadata must not be `null` and match `vec text`.
     3. The relying party origin must be within the `icp:public trusted_origins` of all metadata responses.
