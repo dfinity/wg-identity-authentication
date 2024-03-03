@@ -9,6 +9,7 @@
   * [Identify](#identify)
   * [Verify](#verify)
     * [icrc28_get_trusted_origins](#icrc28_get_trusted_origins)
+    * [icrc28_get_trusted_origins](#icrc28_get_trusted_origins-1)
   * [Use-Cases](#use-cases)
     * [Hot Signer Use-Case](#hot-signer-use-case)
     * [Cold Signer Use-Case](#cold-signer-use-case)
@@ -45,7 +46,7 @@ The origin **MUST** be identified in a trustable way by the signer for example t
 ## Verify
 
 When the signer receives a delegation chain request for a global identity, it must verify that the canisters targets
-trust the relying party making the request. The signer can use the following method to get a list of trusted origins for
+trust the relying party making the request. The signer can use the below method to get a list of trusted origins for
 each canister target and then verify if the relying party is within each list.
 
 ### icrc28_get_trusted_origins
@@ -54,6 +55,21 @@ Returns a list of origins trusted by the canister.
 
 ```
 icrc28_get_trusted_origins : () -> (vec text);
+```
+
+### icrc28_get_trusted_origins
+
+Returns a list of supported standards related to trusted origins that this canister implements. This query call must not
+require authentication.
+
+```
+icrc28_supported_standards : () -> (vec record { name : text; url : text }) query;
+```
+
+The result should always have at least one entry:
+
+```
+record { name = "ICRC-28"; url = "https://github.com/dfinity/ICRC/blob/main/ICRCs/ICRC-28/ICRC-28.md" }
 ```
 
 ## Use-Cases
