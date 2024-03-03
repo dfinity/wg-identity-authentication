@@ -95,7 +95,7 @@ return a delegation with a shorter expiration.
 `delegation`: An array of delegations (as defined by
 the [IC interface specification, authentication section](https://internetcomputer.org/docs/current/references/ic-interface-spec/#authentication)):
 
-- `delegation` (`record`): Map with fields
+- `global_delegation` (`record`): Map with fields
     - `pubkey` (`blob`): Public key as described in
       the [IC interface specification, signatures section](https://internetcomputer.org/docs/current/references/ic-interface-spec/#signatures).
     - `expiration` (`text`): Expiration of the delegation, in nanoseconds since 1970-01-01, as a base-10 string.
@@ -114,7 +114,7 @@ the [IC interface specification, authentication section](https://internetcompute
   "id": 1,
   "jsonrpc": "2.0",
   "result": {
-    "delegation": [
+    "global_delegation": [
       {
         "delegation": {
           "pubkey": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEvHD28SXwRW2i6bgiqmel2fDV7/CDNyxkMwGh8BvmTVI+5DBSBMHJeyFZwbJEyj8Pc7rJv6XWOW+x4lsdEI4bdg==",
