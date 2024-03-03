@@ -147,14 +147,16 @@ the [IC interface specification, authentication section](https://internetcompute
 sequenceDiagram
     participant RP as Relying Party
     participant S as Signer
-    participant U as User
     participant C as Target Canister
     RP ->> S: Request global delegation
-    alt Relying party has not been granted the `icrc34_get_global_delegation` permission scope<br>or the request does not comply with scope restrictions
+    alt Relying party has not been granted <br>the `icrc34_get_global_delegation` permission scope<br>or the request does not comply with scope restrictions
         S ->> RP: Error response: Permission not granted (3000)
     else
-        Note over S, RP: Follow the ICRC-28 standard
-        alt Origin is trusted by all delegation targets
+        loop For every target canister
+            S ->> C: Get trusted origins
+            C ->> S: List of trusted origins
+        end
+        alt Origin is trusted by all targets canisters
             S ->> RP: Signed delegation
         else
             S ->> RP: Error response
