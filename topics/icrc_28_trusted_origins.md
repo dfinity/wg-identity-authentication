@@ -4,16 +4,18 @@
 [![Standard Issue](https://img.shields.io/badge/ISSUE-ICRC--28-blue?logo=github)](https://github.com/dfinity/wg-identity-authentication/issues/115)
 
 <!-- TOC -->
+
 * [ICRC-28: Trusted Origins](#icrc-28-trusted-origins)
-  * [Summary](#summary)
-  * [Identify](#identify)
-  * [Verify](#verify)
-    * [icrc28_get_trusted_origins](#icrc28_get_trusted_origins)
-  * [Supported standards](#supported-standards)
-    * [icrc28_supported_standards](#icrc28_supported_standards)
-  * [Use-Cases](#use-cases)
-    * [Hot Signer Use-Case](#hot-signer-use-case)
-    * [Cold Signer Use-Case](#cold-signer-use-case)
+    * [Summary](#summary)
+    * [Identify](#identify)
+    * [Verify](#verify)
+        * [icrc28_get_trusted_origins](#icrc28_get_trusted_origins)
+    * [Supported standards](#supported-standards)
+        * [icrc28_supported_standards](#icrc28_supported_standards)
+    * [Use-Cases](#use-cases)
+        * [Hot Signer Use-Case](#hot-signer-use-case)
+        * [Cold Signer Use-Case](#cold-signer-use-case)
+
 <!-- TOC -->
 
 ## Summary
@@ -39,10 +41,9 @@ relying party from another.
 > number if a port is present and differs from the default port for the given protocol. Examples of typical origins
 > are https://example.org (implying port 443), http://example.net (implying port 80), and http://example.com:8080.
 
-The origin can't be trusted with some transport layers. It's up to the signer to implement a trustable way to identify
-the origin of the relying party.
-
-The origin **MUST** be identified in a trustable way by the signer for example through `postMessage`.
+When the signer obtains the origin of the relying party, it **MUST** make sure that it's genuine. Which means that the
+transport channel used between the relying party and signer, must return a origin that can be trusted to be genuine
+e.g. [ICRC-29](./icrc_29_window_post_message_transport.md).
 
 ## Verify
 
