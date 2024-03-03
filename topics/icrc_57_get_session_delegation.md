@@ -5,19 +5,17 @@
 [![Standard Issue](https://img.shields.io/badge/ISSUE-ICRC--57-blue?logo=github)](https://github.com/dfinity/wg-identity-authentication/issues/115)
 
 <!-- TOC -->
-
 * [ICRC-57: Get Session Delegation](#icrc-57-get-session-delegation)
-    * [Summary](#summary)
-    * [Method](#method)
-    * [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
-        * [Example RPC Request Permission](#example-rpc-request-permission)
-    * [Request](#request)
-        * [Example RPC Request](#example-rpc-request)
-        * [Response](#response)
-        * [Example RPC Response](#example-rpc-response)
-    * [Message Processing](#message-processing)
-    * [Errors](#errors)
-
+  * [Summary](#summary)
+  * [Method](#method)
+  * [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
+    * [Example RPC Request Permission](#example-rpc-request-permission)
+  * [Request](#request)
+    * [Example RPC Request](#example-rpc-request)
+    * [Response](#response)
+    * [Example RPC Response](#example-rpc-response)
+  * [Message Processing](#message-processing)
+  * [Errors](#errors)
 <!-- TOC -->
 
 ## Summary

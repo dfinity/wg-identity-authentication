@@ -4,18 +4,16 @@
 [![Standard Issue](https://img.shields.io/badge/ISSUE-ICRC--28-blue?logo=github)](https://github.com/dfinity/wg-identity-authentication/issues/115)
 
 <!-- TOC -->
-
 * [ICRC-28: Trusted Origins](#icrc-28-trusted-origins)
-    * [Summary](#summary)
-    * [Identify](#identify)
-    * [Verify](#verify)
-        * [icrc28_get_trusted_origins](#icrc28_get_trusted_origins)
-    * [Supported standards](#supported-standards)
-        * [icrc28_supported_standards](#icrc28_supported_standards)
-    * [Use-Cases](#use-cases)
-        * [Hot Signer Use-Case](#hot-signer-use-case)
-        * [Cold Signer Use-Case](#cold-signer-use-case)
-
+  * [Summary](#summary)
+  * [Identify](#identify)
+  * [Verify](#verify)
+    * [icrc28_get_trusted_origins](#icrc28_get_trusted_origins)
+  * [Supported standards](#supported-standards)
+    * [icrc28_supported_standards](#icrc28_supported_standards)
+  * [Use-Cases](#use-cases)
+    * [Hot Signer Use-Case](#hot-signer-use-case)
+    * [Cold Signer Use-Case](#cold-signer-use-case)
 <!-- TOC -->
 
 ## Summary
@@ -126,9 +124,8 @@ This section describes the interactions between the signer and the relying party
 sequenceDiagram
     participant RP as Relying Party
     participant S as Chain Connected Signer Component
-    participant C as Target Canister
     participant CS as Cold Signer Component
-    participant U as User
+    participant C as Target Canister
     Note over RP, S: Interactions follow ICRC-34 standard
     RP ->> S: Request global delegation
     loop For every target canister
@@ -141,15 +138,9 @@ sequenceDiagram
         CS ->> S: Transfer error
         S ->> RP: Error response
     else
-        U ->> CS: Verify origin and approve / reject
-        alt Approved
-            CS ->> CS: Sign delegation request
-            CS ->> S: Transfer signed delegation
-            S ->> RP: Signed delegation
-        else Invalid
-            CS ->> S: Transfer error
-            S ->> RP: Error response
-        end
+        CS ->> CS: Sign delegation request
+        CS ->> S: Transfer signed delegation
+        S ->> RP: Signed delegation
     end
 ```
 
