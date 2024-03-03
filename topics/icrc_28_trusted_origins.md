@@ -28,24 +28,6 @@ Therefore, a signer **MUST** restrict the delegation chain for the user's global
 targets that trust the relying party that requested the delegation chain. This standard describes how a canister can
 indicate that a relying party is trusted.
 
-For canisters that don't trust the relying party, [ICRC-49](./icrc_49_call_canister.md) can still be used to make
-canister calls that require user approval.
-
-Since canisters from one relying party will not trust another relying party to make calls on behalf of the user without
-approval, a delegation chain for a global identity is as a result always restricted to a relying party's own canisters.
-
-It's recommended to use a user's session identity ([ICRC-34](./icrc_34_get_global_delegation.md)) for most use cases
-instead. Since it does not require to be trusted by canisters of other relying parties to make calls on behalf of the
-user without approval. Also, since it's not restricted by a list of canister targets, it's compatible with multi
-canister architectures like e.g. OpenChat which has a per-user canister. Lastly, since the session identity is scoped
-per relying party, the user is anonymous between different relying parties.
-
-**Examples**
-
-1. Relying party obtains a delegation chain for a session identity to call its own or other relying party's canisters.
-2. Relying party obtains a delegation chain for a global identity to call its own canisters.
-3. Relying party wants the user to transfer tokens, so it requests the user's approval in a signer prompt.
-
 ## Identify
 
 The window origin (as defined in https://developer.mozilla.org/en-US/docs/Glossary/Origin) is used to identify one

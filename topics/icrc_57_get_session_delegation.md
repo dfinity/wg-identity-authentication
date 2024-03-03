@@ -5,25 +5,34 @@
 [![Standard Issue](https://img.shields.io/badge/ISSUE-ICRC--57-blue?logo=github)](https://github.com/dfinity/wg-identity-authentication/issues/115)
 
 <!-- TOC -->
+
 * [ICRC-57: Get Session Delegation](#icrc-57-get-session-delegation)
-  * [Summary](#summary)
-  * [Method](#method)
-  * [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
-    * [Example RPC Request Permission](#example-rpc-request-permission)
-  * [Request](#request)
-    * [Example RPC Request](#example-rpc-request)
-    * [Response](#response)
-    * [Example RPC Response](#example-rpc-response)
-  * [Message Processing](#message-processing)
-  * [Errors](#errors)
+    * [Summary](#summary)
+    * [Method](#method)
+    * [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
+        * [Example RPC Request Permission](#example-rpc-request-permission)
+    * [Request](#request)
+        * [Example RPC Request](#example-rpc-request)
+        * [Response](#response)
+        * [Example RPC Response](#example-rpc-response)
+    * [Message Processing](#message-processing)
+    * [Errors](#errors)
+
 <!-- TOC -->
 
 ## Summary
 
-The purpose of the `icrc57_get_session_delegation` method is for the relying party to receive a delegation identity
-that's unique for each relying party. Since this identity is different for each relying party, it gives anonymity
-between different relying parties for the end user. A common use case would be a relying party that does not interact 
-with tokens held by the signer and thus does not need an identity that holds the tokens of the signer.
+When a relying party wants to authenticate as a user, it uses a session key (e.g., Ed25519 or ECDSA), and
+below `icrc57_get_session_delegation` method to obtain a delegation chain that allows the session key to sign for the
+user's session identity. The obtained delegation chain is scoped per relying party, resulting in a different identity
+for each relying party.
+
+Compared to a global identity ([ICRC-34](./icrc_34_get_global_delegation.md)), a session identity has no requirements
+and restrictions.
+
+- The relying party does not require to be trusted by canisters, so any canister can be called on behalf of the user.
+- There's no canister target restriction, making it compatible with multi canister architectures like e.g. OpenChat.
+- It is scoped per relying party, resulting in anonymity by default for the user between relying parties.
 
 ## Method
 
@@ -37,8 +46,8 @@ with tokens held by the signer and thus does not need an identity that holds the
 
 **Optional Properties:**
 
-- `targets` (`text` array): A list of target canister ids (textual representation) the scope is restricted to. 
-If the list is not present, the scope applies to all canisters (i.e. the permission is not restricted).
+- `targets` (`text` array): A list of target canister ids (textual representation) the scope is restricted to.
+  If the list is not present, the scope applies to all canisters (i.e. the permission is not restricted).
 
 ### Example RPC Request Permission
 
@@ -62,10 +71,13 @@ If the list is not present, the scope applies to all canisters (i.e. the permiss
 
 ## Request
 
-**`publicKey` (`blob`):** Public key that receives the global delegation as described in the [IC interface specification, signatures section](https://internetcomputer.org/docs/current/references/ic-interface-spec/#signatures).  
-**`targets` (`text` array):** (Optional) A list of target canister ids (textual representation) the delegation is restricted to. 
+**`publicKey` (`blob`):** Public key that receives the global delegation as described in
+the [IC interface specification, signatures section](https://internetcomputer.org/docs/current/references/ic-interface-spec/#signatures).  
+**`targets` (`text` array):** (Optional) A list of target canister ids (textual representation) the delegation is
+restricted to.
 If the list is not present, the delegation applies to all canisters (i.e. the delegation is not restricted).
-**`maxTimeToLive` (`text` array):** (Optional) Expiration of the delegation in nanoseconds, signer can still choose to return a delegation with a shorter expiration.
+**`maxTimeToLive` (`text` array):** (Optional) Expiration of the delegation in nanoseconds, signer can still choose to
+return a delegation with a shorter expiration.
 
 ### Example RPC Request
 

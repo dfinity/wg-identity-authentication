@@ -5,25 +5,31 @@
 [![Standard Issue](https://img.shields.io/badge/ISSUE-ICRC--34-blue?logo=github)](https://github.com/dfinity/wg-identity-authentication/issues/115)
 
 <!-- TOC -->
+
 * [ICRC-34: Get Global Delegation](#icrc-34-get-global-delegation)
-  * [Summary](#summary)
-  * [Method](#method)
-  * [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
-    * [Example RPC Request Permission](#example-rpc-request-permission)
-  * [Request](#request)
-    * [Example RPC Request](#example-rpc-request)
-    * [Response](#response)
-    * [Example RPC Response](#example-rpc-response)
-  * [Message Processing](#message-processing)
-  * [Errors](#errors)
+    * [Summary](#summary)
+    * [Method](#method)
+    * [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
+        * [Example RPC Request Permission](#example-rpc-request-permission)
+    * [Request](#request)
+        * [Example RPC Request](#example-rpc-request)
+        * [Response](#response)
+        * [Example RPC Response](#example-rpc-response)
+    * [Message Processing](#message-processing)
+    * [Errors](#errors)
+
 <!-- TOC -->
 
 ## Summary
 
-The purpose of the `icrc34_get_global_delegation` method is for the relying party to receive a delegation identity 
-that's the same for each relying party. This means the user will not have anonymity between different relying parties. 
-A common use case would be a relying party that interacts with tokens held by the signer and thus needs an identity 
-that holds the tokens of the signer.
+When a relying party wants to authenticate as a user, it uses a session key (e.g., Ed25519 or ECDSA), and
+below `icrc34_get_global_delegation` method to obtain a delegation chain that allows the session key to sign for the
+user's global identity. The obtained delegation chain **MUST** be restricted by the signer to canister targets that
+trust the relying party following the [ICRC-28](./icrc_28_trusted_origins.md) standard.
+
+- Due to the canister target restriction, only the relying party its own canisters can be called on behalf of the user.
+- A new delegation chain must be obtained for every new canister created by the relying party.
+- The identity is the same across all relying parties, the user is not anonymous between different relying parties.
 
 ## Method
 
@@ -62,9 +68,11 @@ that holds the tokens of the signer.
 ## Request
 
 **`principal` (`text`):** Principal that the global delegation is requested for.  
-**`publicKey` (`blob`):** Public key that receives the global delegation as described in the [IC interface specification, signatures section](https://internetcomputer.org/docs/current/references/ic-interface-spec/#signatures).  
+**`publicKey` (`blob`):** Public key that receives the global delegation as described in
+the [IC interface specification, signatures section](https://internetcomputer.org/docs/current/references/ic-interface-spec/#signatures).  
 **`targets` (`text` array):** A list of target canister ids (textual representation) the scope is restricted to.
-**`maxTimeToLive` (`text` array):** (Optional) Expiration of the delegation in nanoseconds, signer can still choose to return a delegation with a shorter expiration.
+**`maxTimeToLive` (`text` array):** (Optional) Expiration of the delegation in nanoseconds, signer can still choose to
+return a delegation with a shorter expiration.
 
 ### Example RPC Request
 
@@ -90,7 +98,8 @@ that holds the tokens of the signer.
 the [IC interface specification, authentication section](https://internetcomputer.org/docs/current/references/ic-interface-spec/#authentication)):
 
 - `delegation` (`record`): Map with fields
-    - `pubkey` (`blob`): Public key as described in the [IC interface specification, signatures section](https://internetcomputer.org/docs/current/references/ic-interface-spec/#signatures).
+    - `pubkey` (`blob`): Public key as described in
+      the [IC interface specification, signatures section](https://internetcomputer.org/docs/current/references/ic-interface-spec/#signatures).
     - `expiration` (`text`): Expiration of the delegation, in nanoseconds since 1970-01-01, as a base-10 string.
     - `targets` (`text` array): A list of target canister ids (textual representation) the delegation is restricted to
       making canister calls to. If the list is not present, the delegation applies to all canisters (i.e. it is not
@@ -157,4 +166,5 @@ sequenceDiagram
 
 ## Errors
 
-This standard does not define additional errors. See [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-3) for a list of errors that can be returned by all methods.
+This standard does not define additional errors. See [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-3) for a
+list of errors that can be returned by all methods.
