@@ -9,7 +9,8 @@
   * [Identify](#identify)
   * [Verify](#verify)
     * [icrc28_get_trusted_origins](#icrc28_get_trusted_origins)
-    * [icrc28_get_trusted_origins](#icrc28_get_trusted_origins-1)
+  * [Supported standards](#supported-standards)
+    * [icrc28_supported_standards](#icrc28_supported_standards)
   * [Use-Cases](#use-cases)
     * [Hot Signer Use-Case](#hot-signer-use-case)
     * [Cold Signer Use-Case](#cold-signer-use-case)
@@ -57,7 +58,11 @@ Returns a list of origins trusted by the canister.
 icrc28_get_trusted_origins : () -> (vec text);
 ```
 
-### icrc28_get_trusted_origins
+## Supported standards
+
+The signer can use below method to check if the ICRC-28 standard and any related standards are supported.
+
+### icrc28_supported_standards
 
 Returns a list of supported standards related to trusted origins that this canister implements. This query call must not
 require authentication.
