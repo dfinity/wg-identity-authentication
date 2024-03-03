@@ -4,18 +4,16 @@
 [![Standard Issue](https://img.shields.io/badge/ISSUE-ICRC--28-blue?logo=github)](https://github.com/dfinity/wg-identity-authentication/issues/115)
 
 <!-- TOC -->
-
 * [ICRC-28: Trusted Origins](#icrc-28-trusted-origins)
-    * [Summary](#summary)
-    * [Identify](#identify)
-    * [Verify](#verify)
-        * [icrc28_get_trusted_origins](#icrc28_get_trusted_origins)
-    * [Supported standards](#supported-standards)
-        * [icrc28_supported_standards](#icrc28_supported_standards)
-    * [Use-Cases](#use-cases)
-        * [Hot Signer Use-Case](#hot-signer-use-case)
-        * [Cold Signer Use-Case](#cold-signer-use-case)
-
+  * [Summary](#summary)
+  * [Identify](#identify)
+  * [Verify](#verify)
+    * [icrc28_get_trusted_origins](#icrc28_get_trusted_origins)
+  * [Supported standards](#supported-standards)
+    * [icrc28_supported_standards](#icrc28_supported_standards)
+  * [Use-Cases](#use-cases)
+    * [Hot Signer Use-Case](#hot-signer-use-case)
+    * [Cold Signer Use-Case](#cold-signer-use-case)
 <!-- TOC -->
 
 ## Summary
