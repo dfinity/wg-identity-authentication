@@ -149,7 +149,7 @@ sequenceDiagram
     participant RP as Relying Party
     participant S as Signer
     RP ->> S: Request global delegation
-    alt Relying party has not been granted the `icrc57_get_session_delegation` permission scope<br>or the request does not comply with scope restrictions
+    alt Relying party has not been granted the <br>`icrc57_get_session_delegation` permission <br> scope or the request does not comply <br>with scope restrictions
         S ->> RP: Error response: Permission not granted (3000)
     else
         S ->> RP: Signed delegation

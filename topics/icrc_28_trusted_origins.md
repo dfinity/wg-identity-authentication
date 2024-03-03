@@ -4,16 +4,18 @@
 [![Standard Issue](https://img.shields.io/badge/ISSUE-ICRC--28-blue?logo=github)](https://github.com/dfinity/wg-identity-authentication/issues/115)
 
 <!-- TOC -->
+
 * [ICRC-28: Trusted Origins](#icrc-28-trusted-origins)
-  * [Summary](#summary)
-  * [Identify](#identify)
-  * [Verify](#verify)
-    * [icrc28_get_trusted_origins](#icrc28_get_trusted_origins)
-  * [Supported standards](#supported-standards)
-    * [icrc28_supported_standards](#icrc28_supported_standards)
-  * [Use-Cases](#use-cases)
-    * [Hot Signer Use-Case](#hot-signer-use-case)
-    * [Cold Signer Use-Case](#cold-signer-use-case)
+    * [Summary](#summary)
+    * [Identify](#identify)
+    * [Verify](#verify)
+        * [icrc28_get_trusted_origins](#icrc28_get_trusted_origins)
+    * [Supported standards](#supported-standards)
+        * [icrc28_supported_standards](#icrc28_supported_standards)
+    * [Use-Cases](#use-cases)
+        * [Hot Signer Use-Case](#hot-signer-use-case)
+        * [Cold Signer Use-Case](#cold-signer-use-case)
+
 <!-- TOC -->
 
 ## Summary
@@ -78,7 +80,7 @@ record { name = "ICRC-28"; url = "https://github.com/dfinity/ICRC/blob/main/ICRC
 
 ## Use-Cases
 
-The `icp:public icrc28_trusted_origins` metadata is designed to be used with both cold and hot signers.
+The `icrc28_get_trusted_origins` method is designed to be used with both cold and hot signers.
 
 ### Hot Signer Use-Case
 
@@ -88,18 +90,17 @@ This section describes the interactions between the signer and the relying party
 sequenceDiagram
     participant RP as Relying Party
     participant S as Signer
-    participant B as Boundary Node
+    participant C as Target Canister
     Note over RP, S: Interactions follow ICRC-34 standard
     RP ->> S: Request global delegation
     loop For every target canister
-        S ->> B: Metadata read state request
-        B ->> S: Metadata response
-        S ->> S: Metadata must be certified and valid
+        S ->> C: Get trusted origins
+        C ->> S: List of trusted origins
     end
-    alt Metadata is valid and origin is trusted for all targets
+    alt Origin is trusted by all targets canisters
         S ->> RP: Signed delegation
-    else Metadata is invalid or origin is not trusted for some targets
-        S ->> RP: Rejection response
+    else
+        S ->> RP: Error response
     end
 ```
 
@@ -125,24 +126,30 @@ This section describes the interactions between the signer and the relying party
 sequenceDiagram
     participant RP as Relying Party
     participant S as Chain Connected Signer Component
+    participant C as Target Canister
     participant CS as Cold Signer Component
-    participant B as Boundary Node
     participant U as User
     Note over RP, S: Interactions follow ICRC-34 standard
-    RP ->> CS: Request global delegation
+    RP ->> S: Request global delegation
     loop For every target canister
-        CS ->> B: Metadata read state request
-        B ->> CS: Metadata response
+        S ->> C: Get trusted origins
+        C ->> S: List of trusted origins
     end
-    S ->> CS: - Relying party origin<br>- Delegation request<br>- Metadata responses
+    S ->> CS: - Relying party origin<br>- Delegation request<br>- Trusted origins responses
     CS ->> CS: Validate delegation request
-    U ->> CS: Verify origin and approve / reject
-    alt Approved
-        CS ->> CS: Sign delegation request
-        CS ->> S: Transfer signed delegation
-        S ->> RP: Signed delegation
-    else Rejected
-        S ->> RP: Rejection response
+    alt Invalid
+        CS ->> S: Transfer error
+        S ->> RP: Error response
+    else
+        U ->> CS: Verify origin and approve / reject
+        alt Approved
+            CS ->> CS: Sign delegation request
+            CS ->> S: Transfer signed delegation
+            S ->> RP: Signed delegation
+        else Invalid
+            CS ->> S: Transfer error
+            S ->> RP: Error response
+        end
     end
 ```
 
