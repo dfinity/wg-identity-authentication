@@ -105,16 +105,16 @@ sequenceDiagram
 1. The relying party connects to the signer and requests a global delegation for a given principal and list of target
    canisters.
 2. For every target canister the signer:
-    1. Gets the `icp:public trusted_origins` metadata using read state request
-    2. The metadata response must be certified and valid:
-        * The `icp:public trusted_origins` metadata must be provided in a valid certificate (
-          see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification)).
-        * The `icp:public trusted_origins` metadata must not be `null` and match `vec text`.
-3. The signer verifies that relying party origin is within the `icp:public trusted_origins` metadata for all targets.
+    1. Gets the list of trusted origins using the `icrc28_get_trusted_origins` method.
+    2. The trusted origins response must be certified and valid:
+        * The responses must be provided in a valid certificate (
+          see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification))
+        * The decoded response must not be `null` and match `vec text`.
+3. The signer verifies that relying party origin is within list of trusted origins of all targets.
     * If the origin is trusted by all targets, continue with step 4.
     * If the origin is not trusted by all targets, the signer returns an error to the relying party. No further steps
       are executed.
-4. The global delegation returned to the relying party.
+4. The signed delegation is returned to the relying party.
 
 ### Cold Signer Use-Case
 
@@ -144,27 +144,25 @@ sequenceDiagram
     end
 ```
 
-1. The relying party connects to the signer and requests a global delegation for a given principal and list of target
-   canisters.
-2. For every target canister the signer gets the `icp:public trusted_origins` metadata using read state request
-3. The relying party origin and global delegation request as well as the certified metadata responses are transferred to
+1. The relying party connects to the chain connected signer component and requests a global delegation for a given
+   principal and list of target canisters.
+2. For every target canister the signer gets the list of trusted origins using the `icrc28_get_trusted_origins` method.
+3. The relying party origin and global delegation request as well as the trusted origins responses are transferred to
    the cold signer component.
 4. The cold signer component validates the delegation request:
-    1. The metadata responses must match the delegation request targets:
-    2. The metadata responses must be certified and valid:
-        * The `icp:public trusted_origins` metadata must be provided in a valid certificate (
-          see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification)).
-        * The time of all metadata responses must all be within the same reasonable time range.
-        * The `icp:public trusted_origins` metadata must not be `null` and match `vec text`.
-    3. The relying party origin must be within the `icp:public trusted_origins` of all metadata responses.
-5. If validation is successful, the origin is presented to the user.
-    * If the user recognizes the origin and approves, continue with step 6.
-    * If the user rejects (or does not respond within a certain time frame), the signer returns an error to the relying
-      party (via the chain connected component). No further steps are executed.
-6. The delegation request is signed and transferred to the chain connected component.
-    * The expiry of the delegation request is set to the most recent time within the metadata responses plus a
-      reasonable session length that is less than or equal to the maxTimeToLive value in the delegation request.
-7. The delegation is returned to the relying party.
+    1. The trusted origins responses must match the delegation request targets:
+    2. The trusted origins responses must be certified and valid:
+        * The responses must be provided in a valid certificate (
+          see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification))
+        * The response certificate `time` must be recent with respect to the `ingress_expiry` of the canister call.
+        * The response certificate `time` must all be within the same reasonable time range.
+        * The decoded response must not be `null` and match `vec text`.
+    3. The relying party origin must be within all decoded trusted origins responses.
+5. The delegation request is signed and transferred to the chain connected component.
+    * The expiry of the delegation request is set to the most recent response certificate `time` within the trusted
+      origins responses plus a reasonable session length that is less than or equal to the maxTimeToLive value in the
+      delegation request.
+6. The signed delegation is returned to the relying party.
 
 > It's recommended to have the Chain Connected Signer Component verify the delegation request beforehand as described in
 > above _hot_ signer interaction use-case. To reject invalid requests early before interacting with the cold signer.
