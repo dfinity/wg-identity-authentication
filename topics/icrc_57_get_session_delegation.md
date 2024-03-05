@@ -74,7 +74,7 @@ the [IC interface specification, signatures section](https://internetcomputer.or
 **`targets` (`text` array):** (Optional) A list of target canister ids (textual representation) the delegation is
 restricted to.
 If the list is not present, the delegation applies to all canisters (i.e. the delegation is not restricted).
-**`maxTimeToLive` (`text` array):** (Optional) Expiration of the delegation in nanoseconds, signer can still choose to
+**`maxTimeToLive` (`text`):** (Optional) Expiration of the delegation in nanoseconds, signer can still choose to
 return a delegation with a shorter expiration.
 
 ### Example RPC Request
