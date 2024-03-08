@@ -46,7 +46,7 @@ e.g. [ICRC-29](./icrc_29_window_post_message_transport.md).
 
 ## Verify
 
-When the signer receives a delegation chain request for a global identity, it must verify that the canisters targets
+When the signer receives a delegation chain request for a global identity, it must verify that the canister targets
 trust the relying party making the request. The signer can use the below method to get a list of trusted origins for
 each canister target and then verify if the relying party is within each list.
 
