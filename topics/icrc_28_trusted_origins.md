@@ -19,7 +19,7 @@
 ## Summary
 
 When a relying party wants to authenticate as a user, it uses
-a [session key](https://internetcomputer.org/docs/current/references/ic-interface-spec/#ecdsa), and by way of the
+a [session key](https://internetcomputer.org/docs/current/references/ic-interface-spec/#signatures), and by way of the
 authentication flow ([ICRC-34](./icrc_34_get_global_delegation.md) or [ICRC-57](./icrc_57_get_session_delegation.md))
 obtains a delegation chain that allows the session key to sign for the user's global or session identity.
 
