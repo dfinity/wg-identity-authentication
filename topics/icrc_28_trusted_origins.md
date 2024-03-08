@@ -18,7 +18,8 @@
 
 ## Summary
 
-When a relying party wants to authenticate as a user, it uses a session key (e.g., Ed25519 or ECDSA), and by way of the
+When a relying party wants to authenticate as a user, it uses
+a [session key](https://internetcomputer.org/docs/current/references/ic-interface-spec/#ecdsa), and by way of the
 authentication flow ([ICRC-34](./icrc_34_get_global_delegation.md) or [ICRC-57](./icrc_57_get_session_delegation.md))
 obtains a delegation chain that allows the session key to sign for the user's global or session identity.
 
@@ -54,7 +55,7 @@ each canister target and then verify if the relying party is within each list.
 Returns a list of origins trusted by the canister.
 
 ```
-icrc28_get_trusted_origins : () -> (vec text);
+icrc28_get_trusted_origins : () -> (record { trusted_origins : vec text });
 ```
 
 ## Supported standards
@@ -110,7 +111,7 @@ sequenceDiagram
         * The responses must be provided in a valid certificate (
           see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification))
         * The decoded response must not be `null` and match `vec text`.
-3. The signer verifies that relying party origin is within list of trusted origins of all targets.
+3. The signer verifies that relying party origin is within the trusted origin list of all targets.
     * If the origin is trusted by all targets, continue with step 4.
     * If the origin is not trusted by all targets, the signer returns an error to the relying party. No further steps
       are executed.
@@ -132,7 +133,7 @@ sequenceDiagram
         S ->> C: Get trusted origins
         C ->> S: List of trusted origins
     end
-    S ->> CS: - Relying party origin<br>- Delegation request<br>- Trusted origins responses
+    S ->> CS: - Relying party origin<br>- Delegation request<br>- Trusted origins requests and responses
     CS ->> CS: Validate delegation request
     alt Invalid
         CS ->> S: Transfer error
@@ -147,10 +148,12 @@ sequenceDiagram
 1. The relying party connects to the chain connected signer component and requests a global delegation for a given
    principal and list of target canisters.
 2. For every target canister the signer gets the list of trusted origins using the `icrc28_get_trusted_origins` method.
-3. The relying party origin and global delegation request as well as the trusted origins responses are transferred to
-   the cold signer component.
+3. The relying party origin and global delegation request as well as the trusted origins requests and responses are
+   transferred to the cold signer component.
 4. The cold signer component validates the delegation request:
-    1. The trusted origins responses must match the delegation request targets:
+    1. The trusted origins requests must match the delegation request targets:
+        * The request method must match `icrc28_get_trusted_origins`.
+        * The `icrc28_get_trusted_origins` request `canister_id` must match the delegation target canister id.
     2. The trusted origins responses must be certified and valid:
         * The responses must be provided in a valid certificate (
           see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification))

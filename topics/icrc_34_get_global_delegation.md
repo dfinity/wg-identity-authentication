@@ -20,7 +20,8 @@
 
 ## Summary
 
-When a relying party wants to authenticate as a user, it uses a session key (e.g., Ed25519 or ECDSA), and
+When a relying party wants to authenticate as a user, it uses
+a [session key](https://internetcomputer.org/docs/current/references/ic-interface-spec/#ecdsa), and
 below `icrc34_get_global_delegation` method to obtain a delegation chain that allows the session key to sign for the
 user's global identity. The obtained delegation chain **MUST** be restricted by the signer to canister targets that
 trust the relying party following the [ICRC-28](./icrc_28_trusted_origins.md) standard.
@@ -68,7 +69,7 @@ trust the relying party following the [ICRC-28](./icrc_28_trusted_origins.md) st
 **`principal` (`text`):** Principal that the global delegation is requested for.  
 **`publicKey` (`blob`):** Public key that receives the global delegation as described in
 the [IC interface specification, signatures section](https://internetcomputer.org/docs/current/references/ic-interface-spec/#signatures).  
-**`targets` (`text` array):** A list of target canister ids (textual representation) the scope is restricted to.
+**`targets` (`text` array):** A list of target canister ids (textual representation) the scope is restricted to.  
 **`maxTimeToLive` (`text` array):** (Optional) Expiration of the delegation in nanoseconds, signer can still choose to
 return a delegation with a shorter expiration.
 

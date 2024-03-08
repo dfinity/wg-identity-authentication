@@ -20,7 +20,8 @@
 
 ## Summary
 
-When a relying party wants to authenticate as a user, it uses a session key (e.g., Ed25519 or ECDSA), and
+When a relying party wants to authenticate as a user, it uses
+a [session key](https://internetcomputer.org/docs/current/references/ic-interface-spec/#ecdsa), and
 below `icrc57_get_session_delegation` method to obtain a delegation chain that allows the session key to sign for the
 user's session identity. The obtained delegation chain is scoped per relying party, resulting in a different identity
 for each relying party.
@@ -73,7 +74,7 @@ and restrictions.
 the [IC interface specification, signatures section](https://internetcomputer.org/docs/current/references/ic-interface-spec/#signatures).  
 **`targets` (`text` array):** (Optional) A list of target canister ids (textual representation) the delegation is
 restricted to.
-If the list is not present, the delegation applies to all canisters (i.e. the delegation is not restricted).
+If the list is not present, the delegation applies to all canisters (i.e. the delegation is not restricted).  
 **`maxTimeToLive` (`text` array):** (Optional) Expiration of the delegation in nanoseconds, signer can still choose to
 return a delegation with a shorter expiration.
 
