@@ -4,8 +4,8 @@
 type icrc21_consent_message_spec = record {
     // BCP-47 language tag. See https://www.rfc-editor.org/rfc/bcp/bcp47.txt
     language: text;
-    // The output device for which the consent message should be created for.
-    output_device: variant {
+    // Information about the device responsible for presenting the consent message to the user.
+    device_spec: variant {
         // A generic display able to handle large documents and do line wrapping and pagination / scrolling.
         // Text must be Markdown formatted, no external resources (e.g. images) are allowed.
         GenericDisplay;
