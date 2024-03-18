@@ -1,9 +1,15 @@
 // Canister interface specification for ICRC-21.
 // See https://github.com/dfinity/wg-identity-authentication/blob/main/topics/ICRC-21/icrc_21_consent_msg.md
 
-type icrc21_consent_message_spec = record {
+type icrc21_consent_message_metadata = record {
     // BCP-47 language tag. See https://www.rfc-editor.org/rfc/bcp/bcp47.txt
     language: text;
+};
+
+type icrc21_consent_message_spec = record {
+    // Metadata of the consent message.
+    metadata: icrc21_consent_message_metadata
+
     // Information about the device responsible for presenting the consent message to the user.
     device_spec: variant {
         // A generic display able to handle large documents and do line wrapping and pagination / scrolling.
@@ -54,7 +60,7 @@ type icrc21_consent_info = record {
     // The message should adhere as close as possible to the user_preferences specified in the consent_message_spec
     // of the icrc21_consent_message_request.
     // If the message is not available for the given user_preferences a fallback message may be used.
-    // The consent_message_spec must match the consent_message provided.
+    // The metadata must match the consent_message provided.
     //
     // The message should be short and concise.
     // It should only contain information that is:
@@ -73,9 +79,8 @@ type icrc21_consent_info = record {
     // │  └───────────┘   └───────────┘  │
     // └─────────────────────────────────┘
     consent_message: icrc21_consent_message;
-    // Actual consent message spec used to generate the message.
-    // Clients must reject the consent message if the spec does not match the supplied consent_message.
-    consent_message_spec: icrc21_consent_message_spec;
+    // Metadata of the consent_message.
+    metadata: icrc21_consent_message_metadata;
 };
 
 type icrc21_error_info = record {
