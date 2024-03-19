@@ -11,7 +11,8 @@ type icrc21_consent_message_spec = record {
     metadata: icrc21_consent_message_metadata
 
     // Information about the device responsible for presenting the consent message to the user.
-    device_spec: variant {
+    // If absent in the request, the canister should fallback to one of the values defined in this spec (ICRC-21).
+    device_spec: opt variant {
         // A generic display able to handle large documents and do line wrapping and pagination / scrolling.
         // Text must be Markdown formatted, no external resources (e.g. images) are allowed.
         GenericDisplay;
@@ -59,7 +60,8 @@ type icrc21_consent_info = record {
     //
     // The message should adhere as close as possible to the user_preferences specified in the consent_message_spec
     // of the icrc21_consent_message_request.
-    // If the message is not available for the given user_preferences a fallback message may be used.
+    // If the message is not available for the given user_preferences any fallback message should be used. Providing a
+    // message should be preferred over sending an icrc21_error.
     // The metadata must match the consent_message provided.
     //
     // The message should be short and concise.
