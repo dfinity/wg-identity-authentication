@@ -28,7 +28,7 @@ Batch call must be processed by signers as follows:
    2. Evaluate the result of processing the request:
       1. If the result is a successful response, add the result to the batch response. Proceed with processing the next request in the batch.
       2. If the result is an error, add an error to the batch response and stop processing the batch. For any request in the batch that has not been processed yet, add an error response with code `10101` to the batch response.
-3. Send the batch response to the relying party.
+2. Send the batch response to the relying party.
 
 
 ### Examples
