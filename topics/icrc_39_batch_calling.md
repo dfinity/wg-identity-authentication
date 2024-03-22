@@ -17,19 +17,18 @@
 
 JSON-RPC defines a [batch call](https://www.jsonrpc.org/specification#batch) as a JSON array of requests. By supporting this standard a signer declares that all methods offered by the signer may also be invoked as part of a batch.
 
-If a signer receives a batch call, it must process each request sequentially in order of the id and reply with a batch response. If any call results in an error response the signer must not process any further calls in the batch but add an error for any not executed call in the batch.
+If a signer receives a batch call, it must process each request sequentially in order of array position and reply with a batch response. If any call results in an error response the signer must not process any further calls in the batch but add an error for any not executed call in the batch. The signer **MUST** return exactly one response for every request in the same order and with the same ids as the received requests.
 
 ## Batch Processing
 
 Batch call must be processed by signers as follows:
 
-1. Order all requests in the batch by their id in ascending order.
-2. Sequentially, for each request in the batch
+1. Sequentially, for each request in the batch:
    1. Process the request as defined in the appropriate standard.
    2. Evaluate the result of processing the request:
       1. If the result is a successful response, add the result to the batch response. Proceed with processing the next request in the batch.
       2. If the result is an error, add an error to the batch response and stop processing the batch. For any request in the batch that has not been processed yet, add an error response with code `10101` to the batch response.
-3. Send the batch response to the relying party.
+2. Send the batch response to the relying party.
 
 
 ### Examples
@@ -102,7 +101,7 @@ Request
 ```json
 [
     {
-        "id": 1,
+        "id": "725907bb-052e-485d-9d89-16cce654523b",
         "jsonrpc": "2.0",
         "method": "icrc25_request_permissions",
         "params": {
@@ -115,7 +114,7 @@ Request
         }
     },
     {
-        "id": 2,
+        "id": "23c2d1fc-0e42-4a29-b710-b1bd83cb1877",
         "jsonrpc": "2.0",
         "method": "icrc31_get_principals",
         "params": {
@@ -130,7 +129,7 @@ Response
 ```json
 [
     {
-        "id": "1",
+        "id": "725907bb-052e-485d-9d89-16cce654523b",
         "jsonrpc": "2.0",
         "error": {
             "code": 30101,
@@ -138,7 +137,7 @@ Response
         }
     },
     {
-        "id": "2",
+        "id": "23c2d1fc-0e42-4a29-b710-b1bd83cb1877",
         "jsonrpc": "2.0",
         "error": {
             "code": 10101,
