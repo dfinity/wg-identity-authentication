@@ -26,7 +26,7 @@ below `icrc34_get_global_delegation` method to obtain a delegation chain that al
 user's global identity. The obtained delegation chain **MUST** be restricted by the signer to canister targets that
 trust the relying party following the [ICRC-28](./icrc_28_trusted_origins.md) standard.
 
-- Due to the canister target restriction, only the relying party its own canisters can be called on behalf of the user.
+- Due to the canister target restriction, only the canisters that the relying party owns can be called on behalf of the user.
 - A new delegation chain must be obtained for every new canister created by the relying party.
 - The identity is the same across all relying parties, the user is not anonymous between different relying parties.
 
