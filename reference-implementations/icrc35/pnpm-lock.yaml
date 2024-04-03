@@ -22,8 +22,8 @@ importers:
         version: link:../../impl
     devDependencies:
       vite:
-        specifier: 5.0.8
-        version: 5.0.8
+        specifier: 5.0.13
+        version: 5.0.13
 
   example/service-provider:
     dependencies:
@@ -35,8 +35,8 @@ importers:
         version: link:../../impl
     devDependencies:
       vite:
-        specifier: 5.0.8
-        version: 5.0.8
+        specifier: 5.0.13
+        version: 5.0.13
 
   example/shared:
     dependencies:
@@ -2663,8 +2663,8 @@ packages:
       convert-source-map: 2.0.0
     dev: true
 
-  /vite@5.0.8:
-    resolution: {integrity: sha512-jYMALd8aeqR3yS9xlHd0OzQJndS9fH5ylVgWdB+pxTwxLKdO1pgC5Dlb398BUxpfaBxa4M9oT7j1g503Gaj5IQ==}
+  /vite@5.0.13:
+    resolution: {integrity: sha512-/9ovhv2M2dGTuA+dY93B9trfyWMDRQw2jdVBhHNP6wr0oF34wG2i/N55801iZIpgUpnHDm4F/FabGQLyc+eOgg==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
