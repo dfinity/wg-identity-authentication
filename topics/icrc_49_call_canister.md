@@ -70,6 +70,8 @@ An ICRC-25 compliant signer must implement the [icrc25_supported_standards](./ic
 
 **`arg` (`blob`):** The arguments for the call.
 
+**`nonce` (`blob` optional):** Arbitrary data of length at most 32 bytes, typically randomly generated. This can be used to create distinct requests with otherwise identical fields.
+
 ### Example RPC Request
 
 ```json
