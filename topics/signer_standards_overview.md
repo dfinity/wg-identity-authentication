@@ -5,7 +5,7 @@ It explains the motivation behind the standards and how they relate to each othe
 
 The following ICRC standards are relevant in this context:
 * The [Internet Computer Interface Specification](https://internetcomputer.org/docs/current/references/ic-interface-spec/), specifically the [HTTPs interface](https://internetcomputer.org/docs/current/references/ic-interface-spec/#http-interface)
-* [ICRC-21](icrc_21_consent_msg.md): Canister Call Consent Messages
+* [ICRC-21](ICRC-21/icrc_21_consent_msg.md): Canister Call Consent Messages
 * [ICRC-25](icrc_25_signer_interaction_standard.md): Signer Interaction Standard
 * [ICRC-27](icrc_27_get_icrc_1_accounts.md): Get ICRC-1 ledger accounts (ICRC-25 Extension)
 * [ICRC-29](icrc_29_window_post_message_transport.md): PostMessage Transport Standard for ICRC-25
