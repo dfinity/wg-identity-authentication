@@ -1,0 +1,22 @@
+import "../../topics/ICRC-21/ICRC-21.did";
+
+service : {
+    // Returns a human-readable consent message for the given canister call.
+    //
+    // This call must not require authentication (i.e. must be available for the anonymous sender).
+    // If the call is made with a non-anonymous identity, the response may be tailored to the identity.
+    //
+    // This is currently an update call. As soon as secure (replicated) query calls are available, this will be changed to such a replicated query call.
+    icrc21_canister_call_consent_message: (icrc21_consent_message_request) -> (icrc21_consent_message_response);
+
+    // Returns a list of supported standards related to consent messages that this canister implements.
+    // The result should always have at least one entry:
+    // record { name = "ICRC-21"; url = "https://github.com/dfinity/ICRC/blob/main/ICRCs/ICRC-21/ICRC-21.md" }
+    //
+    // This query call must not require authentication.
+    icrc21_supported_standards : () -> (vec record { name : text; url : text }) query;
+
+
+    // Returns a greeting message for the given name.
+    greet: (name: text) -> (text) query;
+}
