@@ -8,7 +8,7 @@ type icrc21_consent_message_metadata = record {
 
 type icrc21_consent_message_spec = record {
     // Metadata of the consent message.
-    metadata: icrc21_consent_message_metadata
+    metadata: icrc21_consent_message_metadata;
 
     // Information about the device responsible for presenting the consent message to the user.
     // If absent in the request, the canister should fallback to one of the values defined in this spec (ICRC-21).
@@ -21,9 +21,9 @@ type icrc21_consent_message_spec = record {
         // Text must be plain text without any embedded formatting elements.
         LineDisplay: record {
             // Maximum number of characters that can be displayed per line.
-            characters_per_line: nat;
+            characters_per_line: nat16;
             // Maximum number of lines that can be displayed at once on a single page.
-            lines_per_page: nat;
+            lines_per_page: nat16;
         };
     };
 };
