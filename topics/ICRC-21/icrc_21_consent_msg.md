@@ -94,8 +94,12 @@ sequenceDiagram
    * `icrc21_consent_message_request.arg` must match the canister call argument.
    * The `icrc21_consent_message` canister call must be made to the target canister.
    * The response to the `icrc21_consent_message` canister call (fetched using `read_state`) must be delivered in a valid certificate (see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification)).
-   * The decoded response must not be `null` and match the `icrc21_consent_message_response::OK` variant.
-3. The consent message is presented to the user.
+   * The decoded response must match the `icrc21_consent_message_response::OK` variant.
+   * The consent message format and metadata must be acceptable to the user _and_ the signer. The consent message must be:
+      * in a format that can be presented by the signer.
+      * in a language understood by the user.
+3. If validation is successful, the consent message is presented to the user.
+   * Otherwise, the signer must abort the signing process and display an error message to the user. No further steps are executed.
 4. User approval:
    * If the user approves the canister call, continue with step 5.
    * If the user rejects the canister call (or does not respond within a certain time frame), the signer returns an error to the relying party. No further steps are executed.
@@ -152,9 +156,11 @@ sequenceDiagram
       * The `icrc21_consent_message` request `canister_id` must match the target canister id.
    2. The consent message response must be certified and valid:
       * The response to the `icrc21_consent_message` canister call must be provided in a valid certificate (see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification)).
-      * The decoded response must not be `null` and match the `icrc21_consent_message_response::Ok` variant.
+      * The decoded response must match the `icrc21_consent_message_response::Ok` variant.
    3. The consent message response certificate `time` must be recent with respect to the `ingress_expiry` of the canister call.
-   4. The consent message user preferences must match the user preferences of the signer. In particular, the consent message must be in a language understood by the user.
+   4. The consent message format and metadata must be acceptable to the user _and_ the signer. The consent message must be:
+      * in a format that can be presented by the signer.
+      * in a language understood by the user.
 5. If validation is successful, the consent message is presented to the user.
    * Otherwise, the signer must abort the signing process and display an error message to the user. No further steps are executed.
 6. User approval:
@@ -194,9 +200,10 @@ Argument for the ledger canister call to `icrc21_consent_message`:
    record {
       method = "transfer";
       arg = blob "4449..."; // candid encoded argument
-      consent_preferences = record {
+      metadata = record {
         language = "en-US"
-      }
+      };
+      device_spec: opt variant { GenericDisplay };
    }
 )
 ```
@@ -205,14 +212,15 @@ Argument for the ledger canister call to `icrc21_consent_message`:
 
 ```
 (
-   variant {
-      Ok = record {
-         consent_message = "Transfer 7.89 ICP to account ed2182..., include memo: 123. Fee: 0.0001 ICP.";
-         language = "en-US"
-      }
-   }
+  variant {
+    Ok = record {
+      metadata = record { language = "en-US" };
+      consent_message = variant { GenericDisplayMessage = "Transfer 7.89 ICP to account ed2182..., include memo: 123. Fee: 0.0001 ICP." };
+    }
+  },
 )
 ```
+
 ### Signer UI Approval Screen
 
 The message will then be shown to the user in the following context:
