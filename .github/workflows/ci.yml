@@ -1,0 +1,40 @@
+name: CI
+on: [pull_request]
+
+jobs:
+  rust-checks:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ref-impl: [ ICRC-21 ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache Cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ matrix.ref-impl }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+      - name: Install Rust
+        run: |
+          rustup update stable --no-self-update
+          rustup component add rustfmt
+          rustup component add clippy
+
+      - name: Check Format
+        working-directory: reference-implementations/${{ matrix.ref-impl }}
+        run: cargo fmt --check
+
+      - name: Clippy
+        working-directory: reference-implementations/${{ matrix.ref-impl }}
+        run: cargo clippy --tests --benches -- -D clippy::all
+
+      - name: Test
+        working-directory: reference-implementations/${{ matrix.ref-impl }}
+        run: cargo test
+        env:
+          RUST_BACKTRACE: 1
