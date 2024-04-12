@@ -80,7 +80,6 @@ fn consent_msg_text_pages(
     // Split text into word chunks that fit on a line (breaking long words)
     let words = full_text
         .split_whitespace()
-        .into_iter()
         .flat_map(|word| {
             word.chars()
                 .collect::<Vec<_>>()
@@ -95,14 +94,13 @@ fn consent_msg_text_pages(
     // Add words to lines until the line is full
     let mut lines = vec![];
     let mut current_line = "".to_string();
-    let mut words = words.into_iter();
-    while let Some(word) = words.next() {
+    for word in words {
         if current_line.is_empty() {
             // all words are guaranteed to fit on a line
             current_line = word.to_string();
             continue;
         }
-        if current_line.len() + word.len() + 1 <= characters_per_line as usize {
+        if current_line.len() + word.len() < characters_per_line as usize {
             current_line.push(' ');
             current_line.push_str(word.as_str());
         } else {
@@ -221,7 +219,7 @@ mod test {
                 consent_message: LineDisplayMessage {
                     pages: vec![
                         Icrc21LineDisplayPage {
-                            lines: vec!["Produce the", "following greeting", "text: \"Hello,"]
+                            lines: ["Produce the", "following greeting", "text: \"Hello,"]
                                 .iter()
                                 .map(|s| s.to_string())
                                 .collect()
