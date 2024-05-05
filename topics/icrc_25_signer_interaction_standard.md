@@ -114,7 +114,7 @@ Extensions to this standard may define additional scopes.
 
 This standard is the signer interaction _base_ standard. As such it intentionally excludes all methods that could be handled by an extension, for example:
 
-- Getting principals: [ICRC-31](./icrc_31_get_principals.md)
+- Getting accounts: [ICRC-27](./icrc_27_get_accounts.md)
 - Proving ownership of principals: [ICRC-32](./icrc_32_sign_challenge.md)
 - Canister calls: [ICRC-49](./icrc_49_call_canister.md)
 
@@ -279,7 +279,7 @@ Response
     "result": {
         "scopes": [
             {
-                "method": "icrc31_get_principals"
+                "method": "icrc27_get_accounts"
             },
             {
                 "method": "icrc49_call_canister",
