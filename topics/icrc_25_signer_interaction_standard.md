@@ -11,7 +11,6 @@
   * [Sessions](#sessions)
   * [Scopes](#scopes)
     * [Scope Objects](#scope-objects)
-    * [Scopes Defined by this Standard](#scopes-defined-by-this-standard)
   * [Extensions](#extensions)
   * [Methods](#methods)
     * [`icrc25_request_permissions`](#icrc25_request_permissions)
@@ -69,11 +68,13 @@ The transport channel is not required to provide confidentiality.
 
 ## Sessions
 
-ICRC-25 uses sessions to determine the lifetime of granted permission [scopes](#scopes). Permission scopes (see [`icrc25_request_permissions` message](#icrc25_request_permissions)) are granted for the duration of a single session only. 
+ICRC-25 may use sessions to store user-choices and determine the lifetime of granted permission [scopes](#scopes). Permission scopes (see [`icrc25_request_permissions` message](#icrc25_request_permissions)) are granted for the duration of a single session only. 
 
 A session is established when the first permission request is granted. A session can be revoked by the relying party at any time by sending a [`icrc25_revoke_permissions` message](#icrc25_revoke_permissions) to the signer. The signer can also terminate the session at any time and should offer the user a method to do so.
 
 A session must be terminated automatically after a certain period of inactivity. The session might be extended automatically if the interaction between the relying party and the signer is still _actively_ ongoing when the default session timeout is reached. There must be a maximum session duration (regardless of activity).
+
+Signers that do not maintain sessions (i.e. stateless signers) MUST prompt the user to approve each request individually for each method defined in an ICRC-25 extension.
 
 ## Scopes
 
@@ -88,40 +89,18 @@ Scopes are represented in JSON-RPC 2.0 messages as JSON objects with the followi
 
 Extensions to this standard may define additional properties on scope objects.
 
-### Scopes Defined by this Standard
-
-This standard defines the wildcard (`*`) scope. It means that the relying party requests permission to invoke any method on the signer.
-
-**Example:**
-```json
-{
-    "id": 1,
-    "jsonrpc": "2.0",
-    "method": "icrc25_request_permissions",
-    "params": {
-        "scopes": [
-            {
-                "method": "*"
-            }
-        ]
-    }
-}
-```
-
-Extensions to this standard may define additional scopes.
-
 ## Extensions
 
 This standard is the signer interaction _base_ standard. As such it intentionally excludes all methods that could be handled by an extension, for example:
 
-- Getting principals: [ICRC-31](./icrc_31_get_principals.md)
+- Getting principals: [ICRC-27](./icrc_27_get_accounts.md)
 - Proving ownership of principals: [ICRC-32](./icrc_32_sign_challenge.md)
 - Canister calls: [ICRC-49](./icrc_49_call_canister.md)
 
 This allows signer developers to choose which extensions they want to support and only implement those.
 
 The standard defines the `icrc25_supported_standards` endpoint to accommodate these and other future extensions.
-This endpoint returns names of all specifications (e.g., `"ICRC-31"`) implemented by the signer.
+This endpoint returns names of all specifications (e.g., `"ICRC-27"`) implemented by the signer.
 
 ## Methods
 
@@ -151,19 +130,21 @@ While processing the request from the relying party, the signer can cancel it at
 
 1. The relying party sends a `icrc25_request_permissions` message to the signer.
 2. The signer removes any unrecognized scopes from the array of requested scopes.
-3. Depending on the session state the signer either skips or displays the details of the to-be-established connection to the user:
+3. Depending on whether the signer supports sessions:
+   - If the signer does _not_ support sessions, it may send a response immediately _without_ prompting the user. Scopes should be granted subject to a static signer policy. Skip to step 6.
+     > **Note:** Stateless signers MUST prompt the user to approve each request individually for each method defined in an ICRC-25 extension.
+   - Otherwise, continue with step 4.
+   > **Note:** It is recommended that signers assist users when granting permissions to relying parties, e.g. by maintaining a list of well-known relying parties and displaying additional information about the relying party, such as its name, logo, etc., or in the case of an unknown relying party, by displaying a warning.
+4. Depending on the session state the signer either skips or displays the details of the to-be-established connection to the user:
     - If there is an active session with the relying party, skip to the next step, otherwise:
-        - the signer presents the details of the to-be-established connection to the user. If the user has never interacted with this relying party before, the signer should display information explaining that the user is about to establish a connection with a new relying party.
+        - the signer presents the details of the to-be-established connection to the user. If the user has never interacted with this relying party before, the signer may display information explaining that the user is about to establish a connection with a new relying party.
         - If the user approves the connection, the signer creates a new session for the relying party.
             - Otherwise, the signer sends a response with an error back to the relying party and step 5 is skipped.
-
-      > **Note:** The signer should maintain a list of relying parties that are trusted by the user. It is recommended that signers assist users when deciding to grant permissions to new relying parties, e.g. by maintaining a list of well-known relying parties and displaying additional information about the relying party, such as its name, logo, etc., or in the case of an unknown relying party, by displaying a warning.
-      
-4. The signer displays the requested scopes to the user and asks the user to approve or reject the request. The user should also be allowed to approve only a subset of the requested scopes or add additional restrictions (see [optional scope restrictions](#optional-properties)).
+5. The signer displays the requested scopes to the user and asks the user to approve or reject the request. The user may also be allowed to approve only a subset of the requested scopes or add additional restrictions (see [optional scope restrictions](#optional-properties)).
     - If all requested scopes have already been granted, the signer may skip the user interaction and reply with the array of granted scopes immediately.
     - If the user approves the request, the signer saves information about the granted permission scopes on the current session. Then the signer sends a successful response back to the relying party with the array of granted scopes.
     - If the user rejects the request, the signer sends a response with an error back to the relying party.
-5. After receiving a response, the relying party may send additional messages depending on the granted scopes.
+6. After receiving a response, the relying party may send additional messages depending on the granted scopes.
 
 ```mermaid
 sequenceDiagram
@@ -172,14 +153,18 @@ sequenceDiagram
     participant U as User
 
     RP ->> S: Request permission
-    S ->> U: Show relying party details<br>and requested permissions
-    alt Approved
-        U ->> S: Approve request
-        S ->> S: Store the granted permission scopes
+    alt Stateless Signer
         S ->> RP: Permission response
-    else Rejected
-        U ->> S: Reject request
-        S ->> RP: Error response: Permission not granted (3000)
+    else Signer supports sessions 
+        S ->> U: Show relying party details<br>and requested permissions
+        alt Approved
+            U ->> S: Approve request
+            S ->> S: Store the granted permission scopes
+            S ->> RP: Permission response
+        else Rejected
+            U ->> S: Reject request
+            S ->> RP: Error response: Permission not granted (3000)
+        end
     end
 ```
 
@@ -194,7 +179,7 @@ Request
     "params": {
         "scopes": [
             {
-                "method": "icrc31_get_principals"
+                "method": "icrc27_get_accounts"
             },
             {
                 "method": "icrc49_call_canister",
@@ -213,7 +198,7 @@ Response
     "result": {
         "scopes": [
             {
-                "method": "icrc31_get_principals"
+                "method": "icrc27_get_accounts"
             },
             {
                 "method": "icrc49_call_canister",
@@ -279,7 +264,7 @@ Response
     "result": {
         "scopes": [
             {
-                "method": "icrc31_get_principals"
+                "method": "icrc27_get_accounts"
             },
             {
                 "method": "icrc49_call_canister",
@@ -389,7 +374,7 @@ sequenceDiagram
     participant RP as Relying Party
     participant S as Signer
 
-    RP ->> S: Revoke supported standards
+    RP ->> S: Request supported standards
     S ->> RP: Reply with supported standards
 ```
 
