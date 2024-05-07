@@ -93,8 +93,7 @@ Extensions to this standard may define additional properties on scope objects.
 
 This standard is the signer interaction _base_ standard. As such it intentionally excludes all methods that could be handled by an extension, for example:
 
-- Getting principals: [ICRC-27](./icrc_27_get_accounts.md)
-- Proving ownership of principals: [ICRC-32](./icrc_32_sign_challenge.md)
+- Getting accounts: [ICRC-27](./icrc_27_get_accounts.md)
 - Canister calls: [ICRC-49](./icrc_49_call_canister.md)
 
 This allows signer developers to choose which extensions they want to support and only implement those.
@@ -134,7 +133,6 @@ While processing the request from the relying party, the signer can cancel it at
    - If the signer does _not_ support sessions, it may send a response immediately _without_ prompting the user. Scopes should be granted subject to a static signer policy. Skip to step 6.
      > **Note:** Stateless signers MUST prompt the user to approve each request individually for each method defined in an ICRC-25 extension.
    - Otherwise, continue with step 4.
-   > **Note:** It is recommended that signers assist users when granting permissions to relying parties, e.g. by maintaining a list of well-known relying parties and displaying additional information about the relying party, such as its name, logo, etc., or in the case of an unknown relying party, by displaying a warning.
 4. Depending on the session state the signer either skips or displays the details of the to-be-established connection to the user:
     - If there is an active session with the relying party, skip to the next step, otherwise:
         - the signer presents the details of the to-be-established connection to the user. If the user has never interacted with this relying party before, the signer may display information explaining that the user is about to establish a connection with a new relying party.
@@ -202,8 +200,7 @@ Response
             },
             {
                 "method": "icrc49_call_canister",
-                "targets": ["ryjl3-tyaaa-aaaaa-aaaba-cai"],
-                "senders": ["btbdd-ob3pe-dz6kv-7n4gh-k2xtm-xjthz-kcvpk-fwbnv-w5qbk-iqjm4-4qe"]
+                "targets": ["ryjl3-tyaaa-aaaaa-aaaba-cai"]
             }
         ]
     }
