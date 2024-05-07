@@ -140,10 +140,10 @@ service : {
     // This is currently an update call. As soon as secure (replicated) query calls are available, this will be changed to such a replicated query call.
     icrc21_canister_call_consent_message: (icrc21_consent_message_request) -> (icrc21_consent_message_response);
 
-    // Returns a list of supported standards related to consent messages that this canister implements.
-    // The result should always have at least one entry:
+    // Returns a list of supported standards that this canister implements.
+    // The result must include an entry for ICRC-21:
     // record { name = "ICRC-21"; url = "https://github.com/dfinity/ICRC/blob/main/ICRCs/ICRC-21/ICRC-21.md" }
     //
-    // This query call must not require authentication.
-    icrc21_supported_standards : () -> (vec record { name : text; url : text }) query;
+    // See ICRC-10 for more information: https://github.com/dfinity/ICRC/blob/main/ICRCs/ICRC-10/ICRC-10.md
+    icrc10_supported_standards : () -> (vec record { name : text; url : text }) query;
 }
