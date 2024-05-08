@@ -74,8 +74,6 @@ A session is established when the first permission request is granted. A session
 
 A session must be terminated automatically after a certain period of inactivity. The session might be extended automatically if the interaction between the relying party and the signer is still _actively_ ongoing when the default session timeout is reached. There must be a maximum session duration (regardless of activity).
 
-Signers that do not maintain sessions (i.e. stateless signers) MUST prompt the user to approve each request individually for each method defined in an ICRC-25 extension.
-
 ## Scopes
 
 A scope is the permission to invoke a specific JSON-RPC 2.0 method on the signer. A scope is identified by the `method` property which matches the `method` name of the JSON-RPC 2.0 call it relates to. The relying party requests scopes using the [`icrc25_request_permissions`](#icrc25_request_permissions) method and may revoke them using  [`icrc25_revoke_permissions`](#icrc25_revoke_permissions).
@@ -131,7 +129,6 @@ While processing the request from the relying party, the signer can cancel it at
 2. The signer removes any unrecognized scopes from the array of requested scopes.
 3. Depending on whether the signer supports sessions:
    - If the signer does _not_ support sessions, it may send a response immediately _without_ prompting the user. Scopes should be granted subject to a static signer policy. Skip to step 6.
-     > **Note:** Stateless signers MUST prompt the user to approve each request individually for each method defined in an ICRC-25 extension.
    - Otherwise, continue with step 4.
 4. Depending on the session state the signer either skips or displays the details of the to-be-established connection to the user:
     - If there is an active session with the relying party, skip to the next step, otherwise:
@@ -180,8 +177,7 @@ Request
                 "method": "icrc27_get_accounts"
             },
             {
-                "method": "icrc49_call_canister",
-                "targets": ["ryjl3-tyaaa-aaaaa-aaaba-cai"]
+                "method": "icrc49_call_canister"
             }
         ]
     }
@@ -199,8 +195,7 @@ Response
                 "method": "icrc27_get_accounts"
             },
             {
-                "method": "icrc49_call_canister",
-                "targets": ["ryjl3-tyaaa-aaaaa-aaaba-cai"]
+                "method": "icrc49_call_canister"
             }
         ]
     }
@@ -264,9 +259,7 @@ Response
                 "method": "icrc27_get_accounts"
             },
             {
-                "method": "icrc49_call_canister",
-                "targets": ["ryjl3-tyaaa-aaaaa-aaaba-cai"],
-                "senders": ["btbdd-ob3pe-dz6kv-7n4gh-k2xtm-xjthz-kcvpk-fwbnv-w5qbk-iqjm4-4qe"]
+                "method": "icrc49_call_canister"
             }
         ]
     }
@@ -398,8 +391,8 @@ Response
         "url": "https://github.com/dfinity/ICRC/blob/main/ICRCs/ICRC-25/ICRC-25.md"
       },
       {
-        "name": "ICRC-31",
-        "url": "https://github.com/dfinity/ICRC/blob/main/ICRCs/ICRC-31/ICRC-31.md"
+        "name": "ICRC-27",
+        "url": "https://github.com/dfinity/ICRC/blob/main/ICRCs/ICRC-27/ICRC-27.md"
       }
     ]
   }
