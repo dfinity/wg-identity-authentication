@@ -36,12 +36,11 @@ using the [window.postMessage](https://developer.mozilla.org/en-US/docs/Web/API/
 ## Authentication
 
 * The relying party must authenticate the signer by the `origin` of the window that it opens.
-* The singer must authenticate the relying party by the `origin` property of the `message` event that it received.
+* The signer broadcasts the "ready" message cannot authenticate the relying party by the `origin` property of the `message` event that it received.
 
 ## Sending Messages
 
-Messages are sent by calling `window.postMessage` on the signer window, or the `window.opener` respectively.
-When sending messages, the `targetOrigin` parameter must be set to the origin of the signer or relying party window.
+The "ready" message is sent by the signer to the relying party using either `parent.postMessage` or `window.opener.postMessage`, specifically targeting the potential parent that opened the signer window. This message is broadcast without being scoped to any specific origin. This approach is necessary because it initiates communication, and until data exchange begins, the origin of the relying party remains unknown.
 
 The relying party may close the signer window in between interactions. If the relying party wants to continue a session after having closed the window, it must again go through the process of [establishing a communication channel](#establishing-a-communication-channel). 
 
