@@ -113,7 +113,7 @@ More extensions can be added in the future.
 
 ### Use Case 2: Relying Party Initiated Transaction Approval Flow
 
-In this use case the relying party initiates canister calls (transactions) on behalf of an identity controlled by a singer.
+In this use case the relying party initiates canister calls (transactions) on behalf of an identity controlled by a signer.
 The user can approve or reject the transaction on the signer UI. After user approval, the signer signs the call and submits it to the IC. Upon receiving the result of the canister call, the signer must forward the result to the relying party.
 
 This flow (described in [ICRC-49](icrc_49_call_canister.md)) is one of the main use cases for [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md). It offers an alternative interaction model to the currently used session delegations.
