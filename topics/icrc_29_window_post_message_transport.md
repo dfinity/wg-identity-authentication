@@ -36,7 +36,7 @@ using the [window.postMessage](https://developer.mozilla.org/en-US/docs/Web/API/
 ## Authentication
 
 * The relying party must authenticate the signer by the `origin` of the window that it opens.
-* The signer broadcasts the "ready" message cannot authenticate the relying party by the `origin` property of the `message` event that it received.
+* The signer broadcasts the "ready" message to its parent.
 
 ## Sending Messages
 
