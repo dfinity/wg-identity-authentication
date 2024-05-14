@@ -15,11 +15,17 @@ fn greet(name: String) -> String {
 }
 
 #[ic_cdk::query]
-fn icrc21_supported_standards() -> Vec<Icrc21SupportedStandard> {
-    vec![Icrc21SupportedStandard {
-        url: "https://github.com/dfinity/ICRC/blob/main/ICRCs/ICRC-21/ICRC-21.md".to_string(),
-        name: "ICRC-21".to_string(),
-    }]
+fn icrc10_supported_standards() -> Vec<Icrc21SupportedStandard> {
+    vec![
+        Icrc21SupportedStandard {
+            url: "https://github.com/dfinity/ICRCs/ICRC-10.md".to_string(),
+            name: "ICRC-10".to_string(),
+        },
+        Icrc21SupportedStandard {
+            url: "https://github.com/dfinity/ICRC/blob/main/ICRCs/ICRC-21/ICRC-21.md".to_string(),
+            name: "ICRC-21".to_string(),
+        },
+    ]
 }
 
 #[ic_cdk::update]
@@ -160,12 +166,18 @@ mod test {
     #[test]
     fn should_declare_icrc21_support() {
         assert_eq!(
-            icrc21_supported_standards(),
-            vec![Icrc21SupportedStandard {
-                url: "https://github.com/dfinity/ICRC/blob/main/ICRCs/ICRC-21/ICRC-21.md"
-                    .to_string(),
-                name: "ICRC-21".to_string(),
-            }]
+            icrc10_supported_standards(),
+            vec![
+                Icrc21SupportedStandard {
+                    url: "https://github.com/dfinity/ICRCs/ICRC-10.md".to_string(),
+                    name: "ICRC-10".to_string(),
+                },
+                Icrc21SupportedStandard {
+                    url: "https://github.com/dfinity/ICRC/blob/main/ICRCs/ICRC-21/ICRC-21.md"
+                        .to_string(),
+                    name: "ICRC-21".to_string(),
+                }
+            ]
         );
     }
 
