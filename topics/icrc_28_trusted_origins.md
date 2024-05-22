@@ -6,17 +6,19 @@
 <!-- TOC -->
 * [ICRC-28: Trusted Origins](#icrc-28-trusted-origins)
   * [Summary](#summary)
+  * [Extensions](#extensions)
   * [Identify](#identify)
   * [Verify](#verify)
     * [icrc28_get_trusted_origins](#icrc28_get_trusted_origins)
-  * [Supported standards](#supported-standards)
-    * [icrc28_supported_standards](#icrc28_supported_standards)
   * [Use-Cases](#use-cases)
     * [Hot Signer Use-Case](#hot-signer-use-case)
     * [Cold Signer Use-Case](#cold-signer-use-case)
 <!-- TOC -->
 
 ## Summary
+
+ICRC-28 defines a standard method to provide global delegations to relying parties while ensuring that malicious actors 
+cannot gain permission to manage user data in arbitrary canisters (i.e. drain a user's wallet of its assets).
 
 When a relying party wants to authenticate as a user, it uses
 a [session key](https://internetcomputer.org/docs/current/references/ic-interface-spec/#signatures), and by way of the
@@ -30,6 +32,13 @@ relying parties can be called on behalf of the user without user approval unless
 Therefore, a signer **MUST** restrict the delegation chain for the user's global identity to a set of canister
 targets that trust the relying party that requested the delegation chain. This standard describes how a canister can
 indicate that a relying party is trusted.
+
+## Extensions
+
+[ICRC-58](https://github.com/dfinity/ICRC/issues/81): A method for relying parties to request arbitrary canisters as targets.
+
+[ICRC-59](https://github.com/dfinity/ICRC/issues/82): A list of asset canisters meant to be shared by the ecosystem that 
+signers can choose to reject as canister targets even if the relying party controls them.
 
 ## Identify
 
@@ -56,25 +65,6 @@ Returns a list of origins trusted by the canister.
 
 ```
 icrc28_get_trusted_origins : () -> (record { trusted_origins : vec text });
-```
-
-## Supported standards
-
-The signer can use below method to check if the ICRC-28 standard and any related standards are supported.
-
-### icrc28_supported_standards
-
-Returns a list of supported standards related to trusted origins that this canister implements. This query call must not
-require authentication.
-
-```
-icrc28_supported_standards : () -> (vec record { name : text; url : text }) query;
-```
-
-The result should always have at least one entry:
-
-```
-record { name = "ICRC-28"; url = "https://github.com/dfinity/ICRC/blob/main/ICRCs/ICRC-28/ICRC-28.md" }
 ```
 
 ## Use-Cases
