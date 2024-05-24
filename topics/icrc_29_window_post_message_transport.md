@@ -4,7 +4,6 @@
 |:------:|
 | Draft  |
 
-
 ## Summary
 
 This standard defines a transport channel to send [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md) messages from a relying party to a signer. The transport channel is based on the [window.postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) API.
@@ -44,11 +43,8 @@ The signer should reply with a message indicating that it is ready to receive ad
 
 > **Note**: The relying party should send `icrc29_status` messages in short intervals. It is expected that some of the messages will be lost due to being sent before the signer is ready.
 
-After the `"result": "ready"` response has been sent by the signer, it should ignore any further `icrc29_status` messages.
-
 After the `"result": "ready"` response has been received, the relying party can send [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md) messages to the signer
 using the [window.postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) API.
-
 
 ## Authentication
 
