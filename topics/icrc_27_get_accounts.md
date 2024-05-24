@@ -76,7 +76,7 @@ None
 
 **`accounts` (`vec`):** List of accounts.
 
-- `principal` (`text`): Principal (textual representation) used to derive the account identity.
+- `owner` (`text`): Principal (textual representation) used to derive the account identity.
 - `subaccount` (`blob`) (Optional): Subaccount bytes used to derive the account identity, this is 32 bytes as defined in
   the ICRC-1 ledger standard.
 
@@ -89,7 +89,7 @@ None
   "result": {
     "accounts": [
       {
-        "principal": "gyu2j-2ni7o-o6yjt-n7lyh-x3sxq-zh7hp-sjvqe-t7oul-4eehb-2gvtt-jae",
+        "owner": "gyu2j-2ni7o-o6yjt-n7lyh-x3sxq-zh7hp-sjvqe-t7oul-4eehb-2gvtt-jae",
         "subaccount": "FBEBG5Mrrn9HfX8UNL8pFwQV1hWz62YSCMxYAmNp8Sg="
       }
     ]
@@ -122,13 +122,13 @@ sequenceDiagram
 
 ## Errors
 
-This standard does not define additional errors. See [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-3) for a
+This standard does not define additional errors. See [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-4) for a
 list of errors that can be returned by all methods.
 
 ## Supported token standards
 
 To get a list of the token standards that the signer supports see the `icrc25_supported_standards` method
-in [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-3).
+in [ICRC-25](./icrc_25_signer_interaction_standard.md#icrc25_supported_standards).
 
 If a token standard is not returned in the `icrc25_supported_standards` method, the relying party SHOULD assume that the
 signer does not have the capability to show and transfer tokens of this token standard.
