@@ -26,16 +26,11 @@ This Method can be used by the relying party to request calls to 3rd party canis
 
 **Name:** `icrc49_call_canister`
 
-**Prerequisite:** Active session with granted permission scope `icrc49_call_canister` or `*`.
-  * This scope may be restricted to specific target canister ids and/or sender principals.
+**Prerequisite:** Active session with granted permission scope `icrc49_call_canister`.
 
 ## Scope (according to the [ICRC-25 standard](./icrc_25_signer_interaction_standard.md))
 
 **Scope:** `icrc49_call_canister` 
-
-**Optional Properties:**
-- `targets` (`text` array): A list of target canister ids (textual representation) the scope is restricted to. If the list is not present, the scope applies to all canisters (i.e. the permission is not restricted).
-- `senders` (`text` array): A list of sender principal (textual representation) the scope is restricted to. If the list is not present, the scope applies to all senders (i.e. the permission is not restricted).
 
 ### Example Permission Request
 ```json
@@ -47,9 +42,7 @@ This Method can be used by the relying party to request calls to 3rd party canis
         "version": "1",
         "scopes": [
             {
-                "method": "icrc49_call_canister",
-                "targets": ["ryjl3-tyaaa-aaaaa-aaaba-cai"],
-                "senders": ["ryjl3-tyaaa-aaaaa-aaaba-cai"]
+                "method": "icrc49_call_canister"
             }
         ]
     }
