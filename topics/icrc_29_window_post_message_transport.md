@@ -54,7 +54,7 @@ using the [window.postMessage](https://developer.mozilla.org/en-US/docs/Web/API/
 ## Sending Messages
 
 Messages are sent by calling `window.postMessage` on the signer window, or the `window.opener` respectively.
-When sending messages from relying party to signer, the `targetOrigin` parameter must be omitted, so that the signer can redirect to a different origin when needed.
+When sending messages from relying party to signer, the `targetOrigin` parameter must be set to `'*'`, so that the signer can redirect to a different origin when needed.
 When sending messages from signer to relying party, the `targetOrigin` parameter must be set to the `origin` property in the previously received `icrc29_status` message event.
 
 The relying party may close the signer window in between interactions. If the relying party wants to continue a session after having closed the window, it must again go through the process of [establishing a communication channel](#establishing-a-communication-channel). 
