@@ -21,7 +21,7 @@ For this standard to represent an [ICRC-25](https://github.com/dfinity/wg-identi
 ## Establishing a Communication Channel
 
 A [window.postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) communication channel is initiated by the relying party. The relying party opens a new window and polls repeatedly for the signer to reply with a message indicating that it is ready for interactions.
-The message sent by the relaying party is a [JSON-RPC 2.0](https://www.jsonrpc.org/specification) call with method `icrc29_status` and no parameters:
+The message sent by the relaying party has `targetOrigin` set to `'*'` and is a [JSON-RPC 2.0](https://www.jsonrpc.org/specification) call with method `icrc29_status` and no parameters:
 
 ```json
 {
@@ -31,7 +31,8 @@ The message sent by the relaying party is a [JSON-RPC 2.0](https://www.jsonrpc.o
 }
 ```
 
-The signer should reply with a message indicating that it is ready to receive additional messages:
+The signer should reply with a message with indicating that it is ready to receive additional messages.
+The message `targetOrigin` should be set to the `icrc29_status` message its `origin` property value.
 
 ```json
 {
@@ -48,14 +49,20 @@ using the [window.postMessage](https://developer.mozilla.org/en-US/docs/Web/API/
 
 ## Authentication
 
-* The relying party must authenticate the signer by checking if the received message event `source` property is equal to the `window` that was opened.
-* The signer must authenticate the relying party by checking if the received message event `origin` property is equal to the `origin` property in the previously received `icrc29_status` message event.
+* The relying party must authenticate the signer by checking if both:
+  - The received message `source` property is equal to the `window` that was opened.
+  - The received message `origin` property is equal to the `origin` property in the `"result": "ready"` message received when communication channel was established.
+* The signer must authenticate the relying party by checking if both:
+    - The received message `source` property is equal to the `window.opener`.
+    - The received message `origin` property is equal to the `origin` property in the `icrc29_status` message received when communication channel was established.
 
 ## Sending Messages
 
 Messages are sent by calling `window.postMessage` on the signer window, or the `window.opener` respectively.
-When sending messages from relying party to signer, the `targetOrigin` parameter must be set to `'*'`, so that the signer can redirect to a different origin when needed.
-When sending messages from signer to relying party, the `targetOrigin` parameter must be set to the `origin` property in the previously received `icrc29_status` message event.
+
+When sending messages from relying party to signer, the `targetOrigin` parameter must be set to the `origin` property in the `"result": "ready"` message received when communication channel was established
+
+When sending messages from signer to relying party, the `targetOrigin` parameter must be set to the `origin` property in the `icrc29_status` message received when communication channel was established.
 
 The relying party may close the signer window in between interactions. If the relying party wants to continue a session after having closed the window, it must again go through the process of [establishing a communication channel](#establishing-a-communication-channel). 
 
