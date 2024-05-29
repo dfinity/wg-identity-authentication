@@ -35,9 +35,9 @@ indicate that a relying party is trusted.
 
 ## Extensions
 
-[ICRC-58](https://github.com/dfinity/ICRC/issues/81): A method for relying parties to request arbitrary canisters as targets.
+[ICRC-81](https://github.com/dfinity/ICRC/issues/81): A method for relying parties to request arbitrary canisters as targets.
 
-[ICRC-59](https://github.com/dfinity/ICRC/issues/82): A list of asset canisters meant to be shared by the ecosystem that 
+[ICRC-82](https://github.com/dfinity/ICRC/issues/82): A list of asset canisters meant to be shared by the ecosystem that 
 signers can choose to reject as canister targets even if the relying party controls them.
 
 ## Identify
