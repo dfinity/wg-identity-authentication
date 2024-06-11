@@ -47,28 +47,35 @@ The message `targetOrigin` should be set to the previously received `icrc29_stat
 After the `"result": "ready"` response has been received within a reasonable timeframe, the relying party can send [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md) messages to the signer
 using the [window.postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) API.
 
-## Authentication
+## Signer
 
-* The relying party must authenticate the signer by checking if both:
-  - The received message `source` property is equal to the `window` that was opened.
-  - The received message `origin` property is equal to the `origin` property in the `"result": "ready"` response received when communication channel was established.
-* The signer must authenticate the relying party by checking if both:
-  - The received message `source` property is equal to the `source` property in the `icrc29_status` message received when communication channel was established.
-  - The received message `origin` property is equal to the `origin` property in the `icrc29_status` message received when communication channel was established.
+The `origin` and `source` values of the received message `icrc29_status` when the communication channel was established,
+are mentioned below as `establishedOrigin` and `establishedSource` respectively.
 
-## Sending Messages
+Messages are received by listening to `message` events, messages are considered as coming from relying party if both:
+- The received message `origin` property is equal to the `establishedOrigin`.
+- The received message `source` property is equal to the `establishedSource`.
 
-Messages are sent by calling `window.postMessage` on the signer `window`, or the `source` property in the `icrc29_status` message received when communication channel was established respectively.
+Messages are sent by calling the `postMessage` method on the `establishedSource` with the `targetOrigin` parameter set to `establishedOrigin`.
 
-When sending messages from relying party to signer, the `targetOrigin` parameter must be set to the `origin` property in the `"result": "ready"` response received when the communication channel was established
+The window must not be automatically closed after sending a message, since the relying party could possibly send additional messages. 
+Instead, the relying party is responsible for closing the signer window.
 
-When sending messages from signer to relying party, the `targetOrigin` parameter must be set to the `origin` property in the `icrc29_status` message received when the communication channel was established.
+## Relying party
 
-The relying party may close the signer window in between interactions. If the relying party wants to continue a session after having closed the window, it must again go through the process of [establishing a communication channel](#establishing-a-communication-channel). 
+The `origin` value of the received message `"result": "ready"` when the communication channel was established,
+is mentioned below as `establishedOrigin`.
 
-After sending a message, the relying party should wait for the signer to send a response before closing the window. If the window is closed before the signer has sent a response, the relying party must not make any assumptions about the state of the request.
+The `window` that was opened for the signer is mentioned below as `signerWindow`.
 
-The signer must not automatically close its window after sending a response to the relying party, since the relying party could possibly send additional messages to the signer. Instead, the relying party is expected to close the signer window when it is no longer needed.
+Messages are received by listening to `message` events, messages are considered as coming from signer if both:
+- The received message `origin` property is equal to the `establishedOrigin`.
+- The received message `source` property is equal to the `signerWindow`.
+
+Messages are sent by calling the `postMessage` method on the `signerWindow` with the `targetOrigin` parameter set to `establishedOrigin`.
+
+Make sure to call the `close` method on the `signerWindow` after it is no longer needed.  
+After having closed the window, the signer must again go through the process of [establishing a communication channel](#establishing-a-communication-channel) again.
 
 ## Error Handling
 
