@@ -58,7 +58,7 @@ using the [window.postMessage](https://developer.mozilla.org/en-US/docs/Web/API/
 
 ## Sending Messages
 
-Messages are sent by calling `window.postMessage` on the signer window, or the `message.source` on the message received when communication channel was established respectively.
+Messages are sent by calling `window.postMessage` on the signer `window`, or the `source` property in the `icrc29_status` message received when communication channel was established respectively.
 
 When sending messages from relying party to signer, the `targetOrigin` parameter must be set to the `origin` property in the `"result": "ready"` response received when the communication channel was established
 
