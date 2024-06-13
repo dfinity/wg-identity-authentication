@@ -8,9 +8,11 @@
   * [Terminology](#terminology)
   * [Types](#types)
   * [Transport Requirements](#transport-requirements)
-  * [Sessions](#sessions)
-  * [Scopes](#scopes)
+  * [Permissions](#permissions)
+    * [Permissions States](#permissions-states)
+    * [Requesting Permissions](#requesting-permissions)
     * [Scope Objects](#scope-objects)
+      * [Extension Properties](#extension-properties)
   * [Extensions](#extensions)
   * [Methods](#methods)
     * [`icrc25_request_permissions`](#icrc25_request_permissions)
@@ -20,29 +22,22 @@
       * [Errors](#errors)
       * [Message Processing](#message-processing)
       * [Example](#example)
-    * [`icrc25_granted_permissions`](#icrc25_granted_permissions)
+    * [`icrc25_permissions`](#icrc25_permissions)
       * [Prerequisites](#prerequisites-1)
       * [Request Params](#request-params-1)
       * [Result](#result-1)
       * [Errors](#errors-1)
       * [Message Processing](#message-processing-1)
       * [Example](#example-1)
-    * [`icrc25_revoke_permissions`](#icrc25_revoke_permissions)
+    * [`icrc25_supported_standards`](#icrc25_supported_standards)
       * [Prerequisites](#prerequisites-2)
       * [Request Params](#request-params-2)
       * [Result](#result-2)
       * [Errors](#errors-2)
       * [Message Processing](#message-processing-2)
       * [Example](#example-2)
-    * [`icrc25_supported_standards`](#icrc25_supported_standards)
-      * [Prerequisites](#prerequisites-3)
-      * [Request Params](#request-params-3)
-      * [Result](#result-3)
-      * [Errors](#errors-3)
-      * [Message Processing](#message-processing-3)
-      * [Example](#example-3)
-  * [Errors](#errors-4)
-    * [Example](#example-4)
+  * [Errors](#errors-3)
+    * [Example](#example-3)
 <!-- TOC -->
 
 ## Summary
@@ -66,26 +61,42 @@ This standard is agnostic to the transport channel used to send the messages, as
 
 The transport channel is not required to provide confidentiality.
 
-## Sessions
+## Permissions
 
-ICRC-25 may use sessions to store user-choices and determine the lifetime of granted permission [scopes](#scopes). Permission scopes (see [`icrc25_request_permissions` message](#icrc25_request_permissions)) are granted for the duration of a single session only. 
+ICRC-25 defines a permission system that allows the relying party to request permission to perform specific actions on the signer.
 
-A session is established when the first permission request is granted. A session can be revoked by the relying party at any time by sending a [`icrc25_revoke_permissions` message](#icrc25_revoke_permissions) to the signer. The signer can also terminate the session at any time and should offer the user a method to do so.
+Permissions are split into scopes, where a scope is the permission for a _specific_ relying party to invoke a _specific_ JSON-RPC 2.0 method on the signer. A scope is identified by the `method` property which matches the `method` name of the JSON-RPC 2.0 call it relates to.
 
-A session must be terminated automatically after a certain period of inactivity. The session might be extended automatically if the interaction between the relying party and the signer is still _actively_ ongoing when the default session timeout is reached. There must be a maximum session duration (regardless of activity).
+Scope requirements are defined alongside the method definition in the respective (extension) standard. None of the methods defined in this standard require a scope.
 
-## Scopes
+### Permissions States
 
-A scope is the permission to invoke a specific JSON-RPC 2.0 method on the signer. A scope is identified by the `method` property which matches the `method` name of the JSON-RPC 2.0 call it relates to. The relying party requests scopes using the [`icrc25_request_permissions`](#icrc25_request_permissions) method and may revoke them using  [`icrc25_revoke_permissions`](#icrc25_revoke_permissions).
+Permission scopes are in one of three states:
+- `granted`: The signer has granted the scope to the relying party. The relying party is allowed to invoke the associated method.
+- `denied`: The signer has denied the scope to the relying party. The relying party is not allowed to invoke the associated method. All attempts must result in an error response from the signer with error code `3000`.
+- `ask_on_use`: The signer will prompt the user to grant the permission scope when the relying party invokes the associated method. If granted, the method invocation will be processed further. Otherwise, it must result in an error response from the signer with error code `3000`.
+  - Depending on the signer's policy, the user may be asked to grant the permission on every use, or only once (after which its state is set to `granted`).
 
-None of the methods defined in this standard require a scope.
+The initial state of each supported permission scope, before any interaction with a specific relying party, is subject to the signer's policy. The signer may also change the state of a permission scope at any time (e.g. resetting `granted` permission scopes to `ask_on_use` on long inactivity).
+
+The signer may provide users the option to review and manage the permission scopes.
+
+### Requesting Permissions
+
+A relying party may
+- explicitly request one or many permission scopes to be set to `granted` by sending a [`icrc25_request_permissions`](#icrc25_request_permissions) message to the signer.
+- implicitly request a specific permission scope by invoking the corresponding method on the signer for which the scope is in the state `ask_on_use`.
+    - After a successful method invocation with an implicit scope request, the signer may set the scope to `granted` based on its policy.
 
 ### Scope Objects
 
 Scopes are represented in JSON-RPC 2.0 messages as JSON objects with the following properties:
 - `method` (`text`): JSON-RPC 2.0 method the scope is associated with.
 
-Extensions to this standard may define additional properties on scope objects.
+#### Extension Properties
+
+Extensions to this standard may define additional properties on scope objects. These additional properties may be used
+to further restrict the scope, for example, by specifying the canister ID or the method arguments the scope applies to.
 
 ## Extensions
 
@@ -103,7 +114,7 @@ This endpoint returns names of all specifications (e.g., `"ICRC-27"`) implemente
 
 ### `icrc25_request_permissions`
 
-The purpose of the `icrc25_request_permissions` method is for the relying party to request [permission scopes](#scopes) to perform further actions. If the set of granted scopes is not empty and there was no session before, a new [session](#sessions) is created.
+The purpose of the `icrc25_request_permissions` method is for the relying party to request the state of the specified [permission scopes](#permissions) to be set to `granted`.
 
 #### Prerequisites
 
@@ -115,7 +126,9 @@ None
 
 #### Result
 
-`scopes`: Array of permission [scope objects](#scope-objects) that the signer supports and the user has granted the relying party. This must be a subset of the `scopes` field from the original request. Additionally, scope restrictions must be the same or more restrictive than the ones requested by the relying party.
+`scopes`: Array of all [permission scopes](#permissions) supported by the signer and their state with respect to the relying party. If a permission scope supports [extension properties](#extension-properties) the permission scope must be repeated for each set of additional restrictions with different state.
+- `scope` (`object`): permission [scope objects](#scope-objects) that the signer supports. Additionally, scope restrictions must be the same or more restrictive than the ones requested by the relying party.
+- `state` (`text`): The state of the scope after processing the request. Possible values are `granted`, `denied`, or `ask_on_use`.
 
 #### Errors
 
@@ -127,19 +140,12 @@ While processing the request from the relying party, the signer can cancel it at
 
 1. The relying party sends a `icrc25_request_permissions` message to the signer.
 2. The signer removes any unrecognized scopes from the array of requested scopes.
-3. Depending on whether the signer supports sessions:
-   - If the signer does _not_ support sessions, it may send a response immediately _without_ prompting the user. Scopes should be granted subject to a static signer policy. Skip to step 6.
-   - Otherwise, continue with step 4.
-4. Depending on the session state the signer either skips or displays the details of the to-be-established connection to the user:
-    - If there is an active session with the relying party, skip to the next step, otherwise:
-        - the signer presents the details of the to-be-established connection to the user. If the user has never interacted with this relying party before, the signer may display information explaining that the user is about to establish a connection with a new relying party.
-        - If the user approves the connection, the signer creates a new session for the relying party.
-            - Otherwise, the signer sends a response with an error back to the relying party and step 5 is skipped.
-5. The signer displays the requested scopes to the user and asks the user to approve or reject the request. The user may also be allowed to approve only a subset of the requested scopes or add additional restrictions (see [optional scope restrictions](#optional-properties)).
-    - If all requested scopes have already been granted, the signer may skip the user interaction and reply with the array of granted scopes immediately.
-    - If the user approves the request, the signer saves information about the granted permission scopes on the current session. Then the signer sends a successful response back to the relying party with the array of granted scopes.
-    - If the user rejects the request, the signer sends a response with an error back to the relying party.
-6. After receiving a response, the relying party may send additional messages depending on the granted scopes.
+3. The signer displays the requested scopes to the user and asks the user to approve or reject the request. The user may also be allowed to approve only a subset of the requested scopes or add additional restrictions (see [extension scope properties](#extension-properties)).
+    - If all requested scopes have already been granted, the signer may skip the user interaction.
+    - If, by signer policy, the requested changes cannot be granted (e.g. because the signer enforces `ask_on_use` for specific permission scopes), the signer may skip the user interaction. 
+    - If the user approves the request, the signer saves the changes to the permission scopes, including modifications made by the user (if any).
+    - If the user rejects the request then no changes are made to the permission scopes.
+4. The signer sends a response to the relying party with the state of each permission scope.
 
 ```mermaid
 sequenceDiagram
@@ -147,20 +153,11 @@ sequenceDiagram
     participant S as Signer
     participant U as User
 
-    RP ->> S: Request permission
-    alt Stateless Signer
-        S ->> RP: Permission response
-    else Signer supports sessions 
-        S ->> U: Show relying party details<br>and requested permissions
-        alt Approved
-            U ->> S: Approve request
-            S ->> S: Store the granted permission scopes
-            S ->> RP: Permission response
-        else Rejected
-            U ->> S: Reject request
-            S ->> RP: Error response: Permission not granted (3000)
-        end
-    end
+    RP ->> S: Request permissions
+    S ->> U: Display requested permissions
+    U ->> S: Approve or deny request,<br>optionally modify scopes
+    S ->> S: Store changes to permission scopes, if any
+    S ->> RP: Permission response
 ```
 
 #### Example
@@ -192,19 +189,25 @@ Response
     "result": {
         "scopes": [
             {
-                "method": "icrc27_get_accounts"
+                "scope": {
+                    "method": "icrc27_get_accounts"
+                },
+                "state": "granted"
             },
             {
-                "method": "icrc49_call_canister"
+                "scope": {
+                    "method": "icrc49_call_canister"
+                },
+                "state": "ask_on_use"
             }
         ]
     }
 }
 ```
 
-### `icrc25_granted_permissions`
+### `icrc25_permissions`
 
-The purpose of the `icrc25_granted_permissions` method is for the relying party to query the granted [permission scopes](#scopes) on the active session.
+The purpose of the `icrc25_permissions` method is for the relying party to query the state of all [permission scopes](#permissions) supported by the signer.
 
 #### Prerequisites
 
@@ -216,7 +219,9 @@ None
 
 #### Result
 
-`scopes`: Array of permission [scope objects](#scope-objects) that the signer supports and the user has previously granted to the relying party during the active session.
+`scopes`: Array of all [permission scopes](#permissions) supported by the signer and their state with respect to the relying party. If a permission scope supports [extension properties](#extension-properties) the permission scope must be repeated for each set of additional restrictions with different state.
+- `scope` (`object`): [scope object](#scope-objects) of a specific permission. 
+- `state` (`text`): The current state of the scope. Possible values are `granted`, `denied`, or `ask_on_use`.
 
 #### Errors
 
@@ -226,7 +231,7 @@ While processing the request from the relying party, the signer can cancel it at
 #### Message Processing
 
 1. The relying party sends a `icrc25_granted_permissions` message to the signer.
-2. The signer replies with the granted [permission scopes](#scopes) that are active on the current session, if any.
+2. The signer replies with the state of every [permission scopes](#permissions) for the relying party.
 
 ```mermaid
 sequenceDiagram
@@ -244,11 +249,12 @@ Request
 {
     "id": 1,
     "jsonrpc": "2.0",
-    "method": "icrc25_granted_permissions"
+    "method": "icrc25_permissions"
 }
 ```
 
 Response
+
 ```json
 {
     "id": 1,
@@ -256,76 +262,18 @@ Response
     "result": {
         "scopes": [
             {
-                "method": "icrc27_get_accounts"
+                "scope": {
+                    "method": "icrc27_get_accounts"
+                },
+                "state": "granted"
             },
             {
-                "method": "icrc49_call_canister"
+                "scope": {
+                    "method": "icrc49_call_canister"
+                },
+                "state": "ask_on_use"
             }
         ]
-    }
-}
-```
-
-### `icrc25_revoke_permissions`
-
-The relying party can request to revoke all or a subset of the previously granted permission [scopes](#scopes). If all granted permission scopes are revoked, the session (if any) is terminated.
-
-#### Prerequisites
-
-None
-
-#### Request Params
-
-`scopes` (optional): Array of permission [scope objects](#scope-objects) the relying party wants to revoke. If empty or undefined, the signer revokes all granted permission scopes and terminates the session. If the signer does not recognize a provided scope, or if it has not been granted on the current session, it should ignore that particular scope and proceed as if the `scopes` array did not include that object.
-
-#### Result
-
-`scopes`: Array of [scope objects](#scope-objects) that remain granted on the current session (if any) after applying the revocation. May be empty.
-
-#### Errors
-
-While processing the request from the relying party, the signer can cancel it at any time by sending an [error](#errors) in response. In addition to the pre-defined JSON-RPC 2.0 errors ([-32600 to -32603 and -32700](https://www.jsonrpc.org/specification#error_object)), the following values are applicable:
-- `1000 Generic error`
-
-#### Message Processing
-
-1. The relying party sends a `icrc25_revoke_permissions` request to the signer.
-2. Next, the signer revokes the requested permission scopes. If no scopes are provided, the signer revokes all granted permission scopes.
-3. The signer sends a response back to the relying party with the array of remaining permission scopes. If no scopes remain granted, the signer terminates the session.
-
-```mermaid
-sequenceDiagram
-    participant RP as Relying Party
-    participant S as Signer
-
-    RP ->> S: Revoke permission
-    S ->> S: Revoke the permission scopes
-    S ->> RP: Reply with remaining permission scopes
-```
-
-#### Example
-
-Request
-```json
-{
-    "id": 1,
-    "jsonrpc": "2.0",
-    "method": "icrc25_revoke_permissions",
-    "params": {
-        "scopes": [{
-          "method": "icrc49_call_canister"
-        }]
-    }
-}
-```
-
-Response
-```json
-{
-    "id": 1,
-    "jsonrpc": "2.0",
-    "result": {
-        "scopes": []
     }
 }
 ```
