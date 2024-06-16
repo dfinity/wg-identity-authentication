@@ -74,7 +74,7 @@ Messages are received by listening to `message` events, messages are considered 
 
 Messages are sent by calling the `postMessage` method on the `signerWindow` with the `targetOrigin` parameter set to `establishedOrigin`.
 
-Make sure to call the `close` method on the `signerWindow` after it is no longer needed.  
+The relying party should call the `close` method on the `signerWindow` after it is no longer needed.  
 After having closed the window, the signer must again go through the process of [establishing a communication channel](#establishing-a-communication-channel).
 
 ## Error Handling
