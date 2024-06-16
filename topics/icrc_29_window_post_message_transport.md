@@ -63,7 +63,7 @@ Instead, the relying party is responsible for closing the signer window.
 
 ## Relying party
 
-The `origin` value of the received message `"result": "ready"` when the communication channel was established,
+The `origin` value of the first received reply to a `icrc29_status` message with `"result": "ready"` when establishing the communication channel,
 is mentioned below as `establishedOrigin`.
 
 The `window` that was opened for the signer is mentioned below as `signerWindow`.
