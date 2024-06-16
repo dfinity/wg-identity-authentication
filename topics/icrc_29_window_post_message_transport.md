@@ -68,7 +68,7 @@ is mentioned below as `establishedOrigin`.
 
 The `window` that was opened for the signer is mentioned below as `signerWindow`.
 
-Messages are received by listening to `message` events, messages are considered as coming from signer if both:
+Messages are received by listening to `message` events. Messages are considered as coming from signer if both:
 - The received message `origin` property is equal to the `establishedOrigin`.
 - The received message `source` property is equal to the `signerWindow`.
 
