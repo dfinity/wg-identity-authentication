@@ -11,10 +11,9 @@
   * [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
     * [Example RPC Permission Request](#example-rpc-permission-request)
   * [Requests](#requests)
-    * [Example RPC Get Wallet Delegation Request](#example-rpc-get-wallet-delegation-request)
-    * [Example RPC Get Wallet Delegation Response](#example-rpc-get-wallet-delegation-response)
-    * [Example RPC Get App-Specific Delegation Request](#example-rpc-get-app-specific-delegation-request)
-    * [Example RPC Get App-Specific Delegation Response](#example-rpc-get-app-specific-delegation-response)
+    * [Example RPC Get Delegation Request (with targets)](#example-rpc-get-delegation-request-with-targets)
+    * [Example RPC Get Delegation Response (wallet delegation)](#example-rpc-get-delegation-response-wallet-delegation)
+    * [Example RPC Get Delegation Response (app-specific delegation)](#example-rpc-get-delegation-response-app-specific-delegation)
   * [Message Processing](#message-processing)
   * [Errors](#errors)
 <!-- TOC -->
