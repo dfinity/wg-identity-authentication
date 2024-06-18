@@ -140,12 +140,11 @@ While processing the request from the relying party, the signer can cancel it at
 
 1. The relying party sends a `icrc25_request_permissions` message to the signer.
 2. The signer removes any unrecognized scopes from the array of requested scopes.
-3. The signer displays the requested scopes to the user and asks the user to approve or reject the request. The user may also be allowed to approve only a subset of the requested scopes or add additional restrictions (see [extension scope properties](#extension-properties)).
+3. The signer displays the requested scopes to the user and ask the user to confirm or reject the scope state changes. The user may be allowed to only confirm a subset of the requested changes and make further (or different) modifications to the suggested ones (including adding restrictions to scopes with [extension properties](#extension-properties)).
     - If all requested scopes have already been granted, the signer may skip the user interaction.
     - If, by signer policy, the requested changes cannot be granted (e.g. because the signer enforces `ask_on_use` for specific permission scopes), the signer may skip the user interaction. 
-    - If the user approves the request, the signer saves the changes to the permission scopes, including modifications made by the user (if any).
-    - If the user rejects the request then no changes are made to the permission scopes.
-4. The signer sends a response to the relying party with the state of each permission scope.
+4. The signer saves the changes to the permission scopes (if any), including modifications made by the user.
+5. The signer sends a response to the relying party with the state of each permission scope.
 
 ```mermaid
 sequenceDiagram
