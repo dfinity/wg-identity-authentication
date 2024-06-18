@@ -11,7 +11,7 @@
   * [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
     * [Example RPC Permission Request](#example-rpc-permission-request)
   * [Requests](#requests)
-    * [Example RPC Get Delegation Request (with targets)](#example-rpc-get-delegation-request-with-targets)
+    * [Example RPC Get Delegation Request](#example-rpc-get-delegation-request)
     * [Example RPC Get Delegation Response (wallet delegation)](#example-rpc-get-delegation-response-wallet-delegation)
     * [Example RPC Get Delegation Response (app-specific delegation)](#example-rpc-get-delegation-response-app-specific-delegation)
   * [Message Processing](#message-processing)
@@ -75,7 +75,12 @@ return a delegation with a shorter expiration.
 
 ## Requests
 
-### Example RPC Get Delegation Request (with targets)
+### Example RPC Get Delegation Request
+
+Requests for a delegation can optionally include `targets`, enabling signers to verify the security of returning a wallet 
+delegation (via ICRC-28). Signers in this case **SHOULD** offer users the option to connect to the application with either 
+a wallet delegation (limited to canisters listed in `targets`) or an app-specific delegation (without targets). If the array
+of `targets` is empty, signers **SHOULD** only offer users the option to connect with an app-specific delegation.
 
 ```json
 {
