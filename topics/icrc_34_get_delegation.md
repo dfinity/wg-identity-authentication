@@ -94,9 +94,9 @@ return a delegation with a shorter expiration.
 
 ### Example RPC Get Delegation Response (wallet delegation)
 
-`publicKey`: Public key of global identity as described in
+`publicKey`: Public key of delegation identity as described in
 the [IC interface specification, signatures section](https://internetcomputer.org/docs/current/references/ic-interface-spec/#signatures).  
-`global_delegation`: An array of delegations (as defined by
+`delegation`: An array of delegations (as defined by
 the [IC interface specification, authentication section](https://internetcomputer.org/docs/current/references/ic-interface-spec/#authentication)):
 - `delegation` (`record`): Map with fields
     - `pubkey` (`blob`): Public key as described in
@@ -116,7 +116,7 @@ the [IC interface specification, authentication section](https://internetcompute
   "jsonrpc": "2.0",
   "result": {
     "publicKey": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEvHD28SXwRW2i6bgiqmel2fDV7/CDNyxkMwGh8BvmTVI+5DBSBMHJeyFZwbJEyj8Pc7rJv6XWOW+x4lsdEI4bdg==",
-    "global_delegation": [
+    "delegation": [
       {
         "delegation": {
           "pubkey": "MDwwDAYKKwYBBAGDuEMBAgMsAAoAAAAAAGAAJwEB9YN/ErQ8yN+14qewhrU0Hm2rZZ77SrydLsSMRYHoNxM=",
@@ -135,9 +135,9 @@ the [IC interface specification, authentication section](https://internetcompute
 
 ### Example RPC Get Delegation Response (app-specific delegation)
 
-`publicKey`: Public key of global identity as described in
+`publicKey`: Public key of delegation identity as described in
 the [IC interface specification, signatures section](https://internetcomputer.org/docs/current/references/ic-interface-spec/#signatures).  
-`global_delegation`: An array of delegations (as defined by
+`delegation`: An array of delegations (as defined by
 the [IC interface specification, authentication section](https://internetcomputer.org/docs/current/references/ic-interface-spec/#authentication)):
 - `delegation` (`record`): Map with fields
     - `pubkey` (`blob`): Public key as described in
@@ -154,7 +154,7 @@ the [IC interface specification, authentication section](https://internetcompute
   "jsonrpc": "2.0",
   "result": {
     "publicKey": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEvHD28SXwRW2i6bgiqmel2fDV7/CDNyxkMwGh8BvmTVI+5DBSBMHJeyFZwbJEyj8Pc7rJv6XWOW+x4lsdEI4bdg==",
-    "global_delegation": [
+    "delegation": [
       {
         "delegation": {
           "pubkey": "MDwwDAYKKwYBBAGDuEMBAgMsAAoAAAAAAGAAJwEB9YN/ErQ8yN+14qewhrU0Hm2rZZ77SrydLsSMRYHoNxM=",
