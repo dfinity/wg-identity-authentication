@@ -44,9 +44,11 @@ fn icrc21_canister_call_consent_message(
         }));
     };
 
-    // only English supported
     let metadata = Icrc21ConsentMessageMetadata {
+        // only English supported
         language: "en".to_string(),
+        // no time information in the consent message
+        utc_offset_minutes: None,
     };
 
     match consent_msg_request.user_preferences.device_spec {
@@ -189,6 +191,7 @@ mod test {
             user_preferences: Icrc21ConsentMessageSpec {
                 metadata: Icrc21ConsentMessageMetadata {
                     language: "en".to_string(),
+                    utc_offset_minutes: None,
                 },
                 device_spec: Some(GenericDisplay),
             },
@@ -197,7 +200,8 @@ mod test {
             result,
             Icrc21ConsentInfo {
                 metadata: Icrc21ConsentMessageMetadata {
-                    language: "en".to_string()
+                    language: "en".to_string(),
+                    utc_offset_minutes: None,
                 },
                 consent_message: GenericDisplayMessage(
                     "Produce the following greeting text:\n> Hello, Alice!".to_string()
@@ -215,6 +219,7 @@ mod test {
             user_preferences: Icrc21ConsentMessageSpec {
                 metadata: Icrc21ConsentMessageMetadata {
                     language: "en".to_string(),
+                    utc_offset_minutes: None,
                 },
                 device_spec: Some(LineDisplay {
                     characters_per_line: 20,
@@ -226,7 +231,8 @@ mod test {
             result,
             Icrc21ConsentInfo {
                 metadata: Icrc21ConsentMessageMetadata {
-                    language: "en".to_string()
+                    language: "en".to_string(),
+                    utc_offset_minutes: None,
                 },
                 consent_message: LineDisplayMessage {
                     pages: vec![

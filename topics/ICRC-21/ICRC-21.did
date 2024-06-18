@@ -4,6 +4,13 @@
 type icrc21_consent_message_metadata = record {
     // BCP-47 language tag. See https://www.rfc-editor.org/rfc/bcp/bcp47.txt
     language: text;
+
+    // The users local timezone offset in minutes from UTC.
+    // Applicable when converting timestamps to human-readable format.
+    //
+    // If absent in the request, the canister should fallback to the UTC timezone when creating the consent message.
+    // If absent in the response, the canister is indicating that the consent message is not timezone sensitive.
+    utc_offset_minutes: opt int16;
 };
 
 type icrc21_consent_message_spec = record {
