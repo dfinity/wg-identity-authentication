@@ -4,7 +4,7 @@
 [![Extension Badge](https://img.shields.io/badge/Extends-ICRC--25-ffcc222.svg)](./icrc_25_signer_interaction_standard.md)
 
 <!-- TOC -->
-* [ICRC-27: Get Accounts](#icrc-27-get-accounts)
+* [ICRC-27: Accounts](#icrc-27-get-accounts)
   * [Summary](#summary)
   * [Method](#method)
   * [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
@@ -21,18 +21,18 @@
 
 ## Summary
 
-The purpose of the `icrc27_get_accounts` message is for the relying party to receive information about the identities
+The purpose of the `icrc27_accounts` message is for the relying party to receive information about the identities
 managed by the signer.
 
 ## Method
 
-**Name:** `icrc27_get_accounts`
+**Name:** `icrc27_accounts`
 
-**Prerequisite:** Active session with granted permission scope `icrc27_get_accounts`.
+**Prerequisite:** Active session with granted permission scope `icrc27_accounts`.
 
 ## Scope (according to the [ICRC-25 standard](./icrc_25_signer_interaction_standard.md))
 
-**Scope:** `icrc27_get_accounts`
+**Scope:** `icrc27_accounts`
 
 ### Example Permission Request
 
@@ -44,7 +44,7 @@ managed by the signer.
   "params": {
     "scopes": [
       {
-        "method": "icrc27_get_accounts"
+        "method": "icrc27_accounts"
       }
     ]
   }
@@ -68,7 +68,7 @@ None
 {
   "id": 1,
   "jsonrpc": "2.0",
-  "method": "icrc27_get_accounts"
+  "method": "icrc27_accounts"
 }
 ```
 
@@ -99,7 +99,7 @@ None
 
 ## Message Processing
 
-1. The relying party sends a `icrc27_get_accounts` request to the signer.
+1. The relying party sends a `icrc27_accounts` request to the signer.
 2. Upon receiving the message, the signer first checks if it can process the message.
     - If the relying party has not been granted the permission to invoke the method,
       the signer sends a response with an error back to the relying party.
@@ -113,7 +113,7 @@ sequenceDiagram
     participant RP as Relying Party
     participant S as Signer
     RP ->> S: Request accounts
-    alt Scope `icrc27_get_accounts` not granted
+    alt Scope `icrc27_accounts` not granted
         S ->> RP: Error response: Permission not granted (3000)
     else
         S ->> RP: List of accounts
