@@ -102,7 +102,7 @@ to further restrict the scope, for example, by specifying the canister ID or the
 
 This standard is the signer interaction _base_ standard. As such it intentionally excludes all methods that could be handled by an extension, for example:
 
-- Getting accounts: [ICRC-27](./icrc_27_get_accounts.md)
+- Getting accounts: [ICRC-27](./icrc_27_accounts.md)
 - Canister calls: [ICRC-49](./icrc_49_call_canister.md)
 
 This allows signer developers to choose which extensions they want to support and only implement those.
@@ -144,7 +144,7 @@ While processing the request from the relying party, the signer can cancel it at
     - If all requested scopes have already been granted, the signer may skip the user interaction.
     - If, by signer policy, the requested changes cannot be granted (e.g. because the signer enforces `ask_on_use` for specific permission scopes), the signer may skip the user interaction. 
 4. The signer saves the changes to the permission scopes (if any), including modifications made by the user.
-5. The signer sends a response to the relying party with the state of each permission scope.
+5. The signer sends a response to the relying party with the state of each permission scope, including _all_ permission scopes and not only the ones changed in processing this request.
 
 ```mermaid
 sequenceDiagram
@@ -170,7 +170,7 @@ Request
     "params": {
         "scopes": [
             {
-                "method": "icrc27_get_accounts"
+                "method": "icrc27_accounts"
             },
             {
                 "method": "icrc49_call_canister"
@@ -189,7 +189,7 @@ Response
         "scopes": [
             {
                 "scope": {
-                    "method": "icrc27_get_accounts"
+                    "method": "icrc27_accounts"
                 },
                 "state": "granted"
             },
@@ -230,7 +230,7 @@ While processing the request from the relying party, the signer can cancel it at
 #### Message Processing
 
 1. The relying party sends a `icrc25_granted_permissions` message to the signer.
-2. The signer replies with the state of every [permission scopes](#permissions) for the relying party.
+2. The signer replies with the state of each [permission scopes](#permissions) for the relying party.
 
 ```mermaid
 sequenceDiagram
@@ -262,7 +262,7 @@ Response
         "scopes": [
             {
                 "scope": {
-                    "method": "icrc27_get_accounts"
+                    "method": "icrc27_accounts"
                 },
                 "state": "granted"
             },
