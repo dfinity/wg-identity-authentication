@@ -144,7 +144,7 @@ While processing the request from the relying party, the signer can cancel it at
     - If all requested scopes have already been granted, the signer may skip the user interaction.
     - If, by signer policy, the requested changes cannot be granted (e.g. because the signer enforces `ask_on_use` for specific permission scopes), the signer may skip the user interaction. 
 4. The signer saves the changes to the permission scopes (if any), including modifications made by the user.
-5. The signer sends a response to the relying party with the state of each permission scope, including _all_ permission scopes and not only the ones changed in processing this request.
+5. The signer sends a response to the relying party with the state of all permission scopes.
 
 ```mermaid
 sequenceDiagram
@@ -230,7 +230,7 @@ While processing the request from the relying party, the signer can cancel it at
 #### Message Processing
 
 1. The relying party sends a `icrc25_granted_permissions` message to the signer.
-2. The signer replies with the state of each [permission scopes](#permissions) for the relying party.
+2. The signer replies with the state of all [permission scopes](#permissions) for the relying party.
 
 ```mermaid
 sequenceDiagram
