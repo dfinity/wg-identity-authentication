@@ -6,7 +6,7 @@
 <!-- TOC -->
 * [ICRC-28: Trusted Origins](#icrc-28-trusted-origins)
   * [Summary](#summary)
-  * [Methods](#methods)
+  * [Method](#method)
     * [icrc28_trusted_origins](#icrc28_trusted_origins)
   * [Use-Cases](#use-cases)
     * [Wallet Delegation Use-Case](#wallet-delegation-use-case)
@@ -15,13 +15,19 @@
 
 ## Summary
 
-This standard describes how a canister can indicate that a relying party is trusted.
+This standard describes how a canister can indicate that a relying party (an entity that relies on the canister for certain functions or services) is trusted.
 
-## Methods
+A trusted relying party carries certain privileges, like for example the ability to request Account Delegations as per ICRC-34.
+
+This standard does not describe how a canister should:
+- Ensure that all entries are free from malicious intent.
+- Handle entries that become malicious over time.
+
+## Method
 
 ### icrc28_trusted_origins
 
-Returns a list of origins trusted by the canister.
+Returns the canister's list of whitelisted origins.
 
 ```
 icrc28_trusted_origins : () -> (record { trusted_origins : vec text });
