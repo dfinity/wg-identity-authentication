@@ -28,8 +28,9 @@ party to sign transactions on behalf of the user.
 The delegation chain's stable identifier can take two forms: an account that may include ICP, ICRC-1, and other assets 
 (Account Delegation), or an account designed exclusively for the relying party (Relying Party Delegation).
 
-Account Delegations **MUST** be restricted by the signer to canister targets that trust the relying party following the 
-[ICRC-28](./icrc_28_trusted_origins.md) standard. Doing otherwise would allow malicious actors to steal user assets.
+If a relying party wants to receive an Account Delegation, the `icrc34_delegation` request **MUST** include canisters it
+controls as `targets` where each canister **MUST** implement the `icrc28_trusted_origins` endpoint as per the 
+[ICRC-28](./icrc_28_trusted_origins.md) standard.
 
 Relying Party Delegations **MUST** be restricted by the signer to individual relying parties.
 
