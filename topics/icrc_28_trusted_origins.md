@@ -9,17 +9,19 @@
   * [Method](#method)
     * [icrc28_trusted_origins](#icrc28_trusted_origins)
   * [Use-Cases](#use-cases)
-    * [Wallet Delegation Use-Case](#wallet-delegation-use-case)
-    * [Cold Signer Use-Case](#cold-signer-use-case)
+    * [Account Delegation Use-Case](#account-delegation-use-case)
 <!-- TOC -->
 
 ## Summary
 
 This standard describes how a canister can indicate that a relying party (an entity that relies on the canister for certain functions or services) is trusted.
 
+Asset or other canisters that are meant to be composed upon by many parties in the ecosystem, such as ICRC-1 or ICRC-7 asset canisters, 
+**MUST** not implement ICRC-28 because it would privilege certain parties in a context where privilege should not exist.
+
 A trusted relying party carries certain privileges, like for example the ability to request Account Delegations as per ICRC-34.
 
-This standard does not describe how a canister should:
+This standard assumes dapp developer responsibility for how a canister should:
 - Ensure that all entries are free from malicious intent.
 - Handle entries that become malicious over time.
 
@@ -36,12 +38,13 @@ icrc28_trusted_origins : () -> (record { trusted_origins : vec text });
 ## Use-Cases
 
 There are several reasons why signers might want to get a list of frontend URLs a canister trusts, with one in 
-particular related to removing wallet approval prompts for a user's wallet address.
+particular related to removing the user signer's party approval prompts because Account Delegations created
+with icrc28-conforming canisters can call those canisters without user approval.
 
 
-### Wallet Delegation Use-Case
+### Account Delegation Use-Case
 
-[ICRC-34](./icrc_34_get_delegation.md) applies when a user returns a delegation to a relying party that 
+[ICRC-34](./icrc_34_delegation.md) applies when a user returns a delegation to a relying party that 
 can be used to make authenticated calls on the user's behalf (i.e. without displaying wallet approval prompts). 
 To do this safely for the user's wallet address in a way that prevents malicious actors from having access to 
 assets, the wallet needs to confirm that each canister listed as a `target` can be safely entrusted with the 
