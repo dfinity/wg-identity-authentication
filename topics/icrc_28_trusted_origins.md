@@ -76,7 +76,6 @@ sequenceDiagram
           see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification))
         * The decoded response must not be `null` and match `vec text`.
 3. The signer verifies that relying party origin is within the trusted origin list of all targets.
-    * If the origin is trusted by all targets, continue with step 4.
-    * If the origin is not trusted by all targets, the signer returns an error to the relying party. No further steps
-      are executed.
+    * If the origin is trusted by all targets, continue with step 4a.
+    * If the origin is not trusted by all targets, continue with step 4b.
 4. The signed wallet delegation is returned to the relying party.
