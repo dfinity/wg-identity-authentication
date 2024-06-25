@@ -3,6 +3,7 @@ use candid::{self, CandidType, Deserialize};
 #[derive(CandidType, Deserialize, Eq, PartialEq, Debug)]
 pub struct Icrc21ConsentMessageMetadata {
     pub language: String,
+    pub utc_offset_minutes: Option<i16>,
 }
 
 #[derive(CandidType, Deserialize)]
