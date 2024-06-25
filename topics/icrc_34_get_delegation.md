@@ -42,7 +42,7 @@ Relying Party Delegations **MUST** be restricted by the signer to individual rel
 
 Signers **COULD** give users the choice to authenticate with their relying party specific identifier instead of accounts (if available).
 
-Relying parties **SHOULD** remove targets if they want to isolate users from the rest of the ecosystem.
+Relying parties **MUST** remove targets if they want to be guaranteed to receive a Relying Party delegation.
 
 ## Method
 
