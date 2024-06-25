@@ -103,7 +103,7 @@ with a Relying Party Delegation.
 
 `publicKey`: Public key of delegation identity as described in
 the [IC interface specification, signatures section](https://internetcomputer.org/docs/current/references/ic-interface-spec/#signatures).  
-`delegation`: An array of delegations (as defined by
+`signerDelegation`: An array of delegations (as defined by
 the [IC interface specification, authentication section](https://internetcomputer.org/docs/current/references/ic-interface-spec/#authentication)):
 - `signerDelegation` (`record`): Map with fields
     - `pubkey` (`blob`): Public key as described in
