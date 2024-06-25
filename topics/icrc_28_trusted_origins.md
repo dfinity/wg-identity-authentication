@@ -78,4 +78,5 @@ sequenceDiagram
 3. The signer verifies that relying party origin is within the trusted origin list of all targets.
     * If the origin is trusted by all targets, continue with step 4a.
     * If the origin is not trusted by all targets, continue with step 4b.
-4. The signed wallet delegation is returned to the relying party.
+4a. The signed account delegation is returned to the relying party.
+4b. The signed relying party delegation is returned to the relying party.
