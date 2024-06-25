@@ -132,7 +132,7 @@ the [IC interface specification, authentication section](https://internetcompute
   "jsonrpc": "2.0",
   "result": {
     "publicKey": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEvHD28SXwRW2i6bgiqmel2fDV7/CDNyxkMwGh8BvmTVI+5DBSBMHJeyFZwbJEyj8Pc7rJv6XWOW+x4lsdEI4bdg==",
-    "delegation": [
+    "signerDelegation": [
       {
         "signerDelegation": {
           "pubkey": "MDwwDAYKKwYBBAGDuEMBAgMsAAoAAAAAAGAAJwEB9YN/ErQ8yN+14qewhrU0Hm2rZZ77SrydLsSMRYHoNxM=",
