@@ -21,9 +21,9 @@
 
 ## Summary
 
-When a relying party wants to remove wallet approval prompts and sign on behalf of its users, it uses the icrc34_delegation 
-method described below. This method generates a delegation chain, an object with a stable identifier, allowing the relying 
-party to sign transactions on behalf of the user.
+When a relying party wants to avoid going through the signer and user approval for each individual call, it can use the icrc34_delegation method described below. 
+
+This method generates a delegation chain, an object with a stable identifier, allowing the relying party to sign transactions on behalf of the user without having to go through the signer and user approval. This also means the signer does not need to stay connected to the signer to make calls on behalf of the user.
 
 The delegation chain's stable identifier can be either: 
 1. **Account Delegation**: an identity that may hold tokens and other assets.
