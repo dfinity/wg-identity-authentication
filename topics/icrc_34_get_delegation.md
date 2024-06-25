@@ -29,6 +29,11 @@ The delegation chain's stable identifier can be either:
 1. **Account Delegation**: an identity that may hold tokens and other assets.
 2. **Relying Party Delegation**: an identity designed exclusively for the relying party (Relying Party Delegation).
 
+Example use cases of a Relying Party Delegation:
+- Signer could give the user a choice to stay anonymous with a service.
+- Differentiate between calls made with user approval (Account identifier) and without user approval (Relying Party Delegation identifier). Allowing for fine grained security levels per identifier on the Relying Party platform.
+- Exclusive identifier within the Relying Party platform to stay isolated from identifiers of other Relying Party platforms.
+
 If a relying party wants to receive an Account Delegation, the `icrc34_delegation` request **MUST** include canisters it
 controls as `targets` where each canister **MUST** implement the `icrc28_trusted_origins` endpoint as per the 
 [ICRC-28](./icrc_28_trusted_origins.md) standard.
