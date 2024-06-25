@@ -134,7 +134,7 @@ the [IC interface specification, authentication section](https://internetcompute
     "publicKey": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEvHD28SXwRW2i6bgiqmel2fDV7/CDNyxkMwGh8BvmTVI+5DBSBMHJeyFZwbJEyj8Pc7rJv6XWOW+x4lsdEI4bdg==",
     "signerDelegation": [
       {
-        "signerDelegation": {
+        "delegation": {
           "pubkey": "MDwwDAYKKwYBBAGDuEMBAgMsAAoAAAAAAGAAJwEB9YN/ErQ8yN+14qewhrU0Hm2rZZ77SrydLsSMRYHoNxM=",
           "expiration": "1702683438614940079",
           "targets": [
