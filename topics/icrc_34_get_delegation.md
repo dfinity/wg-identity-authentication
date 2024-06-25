@@ -34,7 +34,7 @@ controls as `targets` where each canister **MUST** implement the `icrc28_trusted
 
 Relying Party Delegations **MUST** be restricted by the signer to individual relying parties.
 
-Signers **SHOULD** give users the choice to authenticate with their wallets (if available) or with an app-specific identifier.
+Signers **COULD** give users the choice to authenticate with their relying party specific identifier instead of accounts (if available).
 
 Relying parties **SHOULD** remove targets if they want to isolate users from the rest of the ecosystem.
 
