@@ -68,8 +68,7 @@ sequenceDiagram
     end
 ```
 
-1. The relying party connects to the signer and requests a delegation for a given principal with list of target
-   canisters.
+1. The relying party connects to the signer and requests a delegation with a list of target canisters.
 2. For every target canister the signer:
     1. Gets the list of trusted origins using the `icrc28_trusted_origins` method.
     2. The trusted origins response must be certified and valid:
