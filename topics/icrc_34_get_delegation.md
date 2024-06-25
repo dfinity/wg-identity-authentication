@@ -105,7 +105,7 @@ with a Relying Party Delegation.
 the [IC interface specification, signatures section](https://internetcomputer.org/docs/current/references/ic-interface-spec/#signatures).  
 `signerDelegation`: An array of delegations (as defined by
 the [IC interface specification, authentication section](https://internetcomputer.org/docs/current/references/ic-interface-spec/#authentication)):
-- `signerDelegation` (`record`): Map with fields
+- `delegation` (`record`): Map with fields
     - `pubkey` (`blob`): Public key as described in
       the [IC interface specification, signatures section](https://internetcomputer.org/docs/current/references/ic-interface-spec/#signatures).
     - `expiration` (`text`): Expiration of the delegation, in nanoseconds since 1970-01-01, as a base-10 string.
