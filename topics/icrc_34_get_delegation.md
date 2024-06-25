@@ -25,8 +25,9 @@ When a relying party wants to remove wallet approval prompts and sign on behalf 
 method described below. This method generates a delegation chain, an object with a stable identifier, allowing the relying 
 party to sign transactions on behalf of the user.
 
-The delegation chain's stable identifier can take two forms: an account that may include ICP, ICRC-1, and other assets 
-(Account Delegation), or an account designed exclusively for the relying party (Relying Party Delegation).
+The delegation chain's stable identifier can be either: 
+1. **Account Delegation**: an identity that may hold tokens and other assets.
+2. **Relying Party Delegation**: an identity designed exclusively for the relying party (Relying Party Delegation).
 
 If a relying party wants to receive an Account Delegation, the `icrc34_delegation` request **MUST** include canisters it
 controls as `targets` where each canister **MUST** implement the `icrc28_trusted_origins` endpoint as per the 
