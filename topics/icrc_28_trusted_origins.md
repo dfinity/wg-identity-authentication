@@ -64,7 +64,7 @@ sequenceDiagram
     alt Origin is trusted by all targets canisters
         S ->> RP: Signed wallet delegation
     else
-        S ->> RP: Error response
+        S ->> RP: Signed relying party delegation
     end
 ```
 
