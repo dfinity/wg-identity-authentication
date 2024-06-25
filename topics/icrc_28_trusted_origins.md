@@ -62,7 +62,7 @@ sequenceDiagram
         C ->> S: List of trusted origins
     end
     alt Origin is trusted by all targets canisters
-        S ->> RP: Signed wallet delegation
+        S ->> RP: Signed account delegation
     else
         S ->> RP: Signed relying party delegation
     end
