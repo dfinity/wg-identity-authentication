@@ -39,7 +39,7 @@ If a relying party wants to receive an Account Delegation, the `icrc34_delegatio
 controls as `targets` where each canister **MUST** implement the `icrc28_trusted_origins` endpoint as per the 
 [ICRC-28](./icrc_28_trusted_origins.md) standard.
 
-Relying Party Delegations **MUST** be restricted by the signer to individual relying parties.
+Relying Party Delegations **MUST** be for identities exclusive to each individual relying party. This property **MUST** be enforced by the signer.
 
 Signers **COULD** give users the choice to authenticate with their relying party specific identifier instead of accounts (if available).
 
