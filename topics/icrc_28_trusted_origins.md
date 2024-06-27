@@ -16,7 +16,7 @@
 
 This standard describes how a canister can indicate that a relying party (an entity that relies on the canister for certain functions or services) is trusted.
 
-Asset or other canisters that are meant to be composed upon by many parties in the ecosystem, such as ICRC-1 or ICRC-7 asset canisters, 
+Canisters that manage tradable assets or are otherwise meant to be composed upon by distinct parties in the ecosystem (e.g. ICRC-1 or ICRC-7 canisters), 
 **MUST** not implement ICRC-28 because it would privilege certain parties in a context where privilege should not exist.
 
 A trusted relying party carries certain privileges, like for example the ability to request Account Delegations as per ICRC-34.
