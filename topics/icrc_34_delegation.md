@@ -160,7 +160,7 @@ the [IC interface specification, authentication section](https://internetcompute
     * If the trusted origins cannot be retrieved for any of the given delegations targets or the relying party origin is
       not within any of the trusted origin lists, the signer does not give users the ability to continue with the Account Delegation.
 4. The signer **MAY** display all the available delegations the user can continue with, in which case a user would select one.
-5. The signer returns a signed delegation to the relying party.
+5. The signer returns the signed delegation to the relying party.
 
 ## Errors
 
