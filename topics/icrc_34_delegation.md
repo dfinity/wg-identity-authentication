@@ -87,7 +87,7 @@ return a delegation with a shorter expiration.
 ### Example RPC Delegation Request
 
 Requests for a delegation can optionally include `targets`, enabling signers to verify the security of returning an Account 
-Delegation (via ICRC-28). If the array of `targets` is empty, signers **SHOULD** only offer users the option to connect 
+Delegation (via ICRC-28). If the array of `targets` is set to an empty array, signers **SHOULD** only offer users the option to connect 
 with a Relying Party Delegation.
 
 ```json
