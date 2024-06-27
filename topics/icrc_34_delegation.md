@@ -10,7 +10,7 @@
   * [Method](#method)
   * [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
     * [Example RPC Permission Request](#example-rpc-permission-request)
-  * [icrc-25-supported-standards](#icrc-25-supported-standards)
+  * [icrc25_supported_standards](#icrc25_supported_standards)
   * [Request params](#request-params)
     * [Example RPC Delegation Request](#example-rpc-delegation-request)
   * [Result](#result)
