@@ -26,7 +26,8 @@ When a relying party wants to avoid going through the signer and user approval f
 This method generates a delegation chain, an object with a stable identifier, allowing the relying party to independently sign transactions on behalf of the user. This also means the signer does not need to stay connected to the signer to make calls on behalf of the user.
 
 The delegation chain's stable identifier can be either: 
-1. **Account Delegation**: an identity that may hold tokens and other assets.
+1. **Account Delegation**: an identity that has restricted access to the signers identity, such that it is 
+stable across many relying parties but cannot be used to operate on tradable assets and shared infrastructure.
 2. **Relying Party Delegation**: an identity created exclusively for the relying party (Relying Party Delegation).
 
 Example use cases of a Relying Party Delegation:
