@@ -32,7 +32,7 @@ stable across many relying parties but cannot be used to operate on tradable ass
 
 Example use cases of a Relying Party Delegation:
 - Signer could give the user a choice to stay anonymous with a service.
-- Differentiate between calls made with user approval (Account identifier) and without user approval (Relying Party Delegation identifier). Allowing for fine grained security levels per identifier on the Relying Party platform.
+- Differentiate between calls made with user approval (Account identifier) and without user approval (Relying Party Delegation identifier), allowing for fine grained security levels per identifier.
 - Exclusive identifier within the Relying Party platform to stay isolated from identifiers of other Relying Party platforms.
 
 If a relying party wants to receive an Account Delegation, the `icrc34_delegation` request **MUST** include canisters it
