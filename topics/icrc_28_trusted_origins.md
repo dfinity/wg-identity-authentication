@@ -45,10 +45,27 @@ with icrc28-conforming canisters can call those canisters without user approval.
 ### Account Delegation Use-Case
 
 [ICRC-34](./icrc_34_delegation.md) applies when a user returns a delegation to a relying party that 
-can be used to make authenticated calls on the user's behalf (i.e. without displaying wallet approval prompts). 
-To do this safely for the user's wallet address in a way that prevents malicious actors from having access to 
+can be used to make authenticated calls on the user's behalf (i.e. without displaying wallet approval prompts).
+Reminder that delegations come in two forms:
+1. **Account Delegation**: an identity that may hold tokens and other assets.
+2. **Relying Party Delegation**: an identity designed exclusively for the relying party (Relying Party Delegation).
+
+To return an Account Delegation in a way that prevents malicious actors from having access to 
 assets, the wallet needs to confirm that each canister listed as a `target` can be safely entrusted with the 
 relying party:
+
+1. The relying party connects to the signer and requests a delegation with a list of target canisters.
+2. For every target canister the signer:
+    1. Gets the list of trusted origins using the `icrc28_trusted_origins` method.
+    2. The trusted origins response must be certified and valid:
+        * The responses must be provided in a valid certificate (
+          see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification))
+        * The decoded response must not be `null` and match `vec text`.
+3. The signer verifies that relying party origin is within the trusted origin list of all targets.
+    * If the origin is trusted by all targets, continue with step 4a.
+    * If the origin is not trusted by all targets, continue with step 4b.
+4a. The signed account delegation is returned to the relying party.
+4b. The signed relying party delegation is returned to the relying party.
 
 ```mermaid
 sequenceDiagram
@@ -67,16 +84,3 @@ sequenceDiagram
         S ->> RP: Signed relying party delegation
     end
 ```
-
-1. The relying party connects to the signer and requests a delegation with a list of target canisters.
-2. For every target canister the signer:
-    1. Gets the list of trusted origins using the `icrc28_trusted_origins` method.
-    2. The trusted origins response must be certified and valid:
-        * The responses must be provided in a valid certificate (
-          see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification))
-        * The decoded response must not be `null` and match `vec text`.
-3. The signer verifies that relying party origin is within the trusted origin list of all targets.
-    * If the origin is trusted by all targets, continue with step 4a.
-    * If the origin is not trusted by all targets, continue with step 4b.
-4a. The signed account delegation is returned to the relying party.
-4b. The signed relying party delegation is returned to the relying party.
