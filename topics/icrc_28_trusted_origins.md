@@ -29,7 +29,7 @@ This standard assumes dapp developer responsibility for how a canister should:
 
 ### icrc28_trusted_origins
 
-Returns the canister's list of whitelisted origins.
+Returns the canister's list of trusted origins, meaning each front-end listed will not act maliciously with respect to this canister.
 
 ```
 icrc28_trusted_origins : () -> (record { trusted_origins : vec text });
