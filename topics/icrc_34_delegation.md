@@ -43,7 +43,7 @@ Relying Party Delegations **MUST** be for identities exclusive to each individua
 
 Signers **MAY** give users the choice to authenticate with their relying party specific identifier instead of accounts (if available).
 
-Relying parties **MUST** remove targets if they want to be guaranteed to receive a Relying Party delegation.
+Relying parties must not include `targets` in the request if they want to be guaranteed to receive a Relying Party delegation.
 
 ## Method
 
