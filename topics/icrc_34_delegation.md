@@ -163,6 +163,29 @@ the [IC interface specification, authentication section](https://internetcompute
 4. The signer **MAY** display all the available delegations the user can continue with, in which case a user would select one.
 5. The signer returns the signed delegation to the relying party.
 
+```mermaid
+  sequenceDiagram
+    participant RP as Relying Party
+    participant S as Signer
+    participant C as Target Canister
+    RP ->> S: Request delegation
+    alt Relying party has not been granted <br>the `icrc34_delegation` permission scope<br>or the request does not comply with scope restrictions
+        S ->> RP: Error response: Permission not granted (3000)
+    else Requests includes targets
+        loop For every target canister
+            S ->> C: Get trusted origins
+            C ->> S: List of trusted origins
+        end
+        alt Origin is trusted by all targets canisters
+            S ->> RP: Signed delegation
+        else
+            S ->> RP: Error response
+        end
+    else Request excludes targets
+      S ->> RP: Signed delegation
+    end
+```
+
 ## Errors
 
 This standard does not define additional errors. See [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-3) for a
