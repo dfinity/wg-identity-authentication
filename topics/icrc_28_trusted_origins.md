@@ -6,8 +6,9 @@
 <!-- TOC -->
 * [ICRC-28: Trusted Origins](#icrc-28-trusted-origins)
   * [Summary](#summary)
-  * [Method](#method)
+  * [Methods](#methods)
     * [icrc28_trusted_origins](#icrc28_trusted_origins)
+    * [icrc10_supported_standards](#icrc10_supported_standards)
   * [Use-Cases](#use-cases)
     * [Account Delegation Use-Case](#account-delegation-use-case)
 <!-- TOC -->
@@ -25,7 +26,7 @@ This standard assumes dapp developer responsibility for how a canister should:
 - Ensure that all entries are free from malicious intent.
 - Handle entries of entities that become malicious over time.
 
-## Method
+## Methods
 
 ### icrc28_trusted_origins
 
@@ -33,6 +34,18 @@ Returns the canister's list of trusted origins, meaning each front-end listed wi
 
 ```
 icrc28_trusted_origins : () -> (record { trusted_origins : vec text });
+```
+
+### icrc10_supported_standards
+
+An implementation of ICRC-28 MUST implement the method icrc10_supported_standards as put forth in 
+[ICRC-10](https://github.com/dfinity/ICRC/ICRCs/ICRC-10).
+
+The result of the call MUST always have at least the following entries:
+
+```
+record { name = "ICRC-28"; url = "https://github.com/dfinity/ICRC/ICRCs/ICRC-28"; }
+record { name = "ICRC-10"; url = "https://github.com/dfinity/ICRC/ICRCs/ICRC-10"; }
 ```
 
 ## Use-Cases
