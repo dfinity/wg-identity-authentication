@@ -176,13 +176,16 @@ the [IC interface specification, authentication section](https://internetcompute
             S ->> C: Get trusted origins
             C ->> S: List of trusted origins
         end
-        alt Origin is trusted by all targets canisters
-            S ->> RP: Signed delegation
-        else
-            S ->> RP: Error response
+        alt Origin is trusted by all target canisters
+          Note over RP, S: Signer allows Account Delegation<br>or Relying Party Delegation selection
+          S ->> RP: Signed delegation (Account or RP)
+        else Origin is not trusted by all target canisters
+          Note over RP, S: Signer allows only Relying Party Delegation selection
+          S ->> RP: Signed Relying Party Delegation
         end
     else Request excludes targets
-      S ->> RP: Signed delegation
+      Note over RP, S: Signer allows only Relying Party Delegation selection
+      S ->> RP: Signed Relying Party Delegation
     end
 ```
 
