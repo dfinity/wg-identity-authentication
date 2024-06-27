@@ -156,7 +156,7 @@ the [IC interface specification, authentication section](https://internetcompute
     * If the relying party has not been granted the permission to request the action, the signer sends a response with
       an error back to the relying party.
     * The relying party must make sure that the request complies with scope targets restriction.
-3. If the request includes targets, the signer **MAY** try to retrieve and verify the trusted origins according to the [ICRC-28](icrc_28_trusted_origins.md) specification.
+3. If the request includes targets, the signer **MAY** offer issuing an account delegation. If it does, it **MUST** retrieve and verify the trusted origins according to the [ICRC-28](icrc_28_trusted_origins.md) specification.
     * If the trusted origins cannot be retrieved for any of the given delegations targets or the relying party origin is
       not within any of the trusted origin lists, the signer does not give users the ability to continue with the Account Delegation.
 4. The signer **MAY** display all the available delegations the user can continue with, in which case a user would select one.
