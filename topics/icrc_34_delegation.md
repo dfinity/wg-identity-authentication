@@ -41,7 +41,7 @@ controls as `targets` where each canister **MUST** implement the `icrc28_trusted
 
 Relying Party Delegations **MUST** be for identities exclusive to each individual relying party. This property **MUST** be enforced by the signer.
 
-Signers **COULD** give users the choice to authenticate with their relying party specific identifier instead of accounts (if available).
+Signers **MAY** give users the choice to authenticate with their relying party specific identifier instead of accounts (if available).
 
 Relying parties **MUST** remove targets if they want to be guaranteed to receive a Relying Party delegation.
 
