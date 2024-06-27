@@ -49,7 +49,7 @@ Relying parties must not include `targets` in the request if they want to be gua
 
 **Name:** `icrc34_delegation`
 
-**Prerequisite:** Active session with granted permission scope `icrc34_delegation`.
+**Prerequisite:** Granted permission scope `icrc34_delegation`.
 
 ## Scope (according to the [ICRC-25 standard](./icrc_25_signer_interaction_standard.md))
 
