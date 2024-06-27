@@ -23,7 +23,7 @@ A trusted relying party carries certain privileges, like for example the ability
 
 This standard assumes dapp developer responsibility for how a canister should:
 - Ensure that all entries are free from malicious intent.
-- Handle entries that become malicious over time.
+- Handle entries of entities that become malicious over time.
 
 ## Method
 
