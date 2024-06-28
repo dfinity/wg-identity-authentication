@@ -59,7 +59,7 @@ with icrc28-conforming canisters can call those canisters without user approval.
 
 [ICRC-34](./icrc_34_delegation.md) applies when a user returns a delegation to a relying party that 
 can be used to make authenticated calls on the user's behalf (i.e. without displaying wallet approval prompts).
-Reminder that delegations come in two forms:
+These delegations come in two forms:
 1. **Account Delegation**: an identity that has restricted access to the signers identity, such that it is 
 stable across many relying parties but cannot be used to operate on tradable assets and shared infrastructure.
 2. **Relying Party Delegation**: an identity designed exclusively for the relying party (Relying Party Delegation).
