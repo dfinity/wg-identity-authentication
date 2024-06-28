@@ -171,7 +171,7 @@ the [IC interface specification, authentication section](https://internetcompute
     RP ->> S: Request delegation
     alt Relying party has not been granted <br>the `icrc34_delegation` permission scope<br>or the request does not comply with scope restrictions
         S ->> RP: Error response: Permission not granted (3000)
-    else Requests includes targets
+    else Requests includes targets and signer supports account delegations
         loop For every target canister
             S ->> C: Get trusted origins
             C ->> S: List of trusted origins
