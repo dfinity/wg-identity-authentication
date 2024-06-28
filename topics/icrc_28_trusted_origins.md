@@ -44,8 +44,8 @@ An implementation of ICRC-28 MUST implement the method icrc10_supported_standard
 The result of the call MUST always have at least the following entries:
 
 ```
-record { name = "ICRC-28"; url = "https://github.com/dfinity/ICRC/ICRCs/ICRC-28"; }
-record { name = "ICRC-10"; url = "https://github.com/dfinity/ICRC/ICRCs/ICRC-10"; }
+record { name = "ICRC-28"; url = "https://github.com/dfinity/ICRC/tree/main/ICRCs/ICRC-28/ICRC-28.md"; }
+record { name = "ICRC-10"; url = "https://github.com/dfinity/ICRC/blob/main/ICRCs/ICRC-10/ICRC-10.md"; }
 ```
 
 ## Use-Cases
