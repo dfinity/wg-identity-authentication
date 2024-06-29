@@ -71,9 +71,9 @@ For relying party (RP) accounts, special considerations ensure isolated identiti
 
 #### 4. Multiple Accounts, Sub-Accounts, and RP-Accounts
 
-- Signers SHOULD support multiple accounts or, at a minimum, allow users to define the account index in advanced settings.
-- Signers SHOULD support ICRC-1 sub-accounts or, at a minimum, allow users to define the sub-account index in advanced settings.
-- Signers SHOULD support multiple RP-accounts or, at a minimum, allow users to define the RP-account index in advanced settings.
+- Signers SHOULD support multiple accounts or, at a minimum, allow users to define the account index in e.g. advanced settings.
+- Signers SHOULD support ICRC-1 sub-accounts or, at a minimum, allow users to define the sub-account index in e.g. advanced settings.
+- Signers SHOULD support multiple RP-accounts or, at a minimum, allow users to define the RP-account index in e.g. advanced settings.
 
 #### 5. Interoperability and Compliance
 
