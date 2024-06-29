@@ -85,7 +85,7 @@ For relying party (RP) accounts, the change index and derivation path have speci
 - The derived private and public keys SHOULD be securely stored and used according to secp256k1 standards.
 - Implementations SHOULD ensure private keys are never exposed and are used only in secure environments.
 
-#### 4. Multiple Accounts and Sub-Accounts
+#### 4. Multiple Accounts, Sub-Accounts and RP-accounts
 
 - Signers SHOULD support multiple accounts or, at a minimum, allow users to define the account index in advanced settings.
 - Signers SHOULD support ICRC-1 sub-accounts or, at a minimum, allow users to define the sub-account index in advanced settings.
