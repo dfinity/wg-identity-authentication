@@ -30,7 +30,7 @@ ICRC-X mandates the use of BIP39 for mnemonic phrase generation and BIP44 for ac
 
 ##### 2.1 Relying Party Accounts
 
-For relying party (RP) accounts, special considerations ensure isolated identities:
+For relying party (RP) accounts, as defined in ICRC-34, special considerations ensure isolated identities:
 
 1. **Change Index:**
    - The change index MUST be the UTF-8 encoded bits of the string "rp" represented in base 10.
@@ -45,23 +45,25 @@ For relying party (RP) accounts, special considerations ensure isolated identiti
    - Future relying party identifier specifications may use other indices for different identifier types.
 
 3. **Identifier Hashing:**
-   - Hash the relying party identifier using SHA-256.
-   - Chunk the first 160 bits into 31-bit segments, prefixing each with a positive bit (1).
+   - Hash the UTF-8 encoded bits of the relying party identifier using SHA-256.
+   - Chunk the first 155 bits into 31-bit segments, prefixing each with a positive bit (1).
 
    **Example with Origin "https://example.com":**
    - Hash: `SHA-256("https://example.com") = 0xd8b9f8e8bff761c76f4c07330af244f79d15046d697fc77625a8a9047ad14d44`
-   - Segments: `0x1b173f1d1, 0x7feec38e, 0x6f4c0733, 0x30af244f, 0x79d15046, 0xd`
+   - Segments: `0x1b173f1d1, 0x7feec38e, 0x6f4c0733, 0x30af244f, 0x79d150`
    - Prefixed to form 32-bit indices:
      ```
-     0x81b173f1d, 0x87feec38e, 0x86f4c0733, 0x830af244f, 0x879d15046, 0x80000000d
+     0x81b173f1d, 0x87feec38e, 0x86f4c0733, 0x830af244f, 0x879d150
      ```
 
 4. **Derivation Path:**
-   - The RP derivation path includes the master seed, coin type, RP index, address index, origin index, and origin hash indices.
+   - The RP derivation path includes the master seed, coin type, RP index, origin index, and origin hash indices.
    - The final path for RP accounts is structured to ensure isolation and uniqueness.
 
    **Example Path for Relying Party Account (with origin "https://example.com"):**
-   `m/44'/223'/0'/0x80007270'/0'/0'/0x81b173f1d'/0x87feec38e'/0x86f4c0733'/0x830af244f'/0x879d15046'/0x80000000d'`
+   ```
+   m/44'/223'/0'/0x80007270'/0'/0x81b173f1d'/0x87feec38e'/0x86f4c0733'/0x830af244f'/0x879d150'
+   ```
 
 **Example of Derived Extended Keys and Principal for RP Account:**
 - Extended Private Key: `xprv9yLYKDUhYtmT5XfBLzKFTygEz3d9Mztnbc78GcTZQAiW4ow2BXYdRvU8Q6sFywSbUN2Qq66gN1gZR4MbhGH2BpPnhQWcu2T7Fsyv8d3peNL`
