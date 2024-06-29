@@ -8,6 +8,8 @@ ICRC-X mandates the use of BIP39 for mnemonic phrase generation and BIP44 for ac
 
 **Mnemonic phrase signers MUST use BIP39 for generating mnemonic phrases.**
 
+And they SHOULD support importing mnemonic phrases of 12, 18 and 24 words.
+
 - **Example:** A mnemonic phrase generated using BIP39 might be: "unfold depth bean excess cause suit couple top model dish flavor hospital".
 
 #### 2. Account Identity Derivation
