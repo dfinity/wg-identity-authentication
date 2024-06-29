@@ -1,10 +1,8 @@
 ### ICRC-X Specification: Mnemonic Phrase Signers and Account Identity Derivation
 
-This specification defines standards for generating mnemonic phrases and deriving account identities, ensuring interoperability and security within the ICRC-X framework.
-
 #### Summary
 
-ICRC-X mandates the use of BIP39 for mnemonic phrase generation and BIP44 for account identity derivation. This ensures robust security and interoperability across different platforms. Special provisions are made for relying party (RP) accounts to isolate their identities, requiring all derivation paths to be hardened.
+ICRC-X mandates the use of BIP39 for mnemonic phrase generation and BIP44 for account identity derivation. This ensures robust security and interoperability across different platforms. Special provisions are made for relying party (RP) accounts to isolate their identities, requiring all derivation paths to be hardened. Signers are encouraged to support multiple accounts, sub-accounts, and RP-accounts, allowing users flexibility in managing their cryptographic identities.
 
 #### 1. Mnemonic Phrases
 
@@ -43,7 +41,7 @@ For relying party (RP) accounts, special considerations ensure isolated identiti
    - In 32-bit representation with a leading positive bit: `0x80007270` (hardened index).
 
 2. **Relying Party Identifier:**
-   - The relying party identifier uniquely identifies the RP. For example, an origin URL.
+   - The relying party identifier can be any string that uniquely identifies the RP. For example, an origin URL.
    - If the identifier is an origin, prefix it with "origin:" before hashing.
 
 3. **Identifier Hashing:**
@@ -71,9 +69,11 @@ For relying party (RP) accounts, special considerations ensure isolated identiti
 - Secure storage and usage of derived private and public keys are essential.
 - Implementations must adhere to secp256k1 standards to maintain security.
 
-#### 4. Support for Multiple Accounts and Sub-Accounts
+#### 4. Multiple Accounts, Sub-Accounts, and RP-Accounts
 
-- Signers SHOULD support multiple accounts and sub-accounts, allowing users flexibility in managing cryptographic identities.
+- Signers SHOULD support multiple accounts or, at a minimum, allow users to define the account index in advanced settings.
+- Signers SHOULD support ICRC-1 sub-accounts or, at a minimum, allow users to define the sub-account index in advanced settings.
+- Signers SHOULD support multiple RP-accounts or, at a minimum, allow users to define the RP-account index in advanced settings.
 
 #### 5. Interoperability and Compliance
 
