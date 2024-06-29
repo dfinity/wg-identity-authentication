@@ -41,11 +41,12 @@ For ICRC-34 relying party (RP) accounts, special considerations ensure consisten
    - In 32-bit representation with a leading positive bit: `0x80007270` (hardened index).
 
 2. **Relying Party Identifier:**
-   - The relying party identifier can be any string that uniquely identifies the RP. For example, an origin URL.
-   - If the identifier is an origin, prefix it with "origin:" before hashing.
+   - The relying party identifier can be any string that uniquely identifies the RP with a prefix.
+   - If the identifier is an origin, it MUST be prefixed with "origin:" before hashing.
+   - Other relying party identifier types and their prefixes are defined in further ICRC standards that extend ICRC-X.
 
 3. **Identifier Hashing:**
-   - Hash the relying party identifier using SHA-256.
+   - Hash the relying party identifier UTF-8 encoded string using SHA-256.
    - Chunk the first 160 bits into 31-bit segments, prefixing each with a positive bit (1).
 
    **Example with Origin "https://example.com":**
