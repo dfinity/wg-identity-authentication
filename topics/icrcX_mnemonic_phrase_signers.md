@@ -81,9 +81,10 @@ For relying party (RP) accounts, as defined in ICRC-34, special considerations e
 - Secure storage and usage of derived private and public keys are essential.
 - Implementations must adhere to secp256k1 standards to maintain security.
 
-#### 4. Support for Multiple Accounts, Sub-Accounts, and RP-Accounts
+#### 4. Support for Multiple Accounts, Account Adresses, ICRC-1 Sub-Accounts, and RP-Accounts
 
 - Signers SHOULD support multiple accounts or, at a minimum, allow users to define the account index in e.g. advanced settings.
+- Signers SHOULD support multiple account addresses or, at a minimum, allow users to define the account address index in e.g. advanced settings.
 - Signers SHOULD support ICRC-1 sub-accounts or, at a minimum, allow users to define the sub-account index in e.g. advanced settings.
 - Signers SHOULD support multiple RP-accounts or, at a minimum, allow users to define the RP-account index in e.g. advanced settings.
 
