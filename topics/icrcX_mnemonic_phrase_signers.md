@@ -2,7 +2,7 @@
 
 #### Summary
 
-ICRC-X mandates the use of BIP39 for mnemonic phrase generation and BIP44 for account identity derivation. This ensures robust security and interoperability across different platforms. Special provisions are made for ICRC-34 relying party (RP) accounts to isolate their identities, requiring all derivation paths to be hardened. Signers are encouraged to support multiple accounts, sub-accounts, and RP-accounts, allowing users flexibility in managing their cryptographic identities.
+ICRC-X mandates the use of BIP39 for mnemonic phrase generation and BIP44 for account identity derivation. This ensures robust security and interoperability across different platforms. Special provisions are made for relying party (RP) accounts to isolate their identities, requiring all derivation paths to be hardened. Signers are encouraged to support multiple accounts, sub-accounts, and RP-accounts, allowing users flexibility in managing their cryptographic identities.
 
 #### 1. Mnemonic Phrases
 
@@ -30,7 +30,7 @@ ICRC-X mandates the use of BIP39 for mnemonic phrase generation and BIP44 for ac
 
 ##### 2.1 Relying Party Accounts
 
-For ICRC-34 relying party (RP) accounts, special considerations ensure consistent isolated identities:
+For relying party (RP) accounts, special considerations ensure isolated identities:
 
 1. **Change Index:**
    - The change index MUST be the UTF-8 encoded bits of the string "rp" represented in base 10.
@@ -40,25 +40,28 @@ For ICRC-34 relying party (RP) accounts, special considerations ensure consisten
    - The string "rp" in UTF-8 is `0x7270`, which in base 10 is `29296`.
    - In 32-bit representation with a leading positive bit: `0x80007270` (hardened index).
 
-2. **Relying Party Identifier:**
-   - The relying party identifier can be any string that uniquely identifies the RP with a prefix.
-   - If the identifier is an origin, it MUST be prefixed with "origin:" before hashing.
-   - Other relying party identifier types and their prefixes are defined in further ICRC standards that extend ICRC-X.
+2. **Origin Index:**
+   - The index `0` indicates that the RP identifier is an origin.
+   - Future relying party identifier specifications may use other indices for different identifier types.
 
 3. **Identifier Hashing:**
-   - Hash the relying party identifier UTF-8 encoded string using SHA-256.
+   - Hash the relying party identifier using SHA-256.
    - Chunk the first 160 bits into 31-bit segments, prefixing each with a positive bit (1).
 
    **Example with Origin "https://example.com":**
-   - Combine with the prefix: "origin:https://example.com".
-   - Hash: `SHA-256("origin:https://example.com") = 0xd8b9f8e8bff761c76f4c07330af244f79d15046d697fc77625a8a9047ad14d44`
-   - Segments: `0x81b173f1d, 0x87feec38e, 0x86f4c0733, 0x830af244f, 0x879d15046, 0x80000000d`
+   - Hash: `SHA-256("https://example.com") = 0xd8b9f8e8bff761c76f4c07330af244f79d15046d697fc77625a8a9047ad14d44`
+   - Segments: `0x1b173f1d1, 0x7feec38e, 0x6f4c0733, 0x30af244f, 0x79d15046, 0xd`
+   - Prefixed to form 32-bit indices:
+     ```
+     0x81b173f1d, 0x87feec38e, 0x86f4c0733, 0x830af244f, 0x879d15046, 0x80000000d
+     ```
 
 4. **Derivation Path:**
-   - The path includes the coin type, master seed, and hardened indices.
+   - The RP derivation path includes the master seed, coin type, RP index, address index, origin index, and origin hash indices.
+   - The final path for RP accounts is structured to ensure isolation and uniqueness.
 
    **Example Path for Relying Party Account (with origin "https://example.com"):**
-   `m/44'/223'/0'/0x80007270'/0x81b173f1d'/0x87feec38e'/0x86f4c0733'/0x830af244f'/0x879d15046'/0x80000000d'/0'`
+   `m/44'/223'/0'/0x80007270'/0'/0'/0x81b173f1d'/0x87feec38e'/0x86f4c0733'/0x830af244f'/0x879d15046'/0x80000000d'`
 
 **Example of Derived Extended Keys and Principal for RP Account:**
 - Extended Private Key: `xprv9yLYKDUhYtmT5XfBLzKFTygEz3d9Mztnbc78GcTZQAiW4ow2BXYdRvU8Q6sFywSbUN2Qq66gN1gZR4MbhGH2BpPnhQWcu2T7Fsyv8d3peNL`
@@ -70,7 +73,7 @@ For ICRC-34 relying party (RP) accounts, special considerations ensure consisten
 - Secure storage and usage of derived private and public keys are essential.
 - Implementations must adhere to secp256k1 standards to maintain security.
 
-#### 4. Multiple Accounts, Sub-Accounts, and RP-Accounts
+#### 4. Support for Multiple Accounts, Sub-Accounts, and RP-Accounts
 
 - Signers SHOULD support multiple accounts or, at a minimum, allow users to define the account index in e.g. advanced settings.
 - Signers SHOULD support ICRC-1 sub-accounts or, at a minimum, allow users to define the sub-account index in e.g. advanced settings.
