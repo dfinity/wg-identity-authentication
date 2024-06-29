@@ -1,6 +1,6 @@
 ### ICRC-X Specification: Mnemonic Phrase Signers and Account Identity Derivation
 
-This specification outlines the standards and methods for generating and using mnemonic phrases and deriving account identities in the context of ICRC-92. Compliance with these guidelines ensures interoperability and security.
+This specification outlines the standards and methods for generating and using mnemonic phrases and deriving account identities in the context of ICRC-X. Compliance with these guidelines ensures interoperability and security.
 
 #### 1. Mnemonic Phrases
 
@@ -97,4 +97,4 @@ For relying party (RP) accounts, the change index and derivation path have speci
 
 #### Summary
 
-This specification mandates the use of BIP39 and BIP44 for mnemonic phrase generation and account identity derivation, respectively, with specific requirements for relying party accounts. Following these guidelines ensures robust security and interoperability in the ICRC-92 context. All paths in the RP derivation process are hardened to guarantee isolation of RP identities. If the relying party identifier is an origin, it MUST be prefixed with "origin:" before hashing. Future extensions will define standards for non-origin identifiers. Signers SHOULD support multiple accounts and ICRC-1 sub-accounts, allowing users to define account and sub-account indices in advanced settings.
+This specification mandates the use of BIP39 and BIP44 for mnemonic phrase generation and account identity derivation, respectively, with specific requirements for relying party accounts. Following these guidelines ensures robust security and interoperability in the ICRC-X context. All paths in the RP derivation process are hardened to guarantee isolation of RP identities. If the relying party identifier is an origin, it MUST be prefixed with "origin:" before hashing. Future extensions will define standards for non-origin identifiers. Signers SHOULD support multiple accounts and ICRC-1 sub-accounts, allowing users to define account and sub-account indices in advanced settings.
