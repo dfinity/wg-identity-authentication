@@ -17,7 +17,7 @@ This specification outlines the standards and methods for generating and using m
 - The derived private and public key MUST conform to the secp256k1 curve.
 
 **Example Path for General Account:**
-`m/44'/223'/0'/0`
+`m/44'/223'/0'/0/0`
 
 **Example of Derived Extended Keys and Principal for Main Account (index 0):**
 - Mnemonic: "unfold depth bean excess cause suit couple top model dish flavor hospital"
