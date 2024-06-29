@@ -88,7 +88,8 @@ For relying party (RP) accounts, the change index and derivation path have speci
 #### 4. Multiple Accounts and Sub-Accounts
 
 - Signers SHOULD support multiple accounts or, at a minimum, allow users to define the account index in advanced settings.
-- Signers SHOULD also support ICRC-1 sub-accounts or, at a minimum, allow users to define the sub-account index in advanced settings.
+- Signers SHOULD support ICRC-1 sub-accounts or, at a minimum, allow users to define the sub-account index in advanced settings.
+- Signers SHOULD support multiple rp-accounts or, at a minimum, allow users to define the rp-account index in advanced settings.
 
 #### 5. Interoperability and Compliance
 
