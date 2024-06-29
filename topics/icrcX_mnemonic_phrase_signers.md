@@ -2,7 +2,7 @@
 
 #### Summary
 
-ICRC-X mandates the use of BIP39 for mnemonic phrase generation and BIP44 for account identity derivation. This ensures robust security and interoperability across different platforms. Special provisions are made for relying party (RP) accounts to isolate their identities, requiring all derivation paths to be hardened. Signers are encouraged to support multiple accounts, sub-accounts, and RP-accounts, allowing users flexibility in managing their cryptographic identities.
+ICRC-X mandates the use of BIP39 for mnemonic phrase generation and BIP44 for account identity derivation. This ensures robust security and interoperability across different platforms. Special provisions are made for ICRC-34 relying party (RP) accounts to isolate their identities, requiring all derivation paths to be hardened. Signers are encouraged to support multiple accounts, sub-accounts, and RP-accounts, allowing users flexibility in managing their cryptographic identities.
 
 #### 1. Mnemonic Phrases
 
@@ -30,7 +30,7 @@ ICRC-X mandates the use of BIP39 for mnemonic phrase generation and BIP44 for ac
 
 ##### 2.1 Relying Party Accounts
 
-For relying party (RP) accounts, special considerations ensure isolated identities:
+For ICRC-34 relying party (RP) accounts, special considerations ensure consistent isolated identities:
 
 1. **Change Index:**
    - The change index MUST be the UTF-8 encoded bits of the string "rp" represented in base 10.
