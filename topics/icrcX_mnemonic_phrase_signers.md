@@ -1,8 +1,8 @@
-### ICRC-X: Mnemonic Phrase Signers and Account Identity Derivation
+### ICRC-88: Mnemonic Phrase Signers and Account Identity Derivation
 
 #### Summary
 
-ICRC-X mandates the use of BIP39 for mnemonic phrase generation and BIP44 for account identity derivation. This ensures robust security and interoperability across different platforms. Special provisions are made for relying party (RP) accounts to isolate their identities, requiring all derivation paths to be hardened. Signers are encouraged to support multiple accounts, sub-accounts, and RP-accounts, allowing users flexibility in managing their cryptographic identities.
+ICRC-88 mandates the use of BIP39 for mnemonic phrase generation and BIP44 for account identity derivation. This ensures robust security and interoperability across different platforms. Special provisions are made for relying party (RP) accounts to isolate their identities, requiring all derivation paths to be hardened. Signers are encouraged to support multiple accounts, sub-accounts, and RP-accounts, allowing users flexibility in managing their cryptographic identities.
 
 #### 1. Mnemonic Phrases
 
