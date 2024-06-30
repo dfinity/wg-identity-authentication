@@ -6,47 +6,41 @@ ICRC-88 mandates the use of BIP39 for mnemonic phrase generation and BIP44 for a
 
 #### 1. Mnemonic Phrases
 
-**Mnemonic phrase signers MUST use BIP39 for generating mnemonic phrases.**
-
-And they SHOULD support importing mnemonic phrases of 12, 18 and 24 words.
-
-- **Example:** A mnemonic phrase generated using BIP39 might be: "unfold depth bean excess cause suit couple top model dish flavor hospital".
+**Mnemonic phrase signers MUST use BIP39 for generating mnemonic phrases and SHOULD support importing mnemonic phrases of 12, 18 and 24 words.**
 
 #### 2. Account Identity Derivation
 
 **Account identities MUST be derived from the master seed using BIP44.**
 
 - The coin type index MUST be 223 (as specified in SLIP10).
-- The change index for general accounts MUST be 0.
+- The change index for MUST be 0.
 - The derived private and public key MUST conform to the secp256k1 curve.
 
-**Example Path for General Account:**
+**Path for Main Account**
 `m/44'/223'/0'/0/0`
 
-**Example of Derived Extended Keys and Principal for Main Account (index 0):**
+**Example of Derived Extended Keys and Principal for Main Account:**
 - Mnemonic: "unfold depth bean excess cause suit couple top model dish flavor hospital"
 - Master Seed (derived from the mnemonic): `d12dd257e0e7069ab5e79244c4e5a2a1e5ed84693c4cc9f3e2c4912dd2c9aafd`
 - Extended Private Key: `xprv9s21ZrQH143K3AKjczf5Zs3bFXGHg8Xcyg9dpEgLNUJm5S9gCdxwaKTZhBhax4gj8Tx6PMzLbT6zG51z1EdA5erqSVyBBHSe1ZYY1MX2Fgj`
 - Extended Public Key: `xpub6CUGRUonZSQ4TWtTMmzXdrXDtyPWKiUV5F1XHxn6xkthHG6VznCrcJomZ4xzLiFAm7GptSKApKtTL1gD6K4rhRHDJFvhXRyoAjV5rbPx8qV`
-- Principal (using @dfinity/identity-secp256k1 npm library): `s2gs4-vlb3k-rxqv4-7ulgr-5up6z-fjtsq-cqyy7-q3hsi-bxppy-bvxtm-vae`
+- Principal: `s2gs4-vlb3k-rxqv4-7ulgr-5up6z-fjtsq-cqyy7-q3hsi-bxppy-bvxtm-vae`
 
 ##### 2.1 Relying Party Accounts
 
 For relying party (RP) accounts, as defined in ICRC-34, special considerations ensure isolated identities:
 
 1. **Change Index:**
-   - The change index MUST be the UTF-8 encoded bits of the string "rp" represented in base 10.
-   - This 32-bit index MUST start with a positive bit (1), indicating it is a hardened index.
+   The change index MUST be `0x80007270`.
+   
+   > This 32 bit index is the UTF-8 encoded bits of the string "rp" represented in base 10 starting with a positive bit (1), indicating it is a hardened index.
 
-   **Example:**
-   - The string "rp" in UTF-8 is `0x7270`, which in base 10 is `29296`.
-   - In 32-bit representation with a leading positive bit: `0x80007270` (hardened index).
+3. **Origin Index:**
+   The index `0` indicates that the RP identifier is an origin.
+   
+   > Future relying party identifier specifications may use other indices for different identifier types.
 
-2. **Origin Index:**
-   - The index `0` indicates that the RP identifier is an origin.
-   - Future relying party identifier specifications may use other indices for different identifier types.
-
-3. **Identifier Hashing:**
+6. **Identifier Hashing:**
    - Hash the UTF-8 encoded bits of the relying party identifier using SHA-256.
    - Chunk the first 155 bits into 31-bit segments, prefixing each with a positive bit (1).
 
@@ -64,9 +58,8 @@ For relying party (RP) accounts, as defined in ICRC-34, special considerations e
      0x81b173f1d, 0x87feec38e, 0x86f4c0733, 0x830af244f, 0x879d150
      ```
 
-4. **Derivation Path:**
-   - The RP derivation path includes the master seed, coin type, RP index, origin index, and origin hash indices.
-   - The final path for RP accounts is structured to ensure isolation and uniqueness.
+7. **Derivation Path:**
+   The RP derivation path includes the master seed, coin type, RP index, origin index, and origin hash indices.
 
    **Example Path for Relying Party Account (with origin "https://example.com"):**
    ```
