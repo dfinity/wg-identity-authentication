@@ -39,7 +39,7 @@ For relying party (RP) accounts, as defined in ICRC-34, special considerations e
    > This 32 bit index is the UTF-8 encoded bits of the string "rp" starting with a positive bit (1), indicating it is a hardened index.
 
 3. **Origin Index:**
-   The index `0` indicates that the RP identifier is an origin.
+   The index hardened `0'` indicates that the RP identifier is an origin.
    
    > Future relying party identifier specifications may use other indices for different identifier types.
 
