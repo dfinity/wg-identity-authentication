@@ -64,9 +64,9 @@ m/44'/223'/0'/29296'/0'/134430806'/1427847593'/788432362'/770915148'/2128951988'
 
 **Example of Derived Extended Keys and Principal for Relying Party Account (with origin "https://example.com"):**
 - Extended Private Key:  
-  `xprv9yLYKDUhYtmT5XfBLzKFTygEz3d9Mztnbc78GcTZQAiW4ow2BXYdRvU8Q6sFywSbUN2Qq66gN1gZR4MbhGH2BpPnhQWcu2T7Fsyv8d3peNL`
+  `xprvADKqUASfRBhXY8BaET8ds4TF7qAN6BLgsL1zFBtC5pPfmk95zYBidv5LS5WJrsfVYEeDD58683wJCe2aMdRmRzurTZkfut8sukpmPc8GHuB`
 - Extended Public Key:  
-  `xpub6DpZGS5LF1L4Pce7pXyJDLcwU6gRj3erYAKUmJRFujfTZ9tktFt8PC2Dykzkz4mVxHYwBgxhfT7g2Wh3EDC9pHVPrd9UwaWkX2ak6X2JKyn`
+  `xpub6SKBsfyZFZFpkcG3LUfeECPyfrzrVe4YEYwb3aHoe9veeYUEY5VyBiPpHLXfL2kvqo6mkp944QPB32rmBbyfeJxKCHi9mJQkQmcNptxe6B7`
 - Principal:  
   `avltv-z6aeo-qkvjv-6llam-wxf7j-fsqg6-hhviu-b2czx-mjyvl-qm2tt-4ae`
 
