@@ -38,37 +38,19 @@ Account identities MUST be derived from the master seed using BIP44.
 
 For relying party (RP) accounts, as defined in ICRC-34, special considerations ensure isolated identities:
 
-1. **Change Index:**  
-   The change index MUST be `29296'`.
-   
-   > This 32 bit index is the UTF-8 encoded bits of the string "rp" starting with a positive bit (1), indicating it is a hardened index.
+- The change index MUST be `29296'`.
+> This 32 bit index is the UTF-8 encoded bits of the string "rp" starting with a positive bit (1), indicating it is a hardened index.
+- The hardened index `0'` indicates that the RP identifier is an origin.
+> Future relying party identifier specifications may use other indices for different identifier types.
+- Origin identifier:  
+   1. Hash the UTF-8 encoded bits of the relying party identifier using SHA-256.
+   2. Chunk the first 155 bits into 31-bit segments.
+   3. Prefix each chunk with a positive bit (1) to indicate it is a hardened index.
 
-3. **Origin Index:**  
-   The hardened index `0'` indicates that the RP identifier is an origin.
-   
-   > Future relying party identifier specifications may use other indices for different identifier types.
-
-6. **Identifier Hashing:**  
-   - Hash the UTF-8 encoded bits of the relying party identifier using SHA-256.
-   - Chunk the first 155 bits into 31-bit segments. Prefixing each with a positive bit (1) to indicate it is a hardened index.
-
-   **Example with Origin "https://example.com":**
-   - Hash:
-     ```
-     SHA-256("https://example.com") = 0xd8b9f8e8bff761c76f4c07330af244f79d15046d697fc77625a8a9047ad14d44
-     ```
-   - 32-bit indices (1 bit prefix + 31 bit segment):
-     ```
-     0x81b173f1d, 0x87feec38e, 0x86f4c0733, 0x830af244f, 0x879d150
-     ```
-
-7. **Derivation Path:**  
-   The RP derivation path includes the master seed, coin type, RP index, origin index, and origin hash indices.
-
-   **Example Path for Relying Party Account (with origin "https://example.com"):**
-   ```
-   m/44'/223'/0'/0x80007270'/0'/0x81b173f1d'/0x87feec38e'/0x86f4c0733'/0x830af244f'/0x879d150'
-   ```
+**Path for Relying Party Account (with origin "https://example.com"):**
+```
+m/44'/223'/0'/29296'/0'/134430806'/1427847593'/788432362'/770915148'/2128951988'
+```
 
 **Example of Derived Extended Keys and Principal for RP Account:**
 - Extended Private Key:  
