@@ -34,12 +34,12 @@ Account identities MUST be derived from the master seed using BIP44.
 For relying party (RP) accounts, as defined in ICRC-34, special considerations ensure isolated identities:
 
 1. **Change Index:**  
-   The change index MUST be `0x80007270`.
+   The change index MUST be `29296'`.
    
    > This 32 bit index is the UTF-8 encoded bits of the string "rp" starting with a positive bit (1), indicating it is a hardened index.
 
 3. **Origin Index:**  
-   The index hardened `0'` indicates that the RP identifier is an origin.
+   The hardened index `0'` indicates that the RP identifier is an origin.
    
    > Future relying party identifier specifications may use other indices for different identifier types.
 
@@ -61,7 +61,8 @@ For relying party (RP) accounts, as defined in ICRC-34, special considerations e
    The RP derivation path includes the master seed, coin type, RP index, origin index, and origin hash indices.
 
    **Example Path for Relying Party Account (with origin "https://example.com"):**
-   ``` m/44'/223'/0'/0x80007270'/0'/0x81b173f1d'/0x87feec38e'/0x86f4c0733'/0x830af244f'/0x879d150'
+   ```
+   m/44'/223'/0'/0x80007270'/0'/0x81b173f1d'/0x87feec38e'/0x86f4c0733'/0x830af244f'/0x879d150'
    ```
 
 **Example of Derived Extended Keys and Principal for RP Account:**
