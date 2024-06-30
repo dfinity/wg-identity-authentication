@@ -17,7 +17,7 @@ Mnemonic phrase signers MUST use BIP39 for generating mnemonic phrases and SHOUL
 Account identities MUST be derived from the master seed using BIP44.
 
 - The coin type index MUST be 223 (as specified in SLIP10).
-- The change index for MUST be 0.
+- The change index MUST be 0.
 - The derived private and public key MUST conform to the secp256k1 curve.
 
 **Path for Main Account:** `m/44'/223'/0'/0/0`
