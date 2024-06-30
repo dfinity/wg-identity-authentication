@@ -45,18 +45,14 @@ For relying party (RP) accounts, as defined in ICRC-34, special considerations e
 
 6. **Identifier Hashing:**
    - Hash the UTF-8 encoded bits of the relying party identifier using SHA-256.
-   - Chunk the first 155 bits into 31-bit segments, prefixing each with a positive bit (1).
+   - Chunk the first 155 bits into 31-bit segments. Prefixing each with a positive bit (1) to indicate it is a hardened index.
 
    **Example with Origin "https://example.com":**
    - Hash:
      ```
      SHA-256("https://example.com") = 0xd8b9f8e8bff761c76f4c07330af244f79d15046d697fc77625a8a9047ad14d44
      ```
-   - Segments:
-     ```
-     0x1b173f1d1, 0x7feec38e, 0x6f4c0733, 0x30af244f, 0x79d150
-     ```
-   - Prefixed to form 32-bit indices:
+   - 32-bit indices (1 bit prefix + 31 bit segment):
      ```
      0x81b173f1d, 0x87feec38e, 0x86f4c0733, 0x830af244f, 0x879d150
      ```
