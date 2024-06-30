@@ -36,16 +36,21 @@ Account identities MUST be derived from the master seed using BIP44.
 
 ##### 2.1 Relying Party Accounts
 
-For relying party (RP) accounts, as defined in ICRC-34, special considerations ensure isolated identities:
+For relying party (RP) accounts, as defined in ICRC-34, special considerations ensure isolated identities.
+
+**The derivation path used for Relying Party Accounts follows this structure:**
+```
+m/purpose'/coin_type'/account'/change'/rp_type'/segment1'/segment2'/segment3'/segment4'/segment5'
+```
 
 - The change index MUST be `29296'`.
   > This 32 bit index is the UTF-8 encoded bits of the string "rp" starting with a positive bit (1), indicating it is a hardened index.
-- The hardened index `0'` indicates that the RP identifier is an origin.
+- The hardened index `0'` indicates that the RP identifier type is origin.
   > Future relying party identifier specifications may use other indices for different identifier types.
-- Origin identifier MUST be 5 hardened indexes created from 31-bit segments of the first 155 bits of the SHA-256 hashed origin of the relying party
-  > 1. Hash the UTF-8 encoded bits of the relying party identifier using SHA-256.
-  > 2. Chunk the first 155 bits into 31-bit segments.
-  > 3. Prefix each chunk with a positive bit (1) to indicate it is a hardened index.
+- Origin identifier index segments MUST be created according to the following steps:
+  - Hash the UTF-8 encoded bits of the relying party identifier using SHA-256.
+  - Chunk the first 155 bits into 31-bit segments.
+  - Prefix each segment with a positive bit (1) to indicate it is a hardened index.
 
 **Path for Relying Party Account (with origin "https://example.com"):**
 ```
