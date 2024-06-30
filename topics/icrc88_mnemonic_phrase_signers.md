@@ -57,7 +57,7 @@ For relying party (RP) accounts, as defined in ICRC-34, special considerations e
      0x81b173f1d, 0x87feec38e, 0x86f4c0733, 0x830af244f, 0x879d150
      ```
 
-7. **Derivation Path:**
+7. **Derivation Path:**  
    The RP derivation path includes the master seed, coin type, RP index, origin index, and origin hash indices.
 
    **Example Path for Relying Party Account (with origin "https://example.com"):**
