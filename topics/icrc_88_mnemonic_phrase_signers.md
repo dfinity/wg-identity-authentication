@@ -31,11 +31,11 @@ m/purpose'/coin_type'/account'/change/address_index
 - Mnemonic:  
   `unfold depth bean excess cause suit couple top model dish flavor hospital`
 - Master Seed (derived from the mnemonic):  
-  `d12dd257e0e7069ab5e79244c4e5a2a1e5ed84693c4cc9f3e2c4912dd2c9aafd`
+  `50dd2a9e38fc42312576f6f53cebc123feb834fbdf2fe97cab9c0b67daeb2d31035ae2088378e6c2249bb0edd17d448589609d22dd50565151f8b3465ce4c553`
 - Extended Private Key:  
-  `xprv9s21ZrQH143K3AKjczf5Zs3bFXGHg8Xcyg9dpEgLNUJm5S9gCdxwaKTZhBhax4gj8Tx6PMzLbT6zG51z1EdA5erqSVyBBHSe1ZYY1MX2Fgj`
+  `xprv9s21ZrQH143K2CjhnneZehT4D3L8pTGsBEkdkaax7DCyBiqpRNDTaDepwo8y1XfoXNV8SJPyx6CKfSwhDamaX3qigDj5dmKdximZdF1w2yR`
 - Extended Public Key:  
-  `xpub6CUGRUonZSQ4TWtTMmzXdrXDtyPWKiUV5F1XHxn6xkthHG6VznCrcJomZ4xzLiFAm7GptSKApKtTL1gD6K4rhRHDJFvhXRyoAjV5rbPx8qV`
+  `xpub661MyMwAqRbcEgpAtpBa1qPnm5AdDuziYTgEYxzZfYjx4XAxxuXi81yJo6azGtULMApz5A2k6CPRzUoQdPN9QK9jw7XbPnucgfqiYvPqxne`
 - Principal:  
   `s2gs4-vlb3k-rxqv4-7ulgr-5up6z-fjtsq-cqyy7-q3hsi-bxppy-bvxtm-vae`
 
