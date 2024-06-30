@@ -2,27 +2,27 @@
 
 #### Summary
 
-ICRC-88 mandates the use of BIP39 for mnemonic phrase generation and BIP44 for account identity derivation. This ensures robust security and interoperability across different platforms.
+ICRC-88 mandates the use of [BIP39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki) for mnemonic phrase generation and [BIP44](https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki) for account identity derivation. This ensures robust security and interoperability across different platforms.
 
-Special provisions are made for relying party (RP) accounts to isolate their identities, requiring all derivation paths to be hardened. 
+Special provisions are made for relying party (RP) accounts to isolate their identities, defining a custom path for RP accounts where all derivation paths are hardened. 
 
 Signers are encouraged to support multiple accounts, sub-accounts, and RP-accounts, allowing users flexibility in managing their cryptographic identities.
 
 #### 1. Mnemonic Phrases
 
-Mnemonic phrase signers MUST use BIP39 for generating mnemonic phrases and SHOULD support importing mnemonic phrases of 12, 18 and 24 words.
+Mnemonic phrase signers MUST use [BIP39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki) for generating mnemonic phrases and SHOULD support importing mnemonic phrases of 12, 18 and 24 words.
 
 #### 2. Account Identity Derivation
 
-Account identities MUST be derived from the master seed using BIP44.
+Account identities MUST be derived from the master seed using [BIP44](https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki).
 
 **The derivation path defined in BIP44 follows this structure:**
 ```
 m/purpose'/coin_type'/account'/change/address_index
 ```
 
-- The purpose index MUST be `44'` (as specified in BIP44).
-- The coin type index MUST be `223'` (as specified in SLIP10).
+- The purpose index MUST be `44'` (as specified in [BIP44](https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki)).
+- The coin type index MUST be `223'` (as specified in [SLIP10](https://github.com/satoshilabs/slips/blob/master/slip-0010.md)).
 - The change index MUST be `0`.
 
 **Path for Main Account:** `m/44'/223'/0'/0/0`
