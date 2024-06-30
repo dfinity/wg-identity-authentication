@@ -1,4 +1,4 @@
-### ICRC-X Specification: Mnemonic Phrase Signers and Account Identity Derivation
+### ICRC-X: Mnemonic Phrase Signers and Account Identity Derivation
 
 #### Summary
 
