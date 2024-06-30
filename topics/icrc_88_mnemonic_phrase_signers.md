@@ -50,7 +50,7 @@ m/purpose'/coin_type'/account'/change'/rp_type'/segment1'/segment2'/segment3'/se
 
 - The change index MUST be `29296'`.
   > This 32 bit index is the UTF-8 encoded bits of the string "rp" starting with a positive bit (1), indicating it is a hardened index.
-- The hardened index `0'` indicates that the RP identifier type is origin.
+- The hardened index `0'` indicates that the RP identifier type is `origin`.
   > Future relying party identifier specifications may use other indices for different identifier types.
 - Origin identifier index segments MUST be created according to the following steps:
   - Hash the UTF-8 encoded bits of the relying party identifier using SHA-256.
