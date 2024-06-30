@@ -62,7 +62,7 @@ m/purpose'/coin_type'/account'/change'/rp_type'/segment1'/segment2'/segment3'/se
 m/44'/223'/0'/29296'/0'/134430806'/1427847593'/788432362'/770915148'/2128951988'
 ```
 
-**Example of Derived Extended Keys and Principal for RP Account:**
+**Example of Derived Extended Keys and Principal for Relying Party Account (with origin "https://example.com"):**
 - Extended Private Key:  
   `xprv9yLYKDUhYtmT5XfBLzKFTygEz3d9Mztnbc78GcTZQAiW4ow2BXYdRvU8Q6sFywSbUN2Qq66gN1gZR4MbhGH2BpPnhQWcu2T7Fsyv8d3peNL`
 - Extended Public Key:  
