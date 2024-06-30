@@ -22,7 +22,7 @@ m/purpose'/coin_type'/account'/change/address_index
 ```
 
 - The purpose index MUST be `44'` (as specified in [BIP44](https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki)).
-- The coin type index MUST be `223'` (as specified in [SLIP10](https://github.com/satoshilabs/slips/blob/master/slip-0010.md)).
+- The coin type index MUST be `223'` (as specified in [SLIP44](https://github.com/satoshilabs/slips/blob/master/slip-0044.md)).
 - The change index MUST be `0`.
 
 **Path for Main Account:** `m/44'/223'/0'/0/0`
