@@ -33,17 +33,17 @@ Account identities MUST be derived from the master seed using BIP44.
 
 For relying party (RP) accounts, as defined in ICRC-34, special considerations ensure isolated identities:
 
-1. **Change Index:**
+1. **Change Index:**  
    The change index MUST be `0x80007270`.
    
    > This 32 bit index is the UTF-8 encoded bits of the string "rp" starting with a positive bit (1), indicating it is a hardened index.
 
-3. **Origin Index:**
+3. **Origin Index:**  
    The index hardened `0'` indicates that the RP identifier is an origin.
    
    > Future relying party identifier specifications may use other indices for different identifier types.
 
-6. **Identifier Hashing:**
+6. **Identifier Hashing:**  
    - Hash the UTF-8 encoded bits of the relying party identifier using SHA-256.
    - Chunk the first 155 bits into 31-bit segments. Prefixing each with a positive bit (1) to indicate it is a hardened index.
 
