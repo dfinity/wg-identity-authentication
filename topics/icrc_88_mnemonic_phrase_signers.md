@@ -56,21 +56,19 @@ For relying party (RP) accounts, as defined in ICRC-34, special considerations e
 
 **The derivation path used for Relying Party Accounts follows this structure:**
 ```
-m/purpose'/coin_type'/account'/change'/rp_type'/segment1'/segment2'/segment3'/segment4'/segment5'
+m/purpose'/coin_type'/account'/change'/segment1'/segment2'/segment3'/segment4'/segment5'
 ```
 
 - The change index MUST be `29296'`.
   > This 32 bit index is the UTF-8 encoded bits of the string "rp" starting with a positive bit (1), indicating it is a hardened index.
-- The hardened index `0'` indicates that the RP identifier type is `origin`.
-  > Future relying party identifier specifications may use other indices for different identifier types.
-- Origin identifier index segments MUST be created according to the following steps:
+- Relying Party origin identifier index segments MUST be created according to the following steps:
     - Hash the UTF-8 encoded bits of the relying party identifier using SHA-256.
     - Chunk the first 155 bits into 31-bit segments.
     - Prefix each segment with a positive bit (1) to indicate it is a hardened index.
 
 **Path for Relying Party Account (with origin "https://example.com"):**
 ```
-m/44'/223'/0'/29296'/0'/134430806'/1427847593'/788432362'/770915148'/2128951988'
+m/44'/223'/0'/29296'/134430806'/1427847593'/788432362'/770915148'/2128951988'
 ```
 
 **Example of Derived Extended Keys and Principal for Relying Party Account (with origin "https://example.com"):**
@@ -79,11 +77,11 @@ m/44'/223'/0'/29296'/0'/134430806'/1427847593'/788432362'/770915148'/2128951988'
 - Master Seed (derived from the mnemonic):  
   `50dd2a9e38fc42312576f6f53cebc123feb834fbdf2fe97cab9c0b67daeb2d31035ae2088378e6c2249bb0edd17d448589609d22dd50565151f8b3465ce4c553`
 - Extended Private Key:  
-  `xprvADKqUASfRBhXY8BaET8ds4TF7qAN6BLgsL1zFBtC5pPfmk95zYBidv5LS5WJrsfVYEeDD58683wJCe2aMdRmRzurTZkfut8sukpmPc8GHuB`
+  `xprvABKWiVtKuQ6i4ncC5d3N7V6bmWurWgXDLJwc1SLv6CTCsFeFw6E9ahGXe5n4ZDYpp5ZQFW84opGrYP9x3uqKaLiX42hk6tH4jQyLCLTwQZQ`
 - Extended Public Key:  
-  `xpub6SKBsfyZFZFpkcG3LUfeECPyfrzrVe4YEYwb3aHoe9veeYUEY5VyBiPpHLXfL2kvqo6mkp944QPB32rmBbyfeJxKCHi9mJQkQmcNptxe6B7`
+  `xpub6QJs81RDjmf1HGgfBeaNUd3LKYkLv9F4hXsCopkXeXzBk3yQUdYQ8Vb1VMpEDXBnjV7jyFvoq6XBv4ckzj4QWt7fofiiTA9wgrLWLVkHLu3`
 - Principal:  
-  `j3wud-gh5qh-xqgbm-ebbya-zhhs7-od63d-2p34o-m24ap-oyzcs-3jk52-pqe`
+  `6c7za-syw4s-nsviv-e57hh-tnnfm-icpyh-ob4gj-sx52p-dnwla-nfkwk-2qe`
 
 ## 3. Support for multiple accounts, addresses, and RP-accounts
 
