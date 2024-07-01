@@ -37,7 +37,7 @@ m/purpose'/coin_type'/account'/change/address_index
 - Extended Public Key:  
   `xpub661MyMwAqRbcEgpAtpBa1qPnm5AdDuziYTgEYxzZfYjx4XAxxuXi81yJo6azGtULMApz5A2k6CPRzUoQdPN9QK9jw7XbPnucgfqiYvPqxne`
 - Principal:  
-  `s2gs4-vlb3k-rxqv4-7ulgr-5up6z-fjtsq-cqyy7-q3hsi-bxppy-bvxtm-vae`
+  `t6hat-wb7i4-5gey2-filnh-eoy2i-o3kj5-7xaih-t22be-4u4wd-z4mwp-nqe`
 
 ##### 2.1 Relying Party Accounts
 
@@ -63,12 +63,16 @@ m/44'/223'/0'/29296'/0'/134430806'/1427847593'/788432362'/770915148'/2128951988'
 ```
 
 **Example of Derived Extended Keys and Principal for Relying Party Account (with origin "https://example.com"):**
+- Mnemonic:  
+  `unfold depth bean excess cause suit couple top model dish flavor hospital`
+- Master Seed (derived from the mnemonic):  
+  `50dd2a9e38fc42312576f6f53cebc123feb834fbdf2fe97cab9c0b67daeb2d31035ae2088378e6c2249bb0edd17d448589609d22dd50565151f8b3465ce4c553`
 - Extended Private Key:  
   `xprvADKqUASfRBhXY8BaET8ds4TF7qAN6BLgsL1zFBtC5pPfmk95zYBidv5LS5WJrsfVYEeDD58683wJCe2aMdRmRzurTZkfut8sukpmPc8GHuB`
 - Extended Public Key:  
   `xpub6SKBsfyZFZFpkcG3LUfeECPyfrzrVe4YEYwb3aHoe9veeYUEY5VyBiPpHLXfL2kvqo6mkp944QPB32rmBbyfeJxKCHi9mJQkQmcNptxe6B7`
 - Principal:  
-  `avltv-z6aeo-qkvjv-6llam-wxf7j-fsqg6-hhviu-b2czx-mjyvl-qm2tt-4ae`
+  `j3wud-gh5qh-xqgbm-ebbya-zhhs7-od63d-2p34o-m24ap-oyzcs-3jk52-pqe`
 
 #### 3. Support for Multiple Accounts, Account Adresses, ICRC-1 Sub-Accounts, and RP-Accounts
 
