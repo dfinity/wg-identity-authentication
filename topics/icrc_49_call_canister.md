@@ -26,7 +26,7 @@ This Method can be used by the relying party to request calls to 3rd party canis
 
 **Name:** `icrc49_call_canister`
 
-**Prerequisite:** Active session with granted permission scope `icrc49_call_canister`.
+**Prerequisite:** Granted permission scope `icrc49_call_canister`.
 
 ## Scope (according to the [ICRC-25 standard](./icrc_25_signer_interaction_standard.md))
 

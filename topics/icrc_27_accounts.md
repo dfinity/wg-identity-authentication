@@ -28,7 +28,7 @@ managed by the signer.
 
 **Name:** `icrc27_accounts`
 
-**Prerequisite:** Active session with granted permission scope `icrc27_accounts`.
+**Prerequisite:** Granted permission scope `icrc27_accounts`.
 
 ## Scope (according to the [ICRC-25 standard](./icrc_25_signer_interaction_standard.md))
 
