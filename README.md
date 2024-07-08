@@ -37,7 +37,7 @@ A status overview of the standards owned by this working group can be found [her
 
 ## Meetings
 
-Meetings happen every week. All meeting recordings can be found [this google folder](https://drive.google.com/drive/folders/14unuYLiYtUeOw47eRwYnB4FCa9YPr6zv).
+Meetings happen every two weeks. All meeting recordings can be found [this google folder](https://drive.google.com/drive/folders/14unuYLiYtUeOw47eRwYnB4FCa9YPr6zv).
 
 Please consult the [working group calendar](https://calendar.google.com/calendar/u/0?cid=Y19jZ29lcTkxN3JwZWFwN3ZzZTNpczFobDMxMEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t) ([browser view](https://calendar.google.com/calendar/embed?src=c_cgoeq917rpeap7vse3is1hl310%40group.calendar.google.com&ctz=Europe%2FZurich)) for the next meeting date.
 
