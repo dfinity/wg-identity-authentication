@@ -1,8 +1,7 @@
 # ICRC-35 - Browser-Based Interoperability Framework
 
-| Status |
-|--|
-| Draft / [Reference Implementation](https://github.com/seniorjoinu/icrc35) |
+[![Status Badge](https://img.shields.io/badge/STATUS-DRAFT-ffcc00.svg)](https://github.com/orgs/dfinity/projects/31)
+[Reference Implementation](https://github.com/seniorjoinu/icrc35)
 
 ## 1 Scope
 
