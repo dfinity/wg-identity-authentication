@@ -1,8 +1,6 @@
 # ICRC-29: Window Post Message Transport for ICRC-25
 
-| Status |
-|:------:|
-| Draft  |
+[![Status Badge](https://img.shields.io/badge/STATUS-WG_APPROVED-purple.svg)](https://github.com/orgs/dfinity/projects/31)
 
 ## Summary
 

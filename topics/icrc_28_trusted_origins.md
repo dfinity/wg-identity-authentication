@@ -1,6 +1,6 @@
 # ICRC-28: Trusted Origins
 
-[![Status Badge](https://img.shields.io/badge/STATUS-DRAFT-ffcc00.svg)](https://github.com/orgs/dfinity/projects/31)
+[![Status Badge](https://img.shields.io/badge/STATUS-WG_APPROVED-purple.svg)](https://github.com/orgs/dfinity/projects/31)
 [![Standard Issue](https://img.shields.io/badge/ISSUE-ICRC--28-blue?logo=github)](https://github.com/dfinity/wg-identity-authentication/issues/115)
 
 <!-- TOC -->
