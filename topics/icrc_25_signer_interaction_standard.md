@@ -1,6 +1,6 @@
 # ICRC-25: Signer Interaction Standard
 
-[![Status Badge](https://img.shields.io/badge/STATUS-DRAFT-ffcc00.svg)](https://github.com/orgs/dfinity/projects/31)
+[![Status Badge](https://img.shields.io/badge/STATUS-WG_APPROVED-purple.svg)](https://github.com/orgs/dfinity/projects/31)
 
 <!-- TOC -->
 * [ICRC-25: Signer Interaction Standard](#icrc-25-signer-interaction-standard)
