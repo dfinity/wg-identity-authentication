@@ -82,6 +82,7 @@ Any signer implementing ICRC-34 must include a record with the name field equal 
 - `publicKey` (`text`): A DER encoded public key of a supported signature scheme, as described [here](https://internetcomputer.org/docs/current/references/ic-interface-spec/#signatures).
 - `targets` (`text` `array` optional): A list of target canister ids (textual representation) Account Delegations can execute transactions
 for on behalf of the user.
+- `derivationOrigin` (`text` optional): The canister ID URL based on which a Relying Party Delegation will be created.
 - `maxTimeToLive` (`text` optional): Expiration of the delegation in nanoseconds, though signer can still choose to
 return a delegation with a shorter expiration.
 
@@ -101,6 +102,7 @@ with a Relying Party Delegation.
     "targets": [
       "xhy27-fqaaa-aaaao-a2hlq-cai"
     ],
+    "derivationOrigin": "https://3y5ko-7qaaa-aaaal-aaaaq-cai.icp0.io",
     "maxTimeToLive": "28800000000000"
   }
 }
