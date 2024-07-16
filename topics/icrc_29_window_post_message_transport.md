@@ -45,28 +45,13 @@ The message `targetOrigin` should be set to the previously received `icrc29_stat
 After the `"result": "ready"` response has been received within a reasonable timeframe, the relying party can send [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md) messages to the signer
 using the [window.postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) API.
 
-## Signer
-
-The `origin` and `source` values of the received message `icrc29_status` when the communication channel was established,
-are mentioned below as `establishedOrigin` and `establishedSource` respectively.
-
-Messages are received by listening to `message` events, messages are considered as coming from relying party if both:
-- The received message `origin` property is equal to the `establishedOrigin`.
-- The received message `source` property is equal to the `establishedSource`.
-
-Messages are sent by calling the `postMessage` method on the `establishedSource` with the `targetOrigin` parameter set to `establishedOrigin`.
-
-The window must not be automatically closed after sending a message, since the relying party could possibly send additional messages. 
-Instead, the relying party is responsible for closing the signer window.
-
 ## Relying party
 
-The `origin` value of the first received reply to a `icrc29_status` message with `"result": "ready"` when establishing the communication channel,
-is mentioned below as `establishedOrigin`.
+> The `origin` value of the first received reply to a `icrc29_status` message with `"result": "ready"` when establishing the communication channel, is mentioned below as `establishedOrigin`.
+>
+> The `window` that was opened for the signer is mentioned below as `signerWindow`.
 
-The `window` that was opened for the signer is mentioned below as `signerWindow`.
-
-Messages are received by listening to `message` events. Messages are considered as coming from signer if both:
+Messages are received by listening to [message](https://developer.mozilla.org/en-US/docs/Web/API/Window/message_event) events and are considered as coming from signer if both:
 - The received message `origin` property is equal to the `establishedOrigin`.
 - The received message `source` property is equal to the `signerWindow`.
 
@@ -74,6 +59,19 @@ Messages are sent by calling the `postMessage` method on the `signerWindow` with
 
 The relying party should call the `close` method on the `signerWindow` after it is no longer needed.  
 After having closed the window, the signer must again go through the process of [establishing a communication channel](#establishing-a-communication-channel).
+
+## Signer
+
+> The `origin` and `source` values of the received message `icrc29_status` when the communication channel was established, are mentioned below as `establishedOrigin` and `establishedSource` respectively.
+
+Messages are received by listening to `message` events and are considered as coming from relying party if both:
+- The received message `origin` property is equal to the `establishedOrigin`.
+- The received message `source` property is equal to the `establishedSource`.
+
+Messages are sent by calling the `postMessage` method on the `establishedSource` with the `targetOrigin` parameter set to `establishedOrigin`.
+
+The window must not be automatically closed after sending a message, since the relying party could possibly send additional messages. 
+Instead, the relying party is responsible for closing the signer window.
 
 ## Error Handling
 
