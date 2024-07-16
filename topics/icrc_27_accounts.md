@@ -60,7 +60,7 @@ to "ICRC-27" in that list.
 
 ## Request Params
 
-None
+- `derivationOrigin` (`text` optional): The canister ID URL based on which accounts from Relying Party Delegations will be created.
 
 ### Example RPC Request
 
@@ -68,7 +68,10 @@ None
 {
   "id": 1,
   "jsonrpc": "2.0",
-  "method": "icrc27_accounts"
+  "method": "icrc27_accounts",
+  "params": {
+    "derivationOrigin": "https://3y5ko-7qaaa-aaaal-aaaaq-cai.icp0.io"
+  }
 }
 ```
 
