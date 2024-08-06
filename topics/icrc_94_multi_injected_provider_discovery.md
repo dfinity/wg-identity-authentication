@@ -227,6 +227,7 @@ Here is a reference implementation for a DApp to display and track multiple Wall
 
 const providers: ICRC94ProviderInfo[];
 
+```
 function onPageLoad() {
 
   window.addEventListener('message', (event) => {
@@ -243,3 +244,4 @@ function onPageLoad() {
 
   window.postMessage({type: 'icrc94:requestProvider'}, '*');
 }
+```
