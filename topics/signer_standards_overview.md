@@ -12,6 +12,7 @@ The following ICRC standards are relevant in this context:
 * [ICRC-32](icrc_32_sign_challenge.md): Sign Challenge (ICRC-25 Extension)
 * [ICRC-39](icrc_39_batch_calling.md): Batch Calling (ICRC-25 Extension)
 * [ICRC-49](icrc_49_call_canister.md): Call Canister (ICRC-25 Extension)
+* [ICRC-94](icrc_94_multi_injected_provider_discovery.md): Multi Injected Provider Discovery
 
 The following diagram presents the interactions between the different components (see [terminology](#terminology)) and shows which standards cover the respective parts of the interactions:
 
