@@ -88,6 +88,7 @@ sequenceDiagram
 2. The signer fetches the consent message from the target canister and validates the response:
    * `icrc21_consent_message_request.method` must match the canister call method.
    * `icrc21_consent_message_request.arg` must match the canister call argument.
+   * The signer must either use the anonymous identity or the same identity as for signing the canister call (in step 6) for the `icrc21_consent_message` request.
    * The `icrc21_consent_message` canister call must be made to the target canister.
    * The response to the `icrc21_consent_message` canister call (fetched using `read_state`) must be delivered in a valid certificate (see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification)).
    * The decoded response must not be `null` and match the `icrc21_consent_message_response::OK` variant.
@@ -145,6 +146,7 @@ sequenceDiagram
    1. The consent message request must match the canister call:
       * `icrc21_consent_message_request.method` must match the canister call method.
       * `icrc21_consent_message_request.arg` must match the canister call argument.
+      * The `icrc21_consent_message` request `sender` must be anonymous or match the identity used to sign the canister call request (in step 7).
       * The `icrc21_consent_message` request `canister_id` must match the target canister id.
    2. The consent message response must be certified and valid:
       * The response to the `icrc21_consent_message` canister call must be provided in a valid certificate (see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification)).
