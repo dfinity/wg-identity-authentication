@@ -229,7 +229,7 @@ While processing the request from the relying party, the signer can cancel it at
 
 #### Message Processing
 
-1. The relying party sends a `icrc25_granted_permissions` message to the signer.
+1. The relying party sends a `icrc25_permissions` message to the signer.
 2. The signer replies with the state of all [permission scopes](#permissions) for the specific relying party.
 
 ```mermaid
@@ -237,8 +237,8 @@ sequenceDiagram
     participant RP as Relying Party
     participant S as Signer
 
-    RP ->> S: Query granted permissions
-    S ->> RP: Granted permissions response
+    RP ->> S: Query permissions
+    S ->> RP: Reply with the list of all permissions
 ```
 
 #### Example
