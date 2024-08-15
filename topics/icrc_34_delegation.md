@@ -7,6 +7,8 @@
 <!-- TOC -->
 * [ICRC-34: Delegation](#icrc-34-delegation)
   * [Summary](#summary)
+    * [Use-Cases for Account Delegation:](#use-cases-for-account-delegation)
+    * [Use-Cases for Relying Party Delegation:](#use-cases-for-relying-party-delegation)
   * [Method](#method)
   * [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
     * [Example RPC Permission Request](#example-rpc-permission-request)
@@ -30,20 +32,24 @@ The delegation chain's stable identifier can be either:
 stable across many relying parties but cannot be used to operate on tradable assets and shared infrastructure.
 2. **Relying Party Delegation**: an identity created exclusively for the relying party (Relying Party Delegation).
 
-Example use cases of a Relying Party Delegation:
-- Signer could give the user a choice to stay anonymous with a service.
-- Differentiate between calls made with user approval (Account identifier) and without user approval (Relying Party Delegation identifier), allowing for fine grained security levels per identifier.
-- Exclusive identifier within the Relying Party platform to stay isolated from identifiers of other Relying Party platforms.
-
-If a relying party wants to receive an Account Delegation, the `icrc34_delegation` request **MUST** include canisters it
-controls as `targets` where each canister **MUST** implement the `icrc28_trusted_origins` endpoint as per the 
-[ICRC-28](./icrc_28_trusted_origins.md) standard.
-
 Relying Party Delegations **MUST** be for identities exclusive to each individual relying party. This property **MUST** be enforced by the signer.
-
 Signers **MAY** give users the choice to authenticate with their relying party specific identifier instead of accounts (if available).
 
+If a relying party wants to receive an Account Delegation, the `icrc34_delegation` request **MUST** include canisters it
+controls as `targets` where each canister **MUST** implement the `icrc28_trusted_origins` endpoint as per the
+[ICRC-28](./icrc_28_trusted_origins.md) standard.
 Relying parties must not include `targets` in the request if they want to be guaranteed to receive a Relying Party delegation.
+
+### Use-Cases for Account Delegation:
+- Single identifier for the user that is the same for all relying parties and shared infrastructure, which leads to the following benefits:
+  - application specific user data can be directly tied to the users global identity without the need for a mapping to an application specific identifier
+  - easier integration and composition of applications that handle user data
+
+> **Note:** Using the same identifier globally may be detrimental to privacy as user activity can be tracked across applications.
+
+### Use-Cases for Relying Party Delegation:
+- Differentiate between calls made with user approval (Account identifier) and without user approval (Relying Party Delegation identifier), allowing for fine grained security levels per identifier.
+- Exclusive identifier within the Relying Party platform to stay isolated from identifiers of other Relying Party platforms. Depending on the signer implementation, this may offer privacy benefits.
 
 ## Method
 
@@ -154,12 +160,9 @@ the [IC interface specification, authentication section](https://internetcompute
 
 1. The relying party sends a `icrc34_delegation` request to the signer.
 2. Upon receiving the request, the signer validates whether it can process the message.
-    * If the relying party has not been granted the permission to request the action, the signer sends a response with
-      an error back to the relying party.
-    * The relying party must make sure that the request complies with scope targets restriction.
+    * If the relying party has not been granted the permission to request the action, the signer sends a response with an error back to the relying party.
 3. If the request includes targets, the signer **MAY** offer issuing an account delegation. If it does, it **MUST** retrieve and verify the trusted origins according to the [ICRC-28](icrc_28_trusted_origins.md) specification.
-    * If the trusted origins cannot be retrieved for any of the given delegations targets or the relying party origin is
-      not within any of the trusted origin lists, the signer does not give users the ability to continue with the Account Delegation.
+    * If the trusted origins cannot be retrieved for any of the given delegations targets or the relying party origin is not within any of the trusted origin lists, the signer does not give users the ability to continue with the Account Delegation.
 4. The signer **MAY** display all the available delegations the user can continue with, in which case a user would select one.
 5. The signer returns the signed delegation to the relying party.
 
@@ -169,12 +172,14 @@ the [IC interface specification, authentication section](https://internetcompute
     participant S as Signer
     participant C as Target Canister
     RP ->> S: Request delegation
-    alt Relying party has not been granted <br>the `icrc34_delegation` permission scope<br>or the request does not comply with scope restrictions
+    alt Relying party has not been granted <br>the `icrc34_delegation` permission scope
         S ->> RP: Error response: Permission not granted (3000)
     else Requests includes targets and signer supports account delegations
         loop For every target canister
-            S ->> C: Get trusted origins
-            C ->> S: List of trusted origins
+            Note over S, C: Interactions follow ICRC-28 standard
+            S ->> C: Get trusted origins / supported standards
+            C ->> S: Trusted origins / supported standards
+            S ->> S: Verify trusted origins / supported standards
         end
         alt Origin is trusted by all target canisters
           Note over RP, S: Signer allows Account Delegation<br>or Relying Party Delegation selection
