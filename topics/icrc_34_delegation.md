@@ -51,6 +51,8 @@ Relying parties must not include `targets` in the request if they want to be gua
 - Differentiate between calls made with user approval (Account identifier) and without user approval (Relying Party Delegation identifier), allowing for fine grained security levels per identifier.
 - Exclusive identifier within the Relying Party platform to stay isolated from identifiers of other Relying Party platforms. Depending on the signer implementation, this may offer privacy benefits.
 
+> **Note:** Using exclusive identifiers within the Relying Party platform may be detrimental to data portability, dapp integration, and composition of applications as user data can not be easily queried across the ecosystem of dapps and services.
+
 ## Method
 
 **Name:** `icrc34_delegation`
