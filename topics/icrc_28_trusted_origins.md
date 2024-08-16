@@ -20,7 +20,7 @@ This standard describes how a canister can indicate that a relying party (an ent
 Canisters that manage tradable assets or are otherwise meant to be composed upon by distinct parties in the ecosystem (e.g. ICRC-1 or ICRC-7 canisters), 
 **MUST NOT** implement ICRC-28: ICRC-28 privileges the listed entities to potentially act independently on behalf of the signer, which is a security risk in the context of tradable assets and shared infrastructure.
 
-> **Note:** If an entity is required to act independently on behalf of the signer in the context of tradable assets it is recommended to use relying party delegations as per [ICRC-34](./icrc_34_delegation.md) in conjunction with [ICRC-2](https://github.com/dfinity/ICRC-1/blob/main/standards/ICRC-2/README.md) or https://github.com/dfinity/ICRC/blob/main/ICRCs/ICRC-37/ICRC-37.md.
+> **Note:** If an entity is required to act independently on behalf of the signer in the context of tradable assets it is recommended to use an approval flow as specified in [ICRC-2](https://github.com/dfinity/ICRC-1/blob/main/standards/ICRC-2/README.md) or https://github.com/dfinity/ICRC/blob/main/ICRCs/ICRC-37/ICRC-37.md.
 
 A trusted relying party carries certain privileges, like for example the ability to request Account Delegations as per [ICRC-34](./icrc_34_delegation.md).
 
