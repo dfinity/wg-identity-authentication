@@ -33,7 +33,7 @@ This standard assumes dapp developer responsibility for how a canister should:
 Returns the canister's list of trusted origins, meaning each front-end listed will not act maliciously with respect to this canister.
 
 ```
-icrc28_trusted_origins : () -> (record { trusted_origins : vec text });
+icrc28_trusted_origins : () -> (record { trusted_origins : vec text; certificate : vec nat8; witness : vec nat8; });
 ```
 
 ### icrc10_supported_standards
