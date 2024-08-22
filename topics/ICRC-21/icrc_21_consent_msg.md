@@ -33,14 +33,10 @@ In addition to implementing this interface, it is recommended that the canister 
 
 The signer may send the `icrc21_consent_message` call using the same identity as it would for the actual canister call for which the consent message was issued.
 
-Any canister implementing the `icrc21_consent_message` interface must not require authentication for this call.
-However, canisters may add additional or different information if a non-anonymous `sender` is used.
+Any canister implementing the `icrc21_consent_message` interface must not require authentication for this call. Anonymous consent messages are required in the [cold signer use-case](#cold-signer-use-case) which would otherwise require two interactions with the cold signer component, making the flow very cumbersome for users.
 
-For example, a canister might include private information in the consent message, if the call is made by the owner of that information. 
-
-The canister must ensure that if the actual call is made with a different identity than the `icrc21_consent_message` then either:
-* the call fails with an error and without side effects
-* the call succeeds and the previously issued consent message (for a different identity) still accurately describes the outcome of the call
+Canisters may add additional or different information if a non-anonymous `sender` is used.
+For example, a canister might include private information in the consent message, if the call is made by the owner of that information.
 
 > **_WARNING:_**  Canister developers must take care to not rely on the current state of the canister / identity attached data when issuing the consent message. There might be a significant time delay (depending on the signer used) between retrieving the consent message and submitting the canister call. The consent message must accurately describe all possible outcomes of the canister call, accounting for that time delay.
 
