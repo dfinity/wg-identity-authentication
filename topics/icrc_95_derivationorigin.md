@@ -11,7 +11,7 @@
     * [Definitions](#definitions)
     * [derivationOrigin Parameter](#derivationorigin-parameter)
   * [Reference Implementation](#reference-implementation)
-    * [Wallet Provider](#wallet-provider)
+    * [Signer](#signer)
     * [DApp Implementation](#dapp-implementation)
 <!-- TOC -->
 
@@ -21,7 +21,7 @@ A definition of the `derivationOrigin` parameter for inclusion in ICRC-25 and al
 
 ## Motivation
 
-Internet Identity, NFID Wallet, and other such on-chain wallets currently use a relying party's origin to derive principal identifiers. When relying parties switch DNS names or add subdomains to their applications, users will authenticate with different identifiers and therefore be unable to access their original data.
+Internet Identity, NFID Wallet, and other such on-chain signers currently use a relying party's origin to derive principal identifiers. When relying parties switch DNS names or add subdomains to their applications, users will authenticate with different identifiers and therefore be unable to access their original data.
 
 In this proposal, we present a solution that focuses on incorporating the existing method for authenticating users with the same principal identifiers across different domains, but in a way that extends the current framework of ICRC standards.
 
@@ -31,25 +31,25 @@ The key words “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL 
 
 ### Definitions
 
-Wallet Provider: A user agent that manages keys and facilitates transactions with ICP.
+Signer: A user agent that manages keys and facilitates transactions with ICP.
 
-Relying party: A web page that relies upon one or many Web3 platform APIs which are exposed to the web page via the Wallet.
+Relying party: A web page that relies upon one or many Web3 platform APIs which are exposed to the web page via the signer.
 
 ### derivationOrigin Parameter
 
-ICRC-25 and all of its extensions (in particular, ICRC-27, ICRC-34, ICRC-49) will have the option of adding another parameter to its request named `icrc95_derivationOrigin`.
+ICRC-25 and all of its extensions (in particular, ICRC-27, ICRC-34, ICRC-49) will have the option of adding another parameter to its request named `icrc95DerivationOrigin`.
 
-This parameter specifies the string that wallets should use to derive principal identifiers (and their delegations).
+This parameter specifies the string that signers should use to derive principal identifiers (and their delegations).
 
 ## Reference Implementation
 
-### Wallet Provider
+### Signer
 
-Here is a reference implementation for a Wallet Provider to support [ICRC-95](https://github.com/dfinity/internet-identity/blob/51f050b3f0bf5c21e55f62577bcb4d51c954f738/src/frontend/src/utils/validateDerivationOrigin.ts).
+Here is a reference implementation for a Signer to [validate the derivationOrigin](https://github.com/dfinity/internet-identity/blob/51f050b3f0bf5c21e55f62577bcb4d51c954f738/src/frontend/src/utils/validateDerivationOrigin.ts#L20).
 
 ## DApp Implementation
 
-Here is a reference implementation for a DApp to request a delegation with ICRC-95: derivationOrigin.
+Here is the DApp's request for a delegation using ICRC-95: derivationOrigin:
 
 ```json
 {
@@ -58,7 +58,7 @@ Here is a reference implementation for a DApp to request a delegation with ICRC-
   "method": "icrc34_delegation",
   "params": {
     "publicKey": "MDwwDAYKKwYBBAGDuEMBAgMsAAoAAAAAAGAAJwEB9YN/ErQ8yN+14qewhrU0Hm2rZZ77SrydLsSMRYHoNxM=",
-    "icrc95_derivationOrigin": "https://app.nfidvaults.com",
+    "icrc95DerivationOrigin": "https://app.nfidvaults.com",
     "targets": [
       "xhy27-fqaaa-aaaao-a2hlq-cai"
     ],
