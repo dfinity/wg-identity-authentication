@@ -106,8 +106,9 @@ An ICRC-25 compliant signer must implement the [icrc25_supported_standards](./ic
 
 1. The relying party sends a `icrc49_call_canister` request to the signer.
 2. Upon receiving the request, the signer validates whether it can process the message.
-    - If the relying party has not been granted the permission to request the action, the signer sends a response with an error back to the relying party.
-        - The sender must make sure that the request complies with additional scope restrictions defined by the signer (if any), such as limitations on the target canister id or the sender principal, etc.
+    - If the relying party has been denied the permission to invoke the method,
+      the signer sends a response with an error back to the relying party.
+      If the permission state is `ask_on_use`, the signer must prompt the user to either accept or deny this invocation.
 3. The signer tries to retrieve and verify the consent message according to the [ICRC-21](icrc_21_consent_msg.md) specification. If the target canister does not support ICRC-21 consent messages for the given canister call, the signer may proceed in one of following ways:
    * The signer rejects the request and sends a response with the error code 2001 back to the relying party. Step 4 is skipped.
    * The signer displays a warning, tries to decode the arguments by itself and displays raw canister call details. If the arguments cannot be decoded, a strong warning must be displayed.
