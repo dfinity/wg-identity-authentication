@@ -1,10 +1,10 @@
-# ICRC-27: Get Accounts
+# ICRC-27: Accounts
 
 [![Status Badge](https://img.shields.io/badge/STATUS-WG_APPROVED-purple.svg)](https://github.com/orgs/dfinity/projects/31)
 [![Extension Badge](https://img.shields.io/badge/Extends-ICRC--25-ffcc222.svg)](./icrc_25_signer_interaction_standard.md)
 
 <!-- TOC -->
-* [ICRC-27: Accounts](#icrc-27-get-accounts)
+* [ICRC-27: Accounts](#icrc-27-accounts)
   * [Summary](#summary)
   * [Method](#method)
   * [Scope (according to the ICRC-25 standard)](#scope-according-to-the-icrc-25-standard)
