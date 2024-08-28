@@ -101,8 +101,9 @@ None
 
 1. The relying party sends a `icrc27_accounts` request to the signer.
 2. Upon receiving the message, the signer first checks if it can process the message.
-    - If the relying party has not been granted the permission to invoke the method,
+    - If the relying party has been denied the permission to invoke the method,
       the signer sends a response with an error back to the relying party.
+      If the permission state is `ask_on_use`, the signer must prompt the user to either accept or deny this invocation. See [permission states](icrc_25_signer_interaction_standard.md#permissions-states) for more details.
 3. The signer MAY prompt the user to select which accounts to share.
     - If the signer prompts the user, it SHOULD do so for each request so that the
       relying party can offer the user the option to update / change the selection.
