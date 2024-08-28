@@ -162,9 +162,9 @@ the [IC interface specification, authentication section](https://internetcompute
 
 1. The relying party sends a `icrc34_delegation` request to the signer.
 2. Upon receiving the request, the signer validates whether it can process the message.
-    - If the relying party has been denied the permission to invoke the method,
-      the signer sends a response with an error back to the relying party.
-      If the permission state is `ask_on_use`, the signer must prompt the user to either accept or deny this invocation.
+   - If the relying party has been denied the permission to invoke the method,
+     the signer sends a response with an error back to the relying party.
+     If the permission state is `ask_on_use`, the signer must prompt the user to either accept or deny this invocation. See [permission states](icrc_25_signer_interaction_standard.md#permissions-states) for more details.
 3. If the request includes targets, the signer **MAY** offer issuing an account delegation. If it does, it **MUST** retrieve and verify the trusted origins according to the [ICRC-28](icrc_28_trusted_origins.md) specification.
     * If the trusted origins cannot be retrieved for any of the given delegations targets or the relying party origin is not within any of the trusted origin lists, the signer does not give users the ability to continue with the Account Delegation.
 4. The signer **MAY** display all the available delegations the user can continue with, in which case a user would select one.
