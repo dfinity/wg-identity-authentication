@@ -139,7 +139,7 @@ sequenceDiagram
 2. The chain-connected signer component fetches the consent message from the target canister:
    * `icrc21_consent_message_request.method` must match the canister call method.
    * `icrc21_consent_message_request.arg` must match the canister call argument.
-   * The hot signer component must use the anonymous identity for the `icrc21_consent_message` request.
+   * The chain-connected signer component must use the anonymous identity for the `icrc21_consent_message` request.
    * The `icrc21_consent_message` canister call must be made to the target canister.
    * The response to the `icrc21_consent_message` canister call (fetched using `read_state`) must be delivered in a valid certificate (see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification)).
    * The decoded response must not be `null` and match the `icrc21_consent_message_response::OK` variant.
