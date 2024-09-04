@@ -84,7 +84,7 @@ sequenceDiagram
 2. The signer fetches the consent message from the target canister and validates the response:
    * `icrc21_consent_message_request.method` must match the canister call method.
    * `icrc21_consent_message_request.arg` must match the canister call argument.
-   * The signer must either use the anonymous identity or the same identity as for signing the canister call (in step 6) for the `icrc21_consent_message` request.
+   * The signer must use the same identity for the `icrc21_consent_message` request as is used for signing the canister call (in step 6).
    * The `icrc21_consent_message` canister call must be made to the target canister.
    * The response to the `icrc21_consent_message` canister call (fetched using `read_state`) must be delivered in a valid certificate (see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification)).
    * The decoded response must not be `null` and match the `icrc21_consent_message_response::OK` variant.
@@ -136,7 +136,13 @@ sequenceDiagram
 ```
 
 1. The relying party connects to the signer and requests a signature on a canister call.
-2. The signer fetches the consent message from the target canister:
+2. The chain-connected signer component fetches the consent message from the target canister:
+   * `icrc21_consent_message_request.method` must match the canister call method.
+   * `icrc21_consent_message_request.arg` must match the canister call argument.
+   * The chain-connected signer component must use the anonymous identity for the `icrc21_consent_message` request.
+   * The `icrc21_consent_message` canister call must be made to the target canister.
+   * The response to the `icrc21_consent_message` canister call (fetched using `read_state`) must be delivered in a valid certificate (see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification)).
+   * The decoded response must not be `null` and match the `icrc21_consent_message_response::OK` variant.
 3. The canister call and the consent message request as well as the certified response are transferred to the cold signer component.
 4. The cold signer component validates the consent message:
    1. The consent message request must match the canister call:
