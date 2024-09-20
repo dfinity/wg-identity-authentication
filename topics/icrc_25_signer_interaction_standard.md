@@ -7,7 +7,7 @@
   * [Summary](#summary)
   * [Terminology](#terminology)
   * [Types](#types)
-  * [Transport Requirements](#transport-requirements)
+  * [Transport Channel Requirements](#transport-channel-requirements)
   * [Permissions](#permissions)
     * [Permissions States](#permissions-states)
     * [Requesting Permissions](#requesting-permissions)
@@ -55,7 +55,7 @@ This specification describes a communication protocol between dapps (decentraliz
 - `blob`: A `string` value describing binary data encoded in base64.
 - `int`: An integer value.
 
-## Transport Requirements
+## Transport Channel Requirements
 
 This standard is agnostic to the transport channel used to send the messages, as long as it provides authenticity and integrity: this means that the communicating parties know the other participant and can be sure that the messages they receive are sent by the party they expect and that the messages have not been tampered with.
 
@@ -369,11 +369,12 @@ The error is an object comprising the `code`, `message` and optional `data` fiel
 | 3000 | Permission not granted | The signer has rejected the request due to insufficient permissions. | N/A  |
 | 3001 | Action aborted         | The user has canceled the action.                                    | N/A  |
 
-- Network (**code: `4xxx`**)
+- Transport Channel (**code: `4xxx`**)
 
-| Code | Message       | Meaning                  | Data                                                                                                                            |
-|------|---------------|--------------------------|---------------------------------------------------------------------------------------------------------------------------------|
-| 4000 | Network error | The network call failed. | (optional) Error details: <ul> <li>`status` (`int`): HTTP status code</li> <li>`message` (`text`, optional): message</li> </ul> |
+| Code | Message                  | Meaning                                       | Data                                                                                                                            |
+|------|--------------------------|-----------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
+| 4000 | Network error            | The network call failed.                      | (optional) Error details: <ul> <li>`status` (`int`): HTTP status code</li> <li>`message` (`text`, optional): message</li> </ul> |
+| 4001 | Transport channel closed | The transport channel was closed unexpectedly. | (`text`): description of the error intended for developers                                                                      |
 
 ### Example
 
