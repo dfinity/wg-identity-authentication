@@ -374,7 +374,7 @@ The error is an object comprising the `code`, `message` and optional `data` fiel
 | Code | Message                  | Meaning                                       | Data                                                                                                                            |
 |------|--------------------------|-----------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
 | 4000 | Network error            | The network call failed.                      | (optional) Error details: <ul> <li>`status` (`int`): HTTP status code</li> <li>`message` (`text`, optional): message</li> </ul> |
-| 4001 | Transport channel closed | The transport channel was closed unexpectedly | (`text`): description of the error intended for developers                                                                      |
+| 4001 | Transport channel closed | The transport channel was closed unexpectedly. | (`text`): description of the error intended for developers                                                                      |
 
 ### Example
 
