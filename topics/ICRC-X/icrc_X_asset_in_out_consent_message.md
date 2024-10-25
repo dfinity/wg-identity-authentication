@@ -5,8 +5,7 @@
 ## Summary
 
 This specification describes a protocol for content return by request consent message
-
-This specification inherited funtionalities from ICRC_21 standard
+This specification inherited functionalities from ICRC_21 standard
 
 ## Terminology
 
