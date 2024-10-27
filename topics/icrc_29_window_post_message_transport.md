@@ -42,6 +42,15 @@ method `icrc29_status` and no parameters:
 }
 ```
 
+Expected response from signer:
+```json
+{
+  "jsonrpc": "2.0",
+  "id": "1",
+  "result": "ready"
+}
+```
+
 ### Establishment
 
 The connection is considered established once the relying party receives a `"result": "ready"` response to an
