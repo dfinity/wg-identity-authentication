@@ -4,7 +4,10 @@
 
 ## Summary
 
-This standard defines a transport channel to send [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md) messages from a relying party to a signer. The transport channel is based on the [window.postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) API.
+This standard defines a transport channel to
+send [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md)
+messages from a relying party to a signer. The transport channel is based on
+the [window.postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) API.
 
 ## Terminology
 
@@ -12,73 +15,93 @@ This standard defines a transport channel to send [ICRC-25](https://github.com/d
 * relying party: A service that wants to request calls on a specific canister.
 
 ## Trust Assumption
-For this standard to represent an [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md) compliant transport channel, the following assumptions must hold:
-* The user's machine is not compromised. In particular, the browser must deliver messages unchanged and represent the `origin` of the different parties correctly.
-* DNS entries are not compromised. The user's machine must be able to resolve the domain names of the relying party and signer correctly.
 
-## Establishing a Communication Channel
+For this standard to represent
+an [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md)
+compliant transport channel, the following assumptions must hold:
 
-A [window.postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) communication channel is initiated by the relying party. The relying party opens a new window and polls repeatedly for the signer to reply with a message indicating that it is ready for interactions.
-The message sent by the relying party has `targetOrigin` set to `'*'` and is a [JSON-RPC 2.0](https://www.jsonrpc.org/specification) call with method `icrc29_status` and no parameters:
+* The user's machine is not compromised. In particular, the browser must deliver messages unchanged and represent
+  the `origin` of the different parties correctly.
+* DNS entries are not compromised. The user's machine must be able to resolve the domain names of the relying party and
+  signer correctly.
+
+## Communication Channel
+
+The relying party initiates and maintains the communication channel by opening a new window for the signer and
+periodically sending `icrc29_status` messages using
+the [window.postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) API.
+
+The message has `targetOrigin` set to `'*'` and is a [JSON-RPC 2.0](https://www.jsonrpc.org/specification) call with
+method `icrc29_status` and no parameters:
 
 ```json
 {
-    "jsonrpc": "2.0",
-    "id": "1",
-    "method": "icrc29_status"
+  "jsonrpc": "2.0",
+  "id": "1",
+  "method": "icrc29_status"
 }
 ```
 
-The signer should reply with a message indicating that it is ready to receive additional messages.
-The message `targetOrigin` should be set to the previously received `icrc29_status` message its `origin` property value.
+### Establishment
 
-```json
-{
-    "jsonrpc": "2.0",
-    "id": "1",
-    "result": "ready"
-}
-```
+The connection is considered established once the relying party receives a `"result": "ready"` response to an
+`icrc29_status` message, which may not necessarily be the first message sent. In case the relying party does receive
+any `"result": "ready"` response within a reasonable timeframe, it should treat this as a failure to establish the
+connection.
 
-> **Note**: The relying party should send `icrc29_status` messages in short intervals. It is expected that some of the messages will be lost due to being sent before the signer is ready.
+Once the connection is established, the relying party should continue sending `icrc29_status` messages at regular
+intervals to maintain the connection.
 
-After the `"result": "ready"` response has been received within a reasonable timeframe, the relying party can send [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md) messages to the signer
-using the [window.postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) API.
+### Heartbeats
+
+As mentioned above, the relying party continues to send periodic `icrc29_status` messages intended as heartbeat
+signals, and the signer responds to each received heartbeat with `"result": "ready"`. If the relying party does not
+receive responses for a given timeframe, it should treat this as a disconnection and stop sending `icrc29_status`
+messages.
 
 ## Relying party
 
-> The `origin` value of the first received reply to a `icrc29_status` message with `"result": "ready"` when establishing the communication channel, is mentioned below as `establishedOrigin`.
+> The `origin` value of the first received reply to a `icrc29_status` message with `"result": "ready"` when establishing
+> the communication channel, is mentioned below as `establishedOrigin`.
 >
 > The `window` that was opened for the signer is mentioned below as `signerWindow`.
 
-Messages are received by listening to [message](https://developer.mozilla.org/en-US/docs/Web/API/Window/message_event) events and are considered as coming from signer if both:
+Messages are received by listening to [message](https://developer.mozilla.org/en-US/docs/Web/API/Window/message_event)
+events and are considered as coming from the signer if both:
+
 - The received message `origin` property is equal to the `establishedOrigin`.
 - The received message `source` property is equal to the `signerWindow`.
 
-Messages are sent by calling the `postMessage` method on the `signerWindow` with the `targetOrigin` parameter set to `establishedOrigin`.
+Messages are sent by calling the `postMessage` method on the `signerWindow` with the `targetOrigin` parameter set
+to `establishedOrigin`.
 
 The relying party should call the `close` method on the `signerWindow` after it is no longer needed.  
-After having closed the window, the signer must again go through the process of [establishing a communication channel](#establishing-a-communication-channel).
+After having closed the window, the relying party must again go through the process
+of [establishing a communication channel](#communication-channel) with the signer.
 
 ## Signer
 
-> The `origin` and `source` values of the received message `icrc29_status` when the communication channel was established, are mentioned below as `establishedOrigin` and `establishedSource` respectively.
+> The `origin` and `source` values of the received message `icrc29_status` when the communication channel was
+> established, are mentioned below as `establishedOrigin` and `establishedSource` respectively.
 
 Messages are received by listening to `message` events and are considered as coming from relying party if both:
+
 - The received message `origin` property is equal to the `establishedOrigin`.
 - The received message `source` property is equal to the `establishedSource`.
 
-Messages are sent by calling the `postMessage` method on the `establishedSource` with the `targetOrigin` parameter set to `establishedOrigin`.
+Messages are sent by calling the `postMessage` method on the `establishedSource` with the `targetOrigin` parameter set
+to `establishedOrigin`.
 
-The window must not be automatically closed after sending a message, since the relying party could possibly send additional messages. 
-Instead, the relying party is responsible for closing the signer window.
+The window must not be automatically closed after sending a message to the relying party, since the relying party could
+possibly send additional messages over the existing communication channel. Instead, the relying party is responsible for
+closing the signer window.
 
 ## Error Handling
 
 ### Unexpectedly Closed Window
 
-If the signer window is closed unexpectedly, the relying party should handle this as if it had received a `NOT_GRANTED` error.
-Closing the window does _not_ end the session (see  [ICRC-25 session](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md#sessions)), and the relying party can open a new window and continue the session.
+If the signer window is closed unexpectedly, the relying party will stop receiving `"result": "ready"` responses to the
+heartbeat messages as a result which would be treated as a disconnection.
 
 ### Invalid Messages
 
