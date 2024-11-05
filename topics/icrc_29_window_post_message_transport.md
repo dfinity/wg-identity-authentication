@@ -24,18 +24,18 @@ The message has `targetOrigin` set to `'*'` and is a [JSON-RPC 2.0 (https://www.
 
 ```json
 {
-  "jsonrpc": "2.0",
-  "id": "1",
-  "method": "icrc29_status"
+    "jsonrpc": "2.0",
+    "id": "1",
+    "method": "icrc29_status"
 }
 ```
 
 Expected response from signer:
 ```json
 {
-  "jsonrpc": "2.0",
-  "id": "1",
-  "result": "ready"
+    "jsonrpc": "2.0",
+    "id": "1",
+    "result": "ready"
 }
 ```
 
