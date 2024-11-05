@@ -30,7 +30,7 @@ The message has `targetOrigin` set to `'*'` and is a [JSON-RPC 2.0 (https://www.
 }
 ```
 
-Expected response from signer:
+The signer should send responses with the `targetOrigin` set to the previously received `icrc29_status` message its `origin` property value:
 ```json
 {
     "jsonrpc": "2.0",
