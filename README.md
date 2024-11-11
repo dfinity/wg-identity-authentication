@@ -54,7 +54,7 @@ Everyone is welcome to join the public meetings of the working group.
 The working group sessions are public and everybody is welcome. If you are interested in discussions about identity and authentication on the IC, please join us.
 
 ### Permanent Members
-* DFINITY lead: [Frederik Rothenberger](https://github.com/frederikrothenberger)
+* DFINITY lead: [Thomas Gladdines](https://github.com/sea-snake)
 * Community Leads:
   * [Dan Ostrovsky](https://github.com/dostro) (Identity Labs)
   * [Bruce Huang](https://github.com/brutoshi) (AstroX)
