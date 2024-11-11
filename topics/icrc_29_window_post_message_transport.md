@@ -18,7 +18,7 @@ For this standard to represent an [ICRC-25](https://github.com/dfinity/wg-identi
 
 ## Communication Channel
 
-The relying party initiates and maintains the communication channel by opening a new window for the signer and periodically sending `icrc29_status` messages using the [window.postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) API.
+The relying party initiates and maintains the communication channel by opening a new window for the signer and periodically sending `icrc29_status` messages using the [window.postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) API to indicate it is ready for interactions.
 
 The message has `targetOrigin` set to `'*'` and is a [JSON-RPC 2.0 (https://www.jsonrpc.org/specification) call with method `icrc29_status` and no parameters:
 
@@ -30,7 +30,7 @@ The message has `targetOrigin` set to `'*'` and is a [JSON-RPC 2.0 (https://www.
 }
 ```
 
-The signer should send responses with the `targetOrigin` set to the previously received `icrc29_status` message its `origin` property value:
+The signer should respond to every `icrc29_status` messsage received to indicate it is ready to receive additional messages. The response message `targetOrigin` should be set to the received `icrc29_status` message its `origin` property value:
 ```json
 {
     "jsonrpc": "2.0",
@@ -41,9 +41,9 @@ The signer should send responses with the `targetOrigin` set to the previously r
 
 ### Establishment
 
-The connection is considered established once the relying party receives a `"result": "ready"` response to an `icrc29_status` message, which may not necessarily be the first message sent. In case the relying party does receive any `"result": "ready"` response within a reasonable timeframe, it should treat this as a failure to establish the connection.
+The connection is considered established once the relying party receives a `"result": "ready"` response to an `icrc29_status` message fromt the signer. This may not necessarily be a response to the first message sent by the relying party, since it might take some time for the signer to be ready. In case the relying party does not receive this response within a reasonable timeframe, it should treat this as a failure to establish the connection.
 
-Once the connection is established, the relying party should continue sending `icrc29_status` messages at regular intervals to maintain the connection.
+Once the connection is established, the relying party must continue sending `icrc29_status` messages at regular intervals to maintain the connection.
 
 ### Heartbeats
 
