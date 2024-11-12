@@ -39,7 +39,8 @@ Relying party: A web page that relies upon one or many Web3 platform APIs which 
 
 ICRC-25 and all of its extensions (in particular, ICRC-27, ICRC-34, ICRC-49) will have the option of adding another parameter to its request named `icrc95DerivationOrigin`.
 
-This parameter specifies the string that signers should use to derive principal identifiers (and their delegations).
+Principal identifiers are derived by the origin. If you want to derive principals by another domain, this is the standard to do that 
+and the verification spec can be found [here](https://internetcomputer.org/docs/current/references/ii-spec#alternative-frontend-origins).
 
 ## Reference Implementation
 
