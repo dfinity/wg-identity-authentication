@@ -69,6 +69,7 @@ const response = await provider.sendMessage({
     jsonrpc: '2.0',
     method: `icrc25_supported_standards`
 });
+await provider.dismiss();
 alert(`Signer supports ${response.result.length} standards`);
 ```
 
