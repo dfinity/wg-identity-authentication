@@ -84,24 +84,30 @@ Request
 Response
 
 ```json
-[
-  {
-    "id": 1,
-    "jsonrpc": "2.0",
-    "result": {
-      "version": "1",
-      "Ok": "16509194"
-    }
-  },
-  {
-    "id": 2,
-    "jsonrpc": "2.0",
-    "result": {
-      "version": "1",
-      "Ok": "16509195"
-    }
+{
+  "id": 1,
+  "jsonrpc": "2.0",
+  "result": {
+    "responses": [
+      {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "version": "1",
+          "Ok": "16509194"
+        }
+      },
+      {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "result": {
+          "version": "1",
+          "Ok": "16509195"
+        }
+      }
+    ]
   }
-]
+}
 ```
 
 #### Batch Call with Error
@@ -158,36 +164,42 @@ Request
 Response
 
 ```json
-[
-  {
-    "id": 1,
-    "jsonrpc": "2.0",
-    "result": {
-      "version": "1",
-      "Ok": "16509194"
-    }
-  },
-  {
-    "id": 2,
-    "jsonrpc": "2.0",
-    "result": {
-      "version": "1",
-      "Err": {
-        "InsufficientFunds": {
-          "balance": {
-            "e8s": "0"
+{
+  "id": 1,
+  "jsonrpc": "2.0",
+  "result": {
+    "responses": [
+      {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "version": "1",
+          "Ok": "16509194"
+        }
+      },
+      {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "result": {
+          "version": "1",
+          "Err": {
+            "InsufficientFunds": {
+              "balance": {
+                "e8s": "0"
+              }
+            }
           }
         }
+      },
+      {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "error": {
+          "code": 1000,
+          "message": "Network error: Unable to establish a connection to the server"
+        }
       }
-    }
-  },
-  {
-    "id": 3,
-    "jsonrpc": "2.0",
-    "error": {
-      "code": 1000,
-      "message": "Network error: Unable to establish a connection to the server"
-    }
+    ]
   }
-]
+}
 ```
