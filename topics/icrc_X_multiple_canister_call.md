@@ -60,17 +60,17 @@ sequenceDiagram
 
         alt Approved
 
-            Note over S,C: Call the request for each canister in parallel or sequence
+            Note over S,C: Call the request for each canister in one of following two ways: <br/> - `parallel` <br /> - `sequence` abort if result is not success
+                %% this is a comment 
                 U ->> S: Approve request
                 S ->> C: Submit canister call
                 S ->> S: Wait for the canister call result
                 S ->> S: Add call result to batch call response
             Note over S,C: End of the execution
-
+        
         S ->> U: Display success/failed message
         S ->> RP: Return the batch call response
-
-
+            
         else Rejected
              S ->> U: Display reject message
             S ->> RP: Error response: Action aborted (3001)
