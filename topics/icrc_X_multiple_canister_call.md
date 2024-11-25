@@ -9,7 +9,6 @@
 - [ICRC-X: Call batch canisters](#icrc-x-call-batch-canisters)
   - [Summary](#summary)
   - [Processing](#processing)
-  - [Error handling](#error-handling)
     - [Examples](#examples)
       - [Successful Batch Call](#successful-batch-call)
       - [Batch Call with Error](#batch-call-with-error)
@@ -35,10 +34,49 @@ When a signer receives a call, it must process `icrc49_call_canister` requests b
 
 1. If any call fails, whether due to a canister return error or a signer call error, the execution will not stop until all requests have been processed.
 
-## Error handling
+2. If any execution failed, the relying party have to handle the cases
 
-- For canister return error it treat like
-- For canister trapped error it treat like
+```mermaid
+sequenceDiagram
+    participant RP as Relying Party
+    participant S as Signer
+    participant U as User
+    participant C as Target Canister
+
+    RP ->> S: Request batch canisters call
+    alt Relying party has not been granted the `icrcX_call_canister` permission scope<br>or the request does not comply with scope restrictions
+        S ->> RP: Error response: Permission not granted (3000)
+    else
+
+        alt If signer want to use consent message from canisters
+            loop for each call of calls in the `icrcX_call_canister`
+                S ->> C: Get the consent message
+                C ->> S: Return consent message
+            end
+        end
+
+        S ->> U: Showing signing message from consent message or blind message
+
+
+        alt Approved
+
+            Note over S,C: Call the request for each canister in parallel or sequence
+                U ->> S: Approve request
+                S ->> C: Submit canister call
+                S ->> S: Wait for the canister call result
+                S ->> S: Add call result to batch call response
+            Note over S,C: End of the execution
+
+        S ->> U: Display success/failed message
+        S ->> RP: Return the batch call response
+
+
+        else Rejected
+             S ->> U: Display reject message
+            S ->> RP: Error response: Action aborted (3001)
+        end
+    end
+```
 
 ### Examples
 
@@ -53,28 +91,19 @@ Request
   "method": "icrcX_batch_call_canisters",
   "params": {
     "mode": "sequence",
+    "sender": "b7gqo-ulk5n-2kpo7-oalt7-p2kyl-o4j5l-kiuwo-eeybr-dab4l-ur6up-pqe",
     "requests": [
       {
         "id": 1,
-        "jsonrpc": "2.0",
-        "method": "icrc49_call_canister",
-        "params": {
-          "canisterId": "xhy27-fqaaa-aaaao-a2hlq-ca",
-          "sender": "b7gqo-ulk5n-2kpo7-oalt7-p2kyl-o4j5l-kiuwo-eeybr-dab4l-ur6up-pqe",
-          "method": "transfer",
-          "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdV+ztKgq7E4l1ffuTuwEmw8AtYSjlrJ+WLO5ofQIAAMgB"
-        }
+        "canisterId": "xhy27-fqaaa-aaaao-a2hlq-ca",
+        "method": "transfer",
+        "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdV+ztKgq7E4l1ffuTuwEmw8AtYSjlrJ+WLO5ofQIAAMgB"
       },
       {
         "id": 2,
-        "jsonrpc": "2.0",
-        "method": "icrc49_call_canister",
-        "params": {
-          "canisterId": "xhy27-fqaaa-aaaao-a2hlq-ca",
-          "sender": "b7gqo-ulk5n-2kpo7-oalt7-p2kyl-o4j5l-kiuwo-eeybr-dab4l-ur6up-pqe",
-          "method": "transfer",
-          "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdV+ztKgq7E4l1ffuTuwEmw8AtYSjlrJ+WLO5ofQIAAMgB"
-        }
+        "canisterId": "xhy27-fqaaa-aaaao-a2hlq-ca",
+        "method": "transfer",
+        "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdV+ztKgq7E4l1ffuTuwEmw8AtYSjlrJ+WLO5ofQIAAMgB"
       }
     ]
   }
@@ -91,17 +120,13 @@ Response
     "responses": [
       {
         "id": 1,
-        "jsonrpc": "2.0",
         "result": {
-          "version": "1",
           "Ok": "16509194"
         }
       },
       {
         "id": 2,
-        "jsonrpc": "2.0",
         "result": {
-          "version": "1",
           "Ok": "16509195"
         }
       }
@@ -121,6 +146,8 @@ Request
   "method": "icrcX_batch_call_canisters",
   "params": {
     "mode": "",
+    "sender": "b7gqo-ulk5n-2kpo7-oalt7-p2kyl-o4j5l-kiuwo-eeybr-dab4l-ur6up-pqe",
+    "isAnonymous": false,
     "requests": [
       {
         "id": 1,
@@ -128,7 +155,6 @@ Request
         "method": "icrc49_call_canister",
         "params": {
           "canisterId": "xhy27-fqaaa-aaaao-a2hlq-ca",
-          "sender": "b7gqo-ulk5n-2kpo7-oalt7-p2kyl-o4j5l-kiuwo-eeybr-dab4l-ur6up-pqe",
           "method": "transfer",
           "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdV+ztKgq7E4l1ffuTuwEmw8AtYSjlrJ+WLO5ofQIAAMgB"
         }
@@ -139,7 +165,6 @@ Request
         "method": "icrc49_call_canister",
         "params": {
           "canisterId": "xhy27-fqaaa-aaaao-a2hlq-ca",
-          "sender": "b7gqo-ulk5n-2kpo7-oalt7-p2kyl-o4j5l-kiuwo-eeybr-dab4l-ur6up-pqe",
           "method": "transfer",
           "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdV+ztKgq7E4l1ffuTuwEmw8AtYSjlrJ+WLO5ofQIAAMgB"
         }
@@ -151,7 +176,6 @@ Request
         "method": "icrc49_call_canister",
         "params": {
           "canisterId": "xhy27-fqaaa-aaaao-a2hlq-ca",
-          "sender": "b7gqo-ulk5n-2kpo7-oalt7-p2kyl-o4j5l-kiuwo-eeybr-dab4l-ur6up-pqe",
           "method": "transfer",
           "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdV+ztKgq7E4l1ffuTuwEmw8AtYSjlrJ+WLO5ofQIAAMgB"
         }
@@ -171,7 +195,6 @@ Response
     "responses": [
       {
         "id": 1,
-        "jsonrpc": "2.0",
         "result": {
           "version": "1",
           "Ok": "16509194"
@@ -179,9 +202,7 @@ Response
       },
       {
         "id": 2,
-        "jsonrpc": "2.0",
         "result": {
-          "version": "1",
           "Err": {
             "InsufficientFunds": {
               "balance": {
@@ -193,7 +214,6 @@ Response
       },
       {
         "id": 3,
-        "jsonrpc": "2.0",
         "error": {
           "code": 1000,
           "message": "Network error: Unable to establish a connection to the server"
