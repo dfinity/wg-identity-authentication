@@ -30,7 +30,11 @@ There is two main parameter for this standard
 
 3. The signer submits canister calls to target canisters:
 - mode `parallel`: Execute all requests simultaneously, without waiting for any individual request to complete before starting the next. All transactions will be started. But it is not guaranteed that all transactions will succeed.
-- mode `sequence`: Execute each request one after the other, ensuring that each request is completed before starting the next one. If any transaction fails, the execution of the batch will stop without executing remaining queued transactions. 
+- mode `sequence`: 
+  - Execute each request one after the other, ensuring that each request is completed before starting the next one. If any transaction fails, the execution of the batch will stop without executing remaining queued transactions. 
+  - Evaluate the result of processing the request:
+     1. If the result is a successful response, add the result to the batch response. Proceed with processing the next request in the batch.
+     2. If the result is an error, add an error to the batch response and stop processing the batch. For any request in the batch that has not been processed yet, add an error response with code 10101 to the batch response.
 
 4. The signer, once it has collected responses from all the transactions, displays a response message to the user, and forwards the response to the relying partner. 
 
@@ -225,3 +229,12 @@ Response
   }
 }
 ```
+
+## Errors
+
+In addition to the errors defined in [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-3) this standard defines the following errors:
+
+
+| Code  | Message                                    | Meaning                                                                                          | Data                                                                                |
+|-------|--------------------------------------------|--------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
+| 10101 | Not processed due to batch request failure | The message was not processed as one of the preceding request in the batch resulted in an error. | (optional) Error details: <ul> <li>`message` (`text`, optional): message</li> </ul> |
