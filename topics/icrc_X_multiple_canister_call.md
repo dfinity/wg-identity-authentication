@@ -65,7 +65,7 @@ sequenceDiagram
         
 
         alt Approved
-        U ->> S: Approve request
+            U ->> S: Approve request
             Note over S,C: Call the request for each canister in one of following two ways: <br/> - `parallel` <br /> - `sequence` abort if result is not success
                 %% this is a comment 
                 
@@ -78,7 +78,8 @@ sequenceDiagram
         S ->> RP: Return the batch call response
             
         else Rejected
-             S ->> U: Display reject message
+            U ->> S: Reject request
+            S ->> U: Display reject message
             S ->> RP: Error response: Action aborted (3001)
         end
     end
