@@ -23,7 +23,7 @@ There is two main parameter for this standard
 2. `requests` : An array of canister call requests
 
 ## Processing
-
+**How it works**
 1. Relying party requests a ICRCX batch transaction request to the signer. The request can be either parallel mode or sequence mode (see more details below). Unfortunately there is currently no mode to handle all transactions in one block.
 
 2. The signer fetches consent messages and shows a warning to user to approve the batch transaction. 
@@ -36,11 +36,13 @@ There is two main parameter for this standard
 
 5. The relying partner, if any of the transactions failed, implements error handling.
 
-**IMPORTANT**
+**Important**
 1. With parallel processing, all transactions will be started. But it is not guaranteed that all transactions will succeed.
 2. With sequential processing, transactions will be executed in the designated sequence. If any transaction fails, the execution of the batch will stop without executing remaining queued transactions. 
 
 The response of the individual transactions will be aggregated into the response of the batch call. If there are any errors in the response, it is up to the relying party to decide how to handle the error. 
+
+**Flow**
 
 ```mermaid
 sequenceDiagram
