@@ -20,7 +20,7 @@ This Method can be used by the relying party to request batch call to 3rd party 
 There is two main parameter for this standard
 
 1. `mode` : The mode to execute transaction in sequence or in parallel
-2. `requests` : An array of icrc49_call_canister RPC call
+2. `requests` : An array of canister call requests
 
 ## Processing
 
