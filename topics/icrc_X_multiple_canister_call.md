@@ -31,10 +31,10 @@ When a signer receives a call, it must process `icrc49_call_canister` requests b
 - mode `parallel`: Execute all requests simultaneously, without waiting for any individual request to complete before starting the next one.
 
 **IMPORTANT**
+1. With parallel processing, all transactions will be started. But it is not guaranteed that all transactions will succeed.
+2. With sequential processing, transactions will be executed in the designated sequence. If any transaction fails, the execution of the batch will stop without executing remaining queued transactions. 
 
-1. If any call fails, whether due to a canister return error or a signer call error, the execution will not stop until all requests have been processed.
-
-2. If any execution failed, the relying party have to handle the cases
+The response of the individual transactions will be aggregated into the response of the batch call. If there are any errors in the response, it is up to the relying party to decide how to handle the error. 
 
 ```mermaid
 sequenceDiagram
