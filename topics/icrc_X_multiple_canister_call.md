@@ -29,8 +29,8 @@ There is two main parameter for this standard
 2. The signer fetches consent messages and shows a warning to user to approve the batch transaction. 
 
 3. The signer submits canister calls to target canisters:
+- mode `parallel`: Execute all requests simultaneously, without waiting for any individual request to complete before starting the next.
 - mode `sequence`: Execute each request one after the other, ensuring that each request is completed before starting the next one.
-- mode `parallel`: Execute all requests simultaneously, without waiting for any individual request to complete before starting the next one.
 
 4. The signer, once it has collected responses from all the transactions, displays a response message to the user, and forwards the response to the relying partner. 
 
