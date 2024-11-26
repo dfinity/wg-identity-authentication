@@ -22,9 +22,11 @@ There is two main parameter for this standard
 1. `mode` : The mode to execute transaction in sequence or in parallel
 2. `requests` : An array of canister call requests
 
+Unfortunately there is currently no mode to execute all transactions in the batch in one block. The transactions are handled as independent transactions that are executed in parallel or in sequence. However, ICRCX allows signer to receive approval for all transactions in the batch from the user with one approval action. 
+
 ## Processing
 **How it works**
-1. Relying party requests a ICRCX batch transaction request to the signer. The request can be either `parallel` mode or `sequence` mode (see more details below). Unfortunately there is currently no mode to execute all transactions in the batch in one block.
+1. Relying party requests a ICRCX batch transaction request to the signer. The request can be either `parallel` mode or `sequence` mode (see more details below). 
 
 2. The signer fetches consent messages and shows a warning to user to approve the batch transaction. 
 
