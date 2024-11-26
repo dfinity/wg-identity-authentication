@@ -24,11 +24,17 @@ There is two main parameter for this standard
 
 ## Processing
 
-When a signer receives a call, it must process `icrc49_call_canister` requests based on the provided mode:
+1. Relying party requests a ICRCX batch transaction request to the signer. The request can be either parallel mode or sequence mode (see more details below). Unfortunately there is currently no mode to handle all transactions in one block.
 
-- mode `sequence`: Execute each request one after the other, ensuring that each request is completed before starting the next one.
+2. The signer fetches consent messages and shows a warning to user to approve the batch transaction. 
 
-- mode `parallel`: Execute all requests simultaneously, without waiting for any individual request to complete before starting the next one.
+3. The signer submits canister calls to target canisters:
+- mode sequence: Execute each request one after the other, ensuring that each request is completed before starting the next one.
+- mode parallel: Execute all requests simultaneously, without waiting for any individual request to complete before starting the next one.
+
+4. The signer, once it has collected responses from all the transactions, displays a response message to the user, and forwards the response to the relying partner. 
+
+5. The relying partner, if any of the transactions failed, implements error handling.
 
 **IMPORTANT**
 1. With parallel processing, all transactions will be started. But it is not guaranteed that all transactions will succeed.
