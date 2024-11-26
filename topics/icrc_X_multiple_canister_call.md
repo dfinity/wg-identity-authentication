@@ -24,7 +24,7 @@ There is two main parameter for this standard
 
 ## Processing
 **How it works**
-1. Relying party requests a ICRCX batch transaction request to the signer. The request can be either parallel mode or sequence mode (see more details below). Unfortunately there is currently no mode to handle all transactions in one block.
+1. Relying party requests a ICRCX batch transaction request to the signer. The request can be either `parallel` mode or `sequence` mode (see more details below). Unfortunately there is currently no mode to handle all transactions in one block.
 
 2. The signer fetches consent messages and shows a warning to user to approve the batch transaction. 
 
