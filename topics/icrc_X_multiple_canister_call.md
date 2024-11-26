@@ -62,13 +62,13 @@ sequenceDiagram
         end
 
         S ->> U: Showing signing message from consent message or blind message
-
+        U ->> S: Approve request
 
         alt Approved
 
             Note over S,C: Call the request for each canister in one of following two ways: <br/> - `parallel` <br /> - `sequence` abort if result is not success
                 %% this is a comment 
-                U ->> S: Approve request
+                
                 S ->> C: Submit canister call
                 S ->> S: Wait for the canister call result
                 S ->> S: Add call result to batch call response
