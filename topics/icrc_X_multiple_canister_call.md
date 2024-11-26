@@ -160,8 +160,6 @@ Request
     "requests": [
       {
         "id": 1,
-        "jsonrpc": "2.0",
-        "method": "icrc49_call_canister",
         "params": {
           "canisterId": "xhy27-fqaaa-aaaao-a2hlq-ca",
           "method": "transfer",
@@ -170,8 +168,6 @@ Request
       },
       {
         "id": 2,
-        "jsonrpc": "2.0",
-        "method": "icrc49_call_canister",
         "params": {
           "canisterId": "xhy27-fqaaa-aaaao-a2hlq-ca",
           "method": "transfer",
@@ -181,8 +177,6 @@ Request
       ,
       {
         "id": 3,
-        "jsonrpc": "2.0",
-        "method": "icrc49_call_canister",
         "params": {
           "canisterId": "xhy27-fqaaa-aaaao-a2hlq-ca",
           "method": "transfer",
