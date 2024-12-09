@@ -40,7 +40,7 @@ Before jumping into the standards, it's recommended to read the overview [here](
 
 ### JSON-RPC Messages
 
-Standards that describe interactions between relying parties and signers with JSON-RPC messages.
+Standards that describe interactions between relying parties and signers through JSON-RPC messages.
 
 | Standard                                                                                      | Status      |
 |-----------------------------------------------------------------------------------------------|-------------|

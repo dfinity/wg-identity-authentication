@@ -68,7 +68,7 @@ might want to request a transfer of ICP to some specific account.
 
 ### 🟥 JSON-RPC Messages
 
-[Standards](../README.md#json-rpc-messages) that describe interactions between relying parties and signers with JSON-RPC messages.
+[Standards](../README.md#json-rpc-messages) that describe interactions between relying parties and signers through JSON-RPC messages.
 
 ### 🟦 Transport Channel
 
