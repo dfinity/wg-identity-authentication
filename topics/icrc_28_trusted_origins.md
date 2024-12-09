@@ -1,7 +1,8 @@
 # ICRC-28: Trusted Origins
 
-[![Status Badge](https://img.shields.io/badge/STATUS-WG_APPROVED-purple.svg)](https://github.com/orgs/dfinity/projects/31)
-[![Standard Issue](https://img.shields.io/badge/ISSUE-ICRC--28-blue?logo=github)](https://github.com/dfinity/wg-identity-authentication/issues/115)
+![APPROVED]
+
+**Authors:** [Dan Ostrovsky](https://github.com/dostro)
 
 <!-- TOC -->
 * [ICRC-28: Trusted Origins](#icrc-28-trusted-origins)
@@ -113,3 +114,5 @@ sequenceDiagram
         S ->> RP: Signed Relying Party Delegation
     end
 ```
+
+[APPROVED]: https://img.shields.io/badge/STATUS-APPROVED-ed1e7a.svg

@@ -1,7 +1,8 @@
 # ICRC-32: Sign Challenge
 
-[![Status Badge](https://img.shields.io/badge/STATUS-DRAFT-ffcc00.svg)](https://github.com/orgs/dfinity/projects/31)
-[![Extension Badge](https://img.shields.io/badge/Extends-ICRC--25-ffcc222.svg)](./icrc_25_signer_interaction_standard.md)
+![ON HOLD] [![EXTENDS 25]](./icrc_25_signer_interaction_standard.md)
+
+**Authors:** [Philipp Litzenberger](https://github.com/plitzenberger), [Frederik Rothenberger](https://github.com/frederikrothenberger)
 
 <!-- TOC -->
 * [ICRC-32: Sign Challenge](#icrc-32-sign-challenge)
@@ -18,6 +19,7 @@
     * [Without Delegation](#without-delegation)
     * [With Delegation](#with-delegation)
 <!-- TOC -->
+
 ## Summary
 
 The purpose of the `icrc32_sign_challenge` method is for the relying party to receive a cryptographic proof of ownership for the users identities.
@@ -204,3 +206,7 @@ Response
     }
 }
 ```
+
+[ON HOLD]: https://img.shields.io/badge/STATUS-ON_HOLD-222222.svg
+
+[EXTENDS 25]: https://img.shields.io/badge/EXTENDS-ICRC--25-ed1e7a.svg

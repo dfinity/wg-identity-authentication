@@ -1,7 +1,8 @@
 # ICRC-49: Call Canister
 
-[![Status Badge](https://img.shields.io/badge/STATUS-WG_APPROVED-purple.svg)](https://github.com/orgs/dfinity/projects/31)
-[![Extension Badge](https://img.shields.io/badge/Extends-ICRC--25-ffcc222.svg)](./icrc_25_signer_interaction_standard.md)
+![APPROVED] [![EXTENDS 25]](./icrc_25_signer_interaction_standard.md)
+
+**Authors:** [Frederik Rothenberger](https://github.com/frederikrothenberger)
 
 <!-- TOC -->
 * [ICRC-49: Call Canister](#icrc-49-call-canister)
@@ -188,3 +189,7 @@ This standard defines the following additional errors:
 | Code | Message            | Meaning                                                                                                                      | Data |
 |------|--------------------|------------------------------------------------------------------------------------------------------------------------------|------|
 | 2001 | No consent message | The signer has rejected the request because the target canister does not support ICRC-21 consent messages for the given call | N/A  |
+
+[APPROVED]: https://img.shields.io/badge/STATUS-APPROVED-ed1e7a.svg
+
+[EXTENDS 25]: https://img.shields.io/badge/EXTENDS-ICRC--25-ed1e7a.svg
