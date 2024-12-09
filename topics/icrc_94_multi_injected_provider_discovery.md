@@ -1,6 +1,8 @@
-# ICRC-94: Multi Injected Provider Discovery for ICRC-25
+# ICRC-94: Browser Extension Discovery and Transport
 
-[![Status Badge](https://img.shields.io/badge/STATUS-DRAFT-ffcc00.svg)](https://github.com/orgs/dfinity/projects/31)
+![DRAFT] [![EXTENDS 25]](./icrc_25_signer_interaction_standard.md)
+
+**Authors:** [Thomas Gladdines](https://github.com/sea-snake), [Dan Ostrovsky](https://github.com/dostro)
 
 ## Summary
 
@@ -90,3 +92,6 @@ The relying party can then subsequently inform the user to make a decision e.g. 
 
 If either party receives malformed, unexpected, or otherwise invalid messages, it should ignore them.
 
+[DRAFT]: https://img.shields.io/badge/STATUS-DRAFT-f25a24.svg
+
+[EXTENDS 25]: https://img.shields.io/badge/EXTENDS-ICRC--25-ed1e7a.svg

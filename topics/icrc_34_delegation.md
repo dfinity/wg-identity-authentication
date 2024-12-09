@@ -1,8 +1,8 @@
 # ICRC-34: Delegation
 
-[![Status Badge](https://img.shields.io/badge/STATUS-WG_APPROVED-purple.svg)](https://github.com/orgs/dfinity/projects/31)
-[![Extension Badge](https://img.shields.io/badge/EXTENDS-ICRC--25-ffcc222.svg)](./icrc_25_signer_interaction_standard.md)
-[![Standard Issue](https://img.shields.io/badge/ISSUE-ICRC--34-blue?logo=github)](https://github.com/dfinity/wg-identity-authentication/issues/115)
+![APPROVED] [![EXTENDS 25]](./icrc_25_signer_interaction_standard.md)
+
+**Authors:** [Dan Ostrovsky](https://github.com/dostro), [Thomas Gladdines](https://github.com/sea-snake)
 
 <!-- TOC -->
 * [ICRC-34: Delegation](#icrc-34-delegation)
@@ -202,3 +202,7 @@ the [IC interface specification, authentication section](https://internetcompute
 
 This standard does not define additional errors. See [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-3) for a
 list of errors that can be returned by all methods.
+
+[APPROVED]: https://img.shields.io/badge/STATUS-APPROVED-ed1e7a.svg
+
+[EXTENDS 25]: https://img.shields.io/badge/EXTENDS-ICRC--25-ed1e7a.svg
