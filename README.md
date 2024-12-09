@@ -6,13 +6,6 @@ This group works towards the development and adoption of ICRC standards related 
 Computer. This repository is used to collaborate, document decisions, discuss changes, raise issues and provide
 feedback.
 
-## Terminology
-
-The following terminology is used across standards within this working group:
-
-- **signer**: A service that manages a user's keys and can sign and perform canister calls on their behalf.
-- **relying party**: A service that wants to interact with a signer e.g. to request calls on a specific canister.
-
 ## Process
 
 The following process is followed for standards within this working group.
