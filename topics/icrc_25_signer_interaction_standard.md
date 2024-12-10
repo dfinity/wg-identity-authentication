@@ -1,9 +1,11 @@
-# ICRC-25: Signer Interaction Standard
+# ICRC-25: Signer Interaction
 
-[![Status Badge](https://img.shields.io/badge/STATUS-WG_APPROVED-purple.svg)](https://github.com/orgs/dfinity/projects/31)
+![APPROVED]
+
+**Authors:** [Frederik Rothenberger](https://github.com/frederikrothenberger), [Thomas Gladdines](https://github.com/sea-snake), [Dan Ostrovsky](https://github.com/dostro)
 
 <!-- TOC -->
-* [ICRC-25: Signer Interaction Standard](#icrc-25-signer-interaction-standard)
+* [ICRC-25: Signer Interaction](#icrc-25-signer-interaction)
   * [Summary](#summary)
   * [Terminology](#terminology)
   * [Types](#types)
@@ -389,3 +391,5 @@ The error is an object comprising the `code`, `message` and optional `data` fiel
     }
 }
 ```
+
+[APPROVED]: https://img.shields.io/badge/STATUS-APPROVED-ed1e7a.svg

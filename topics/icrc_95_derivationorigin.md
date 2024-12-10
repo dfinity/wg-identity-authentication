@@ -1,10 +1,11 @@
-# ICRC-95: derivationOrigin
+# ICRC-95: Derivation Origin
 
-[![Status Badge](https://img.shields.io/badge/STATUS-DRAFT-ffcc00.svg)](https://github.com/orgs/dfinity/projects/31)
-[![Extension Badge](https://img.shields.io/badge/Extends-ICRC--25-ffcc222.svg)](./icrc_25_signer_interaction_standard.md)
+![APPROVED] [![EXTENDS 25]](./icrc_25_signer_interaction_standard.md)
+
+**Authors:** [Dan Ostrovsky](https://github.com/dostro)
 
 <!-- TOC -->
-* [ICRC-95: derivationOrigin](#icrc-95-derivationorigin)
+* [ICRC-95: Derivation Origin](#icrc-95-derivation-origin)
   * [Summary](#summary)
   * [Motivation](#motivation)
   * [Specification](#specification)
@@ -12,7 +13,7 @@
     * [derivationOrigin Parameter](#derivationorigin-parameter)
   * [Reference Implementation](#reference-implementation)
     * [Signer](#signer)
-    * [DApp Implementation](#dapp-implementation)
+  * [DApp Implementation](#dapp-implementation)
 <!-- TOC -->
 
 ## Summary
@@ -67,3 +68,7 @@ Here is the DApp's request for a delegation using ICRC-95: derivationOrigin:
   }
 }
 ```
+
+[APPROVED]: https://img.shields.io/badge/STATUS-APPROVED-ed1e7a.svg
+
+[EXTENDS 25]: https://img.shields.io/badge/EXTENDS-ICRC--25-ed1e7a.svg

@@ -1,6 +1,8 @@
-# ICRC-29: Window Post Message Transport for ICRC-25
+# ICRC-29: Browser Post Message Transport
 
-[![Status Badge](https://img.shields.io/badge/STATUS-WG_APPROVED-purple.svg)](https://github.com/orgs/dfinity/projects/31)
+![APPROVED] [![EXTENDS 25]](./icrc_25_signer_interaction_standard.md)
+
+**Authors:** [Frederik Rothenberger](https://github.com/frederikrothenberger), [Thomas Gladdines](https://github.com/sea-snake)
 
 ## Summary
 
@@ -87,3 +89,7 @@ If the signer window is closed unexpectedly, the relying party will stop receivi
 ### Invalid Messages
 
 If either party receives malformed, unexpected, or otherwise invalid messages, it should ignore them.
+
+[APPROVED]: https://img.shields.io/badge/STATUS-APPROVED-ed1e7a.svg
+
+[EXTENDS 25]: https://img.shields.io/badge/EXTENDS-ICRC--25-ed1e7a.svg
