@@ -12,10 +12,10 @@ graph LR
     User((User))
     Signer[Signer]
     Canister[(Target<br>Canister)]
-    Messages["JSON-RPC Messages<br>(ICRC-25 including extensions)"]
+    Messages["JSON-RPC Messages<br>(ICRC-25 incl. extensions)"]
     Calls[Canister Calls:<br>- ICRC-21<br>- ICRC-49]
 
-    subgraph Transport[Transport Channel e.g. ICRC-29]
+    subgraph Transport[Transport Channel]
         Messages
     end
 
@@ -29,8 +29,11 @@ graph LR
 
     RP --- Messages ---> Signer
     Signer --- Calls --> Canister
-    User <-- " Interactions:<br>- Account selection<br>- Permission requests<br>- User approvals " --> Signer
+    User <-- Interactions:<br>- Account selection<br>- Permission requests<br>- User approvals --> Signer
     User -- Interactions --> RP
+    
+    %% Padding so that GitHub controls don't overlap graph
+    BottomPadding["<br><br><br><br><br><br>"]
     
     style RP fill:#93e898,stroke:transparent,color:#000001
     style Transport fill:#025eb155,stroke:transparent
@@ -38,8 +41,9 @@ graph LR
     style Signer fill:#fff781,stroke:transparent,color:#000001
     style HTTP fill:#cccccc22,stroke:transparent
     style IC fill:#cccccc22,stroke:transparent
-    style Calls fill:#67511b,text-align:left,stroke:transparent,color:#fffffe
+    style Calls fill:#553520,text-align:left,stroke:transparent,color:#fffffe
     style Canister fill:#eaabff,text-align:left,stroke:#8f38a7,color:#000001
+    style BottomPadding fill:transparent,stroke:transparent
     linkStyle 4 text-align:left
 ```
 
