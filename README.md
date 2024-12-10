@@ -19,7 +19,7 @@ ideas, still feel free to reach out, we'll try to help you find the right workin
 These ideas are then translated into the draft standards by their original contributor and/or with help of members
 within this working group. Draft standards enable developers to create early reference implementations.
 
-Approved standards are actively being implemented by developers and are candidates for an official ICRC standard once
+Approved standards are actively being implemented by developers and candidates for an official ICRC standard once
 adoption has reached an adequate level.
 
 | Status        | Description                                       |
