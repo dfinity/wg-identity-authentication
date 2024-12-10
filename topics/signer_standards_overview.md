@@ -9,11 +9,11 @@ respective parts of the interactions:
 ```mermaid
 graph LR
     RP[Relying<br>Party]
-    User((User))
+    User(User)
     Signer[Signer]
     Canister[(Target<br>Canister)]
-    Messages["JSON-RPC Messages<br>(ICRC-25 incl. extensions)"]
-    Calls[Canister Calls:<br>- ICRC-21<br>- ICRC-49]
+    Messages[/"JSON-RPC Messages<br>(ICRC-25 incl. extensions)"/]
+    Calls[/Canister Calls:<br>- ICRC-21<br>- ICRC-49/]
 
     subgraph Transport[Transport Channel]
         Messages
