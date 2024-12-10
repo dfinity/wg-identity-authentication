@@ -15,7 +15,7 @@ graph LR
     Messages[/"JSON-RPC Messages<br>(ICRC-25 incl. extensions)"/]
     Calls[/Canister Calls:<br>- ICRC-21<br>- ICRC-49/]
 
-    subgraph Transport["Transport#nbsp;Channel#nbsp;e.g.#nbsp;ICRC-29"]
+    subgraph Transport["Transport#nbsp;Channel#nbsp;e.g.#nbsp;ICRC#8209;29"]
         Messages
     end
 
