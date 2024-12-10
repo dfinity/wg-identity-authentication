@@ -9,7 +9,7 @@ respective parts of the interactions:
 ```mermaid
 graph LR
     RP[Relying<br>Party]
-    User(User)
+    User((User))
     Signer[Signer]
     Canister[(Target<br>Canister)]
     Messages[/"JSON-RPC Messages<br>(ICRC-25 incl. extensions)"/]
