@@ -30,7 +30,7 @@ graph LR
     RP <--> Messages <---> Signer
     Signer <--> Calls <--> Canister
     User <-- Interactions:<br>- Account selection<br>- Permission requests<br>- User approvals --> Signer
-    User -- Interactions --> RP
+    User <-- Interactions --> RP
     
     %% Padding so that GitHub controls don't overlap graph
     BottomPadding["<br><br><br><br><br><br>"]
