@@ -27,22 +27,22 @@ graph LR
         Canister
     end
 
-    RP --- Messages ---> Signer
-    Signer --- Calls --> Canister
+    RP <--> Messages <---> Signer
+    Signer <--> Calls <--> Canister
     User <-- Interactions:<br>- Account selection<br>- Permission requests<br>- User approvals --> Signer
     User -- Interactions --> RP
     
     %% Padding so that GitHub controls don't overlap graph
     BottomPadding["<br><br><br><br><br><br>"]
     
-    style RP fill:#93e898,stroke:transparent,color:#000001
-    style Transport fill:#025eb155,stroke:transparent
-    style Messages fill:#a73838,stroke:transparent,color:#fffffe
-    style Signer fill:#fff781,stroke:transparent,color:#000001
+    style RP fill:#00b400,stroke:transparent,color:#000001
+    style Transport fill:#025df255,stroke:transparent
+    style Messages fill:#bb1414,stroke:transparent,color:#fffffe
+    style Signer fill:#ffc100,stroke:transparent,color:#000001
     style HTTP fill:#cccccc22,stroke:transparent
     style IC fill:#cccccc22,stroke:transparent
     style Calls fill:#553520,text-align:left,stroke:transparent,color:#fffffe
-    style Canister fill:#eaabff,text-align:left,stroke:#8f38a7,color:#000001
+    style Canister fill:#d95fff,text-align:left,stroke:#8f38a7,color:#000001
     style BottomPadding fill:transparent,stroke:transparent
     linkStyle 4 text-align:left
 ```
