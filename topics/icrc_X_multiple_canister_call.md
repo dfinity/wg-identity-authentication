@@ -56,8 +56,8 @@ There is one parameter for this standard
 - Requests with 'waitFor' are only executed if another request they are dependent on are successfully finished
 - If any request failed all the request in queue won't not execute and return with error code `1001`
 
-NOTE:
-The response from canister only includes `contentMap` and `certificate`, so signer knows that the canister received the call request, but not whether the request was sucessfully processed. Optionally, transactions can be defined with 'waitFor'. These requests are only called if another requests they are dependent on were successfully processed. Signer checks for the state of the requests they are dependent on by making an additional call to validateCanister, after receviing a response, to check if that request was processed sucessfully or not.
+  NOTE:
+  The response from canister only includes `contentMap` and `certificate`, so signer knows that the canister received the call         request, but not whether the request was sucessfully processed. Optionally, transactions can be defined with 'waitFor'. These requests are only called if another requests they are dependent on were successfully processed. Signer checks for the state of the requests they are dependent on by making an additional call to validateCanister, after receviing a response, to check if that request was processed sucessfully or not.
   
 4. The signer, once it has collected responses from all the transactions, displays a response message to the user, and forwards the response to the relying partner.
 
