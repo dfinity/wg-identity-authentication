@@ -116,7 +116,7 @@ sequenceDiagram
             Note over S,C: ICRC X execution
 
             loop until response length = request length
-                S ->> C: Submit canister call requests <br /> - if request has no 'waitFor' execute immediately in paralle <br /> - if request has 'waitFor', execute after the request it is dependent on first finishes successfully
+                S ->> C: Submit canister call requests <br /> - if request has no 'waitFor', execute immediately in paralle <br /> - if request has 'waitFor', execute after dependencies finishes successfully
                 S ->> S: Wait for the canister call results
 
 
