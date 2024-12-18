@@ -111,7 +111,7 @@ sequenceDiagram
                     VC ->> S: Return bool response as fixed schema
                 end
 
-                alt If the canister is success
+                alt If the canister called is success
                     S ->> S: Add call result to batch call response
                 else If the canister called is failed
                     S ->> S: Add error to batch call response
@@ -261,7 +261,7 @@ Request
         "id": 4,
         "params": {
           "canisterId": "yyyyy-fqaaa-aaaao-a2hlq-ca",
-          "method": "swap",
+          "method": "bridge_to_eth",
           "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdV+ztKgq7E4l1ffuTuwEmw8AtYSjlrJ+WLO5ofQIAAMgB"
         }
       }
