@@ -68,7 +68,7 @@ ICRCX introduces another standard for signer to check if a call request was succ
 
 Currently, Signers do not parse responses from canisters and nor do the responses contain any information about whether the call request was processed successfully. A target casnister response only lets the Signer know that the call request was received and whether any of the following errors occurred: [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-3).
 
-Signer can take the `contentMap` from the first call request response, and make another call to the target canister request to receive as true or false whether the call request was successful or not. 
+When Signer handles requests that have dependencies and need to be executed in certain order, Signer takes the `contentMap` from the first call request response, and make another call to the target canister request to receive as true or false whether the call request was successful or not. Once Signer validates that the first call request was successfully processed, Signer can execute the second call request that had a dependency on the first.
 
 ```
 // canister response
