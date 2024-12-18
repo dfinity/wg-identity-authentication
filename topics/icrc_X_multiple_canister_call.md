@@ -10,8 +10,8 @@
   - [Summary](#summary)
   - [Request Params](#request-params)
   - [Processing](#processing)
+  - [Error validation](#error-validation)
   - [Flow](#flow)
-    - [Parallel Execution](#parallel-execution)
     - [Examples](#examples)
       - [Successful Batch Call](#successful-batch-call)
       - [Batch Call with Error](#batch-call-with-error)
@@ -52,6 +52,7 @@ There is one parameter for this standard
 2. The signer fetches consent messages and shows a warning to user to approve the batch transaction.
 
 3. Upon user approval, the signer executes the requests (the Signer is responsible for handling 'waitFor' in the way below)
+
 - Requests without 'waitFor' are executed in parallel immediately
 - Requests with 'waitFor' are only executed if previous-in-line request is successful (response was validated with Canister)
 - If any request failed all the request in queue won't not execute and return with error code `1001`
@@ -62,6 +63,28 @@ There is one parameter for this standard
 4. The signer, once it has collected responses from all the transactions, displays a response message to the user, and forwards the response to the relying partner.
 
 5. The relying partner, if any of the transactions failed, implements error handling. The response of the individual transactions will be aggregated into the response of the batch call. If there are any errors in the response, it is up to the relying party to decide how to handle the error.
+
+## Error validation
+
+Beside errors defined in [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-3) which signer cannot detect the error without parse `contentMap`.
+
+In order to have a sequence execution we have to create another method to parse the canister and return the boolean. And this is another new ICRC standard.
+
+The method will take the `contentMap` from previous request and parse it and return is that success call or not.
+This can be a fixed `contentMap` for the canister call
+
+```
+// canister response
+{
+  "result" : true
+}
+
+// signer received payload
+{
+          "contentMap": "2dn3p2NhcmdYTkRJREwEbXtuAGwCs7DawwNorYbKgwUBbAP7ygECot6U6wYB2KOMqA19AQMBHVfs7SoKuxOJdX37k7sBJsPALWEo5ayflizuaH0CAADIAWtjYW5pc3Rlcl9pZEoAAAAAAcDR1wEBbmluZ3Jlc3NfZXhwaXJ5GxeNX/65y4YAa21ldGhvZF9uYW1laHRyYW5zZmVyZW5vbmNlUFF4+hAimFhoqkdUcIchz0xscmVxdWVzdF90eXBlZGNhbGxmc2VuZGVyWB1q63Snu+4C5/fpWFu4nq1IpZxCYDEYA8XSPqPfAg==",
+          "certificate": "2dn3omR0cmVlgwGDAYIEWCAPzKZJY/emKhi2GGtBrnHh4cdttATd4+9GtJrNCBepb4MBgwJOcmVxdWVzdF9zdGF0dXODAYIEWCCCgynUaonrKCCywghWCSk9BeDqMoI4yf15nxyU/5JZv4MBggRYIDG7WdzQ9sGWI1MpxizUzxubsEBuNkTT94UOZ9USbzNvgwGCBFggawwbTHxnPUzBAUhWBRjk0nzPs2fPpJlaIYtj5AvcX+ODAYIEWCDiFLyaWuMWjtVurCQcSgny/cqfM8S6qrdihVq7nPz1FoMCWCD/8jdeccvqHVYf06Hw7qPXIDNimC1Uyf47VsvgqKpPiIMBgwJFcmVwbHmCA1RESURMAWsCvIoBfcX+0gFxAQAABIMCRnN0YXR1c4IDR3JlcGxpZWSCBFgg7qZngcNt2+B/RuF44W3LRsKWXG6QQg2L6GdZgJ6Nb3+DAYIEWCAx3tU/mhHfX+wDzF003eSJYN8Nebou8rTeGyxr/rUa1YMCRHRpbWWCA0nw9+r88fjXxhdpc2lnbmF0dXJlWDCXNshvwWG1jGViP7ELePGHCThBw9mts45FxIy4gZATkUEsPeJ6y+cjbn2REmB0Soo="
+        }
+```
 
 ## Flow
 
@@ -93,20 +116,13 @@ sequenceDiagram
             Note over S,C: ICRC X execution
 
             loop until response length = request length
-                alt requests without `waitFor`
-                    S ->> C: Submit canister call requests
-                    S ->> S: Wait for the canister call results
-                else requests with `waitFor`
-                    S ->> S: Check the id in waitFor have the response yet
-                    alt If the id exist in response
-                        S ->> C: Submit canister call request
-                        S ->> S: Wait for the canister call results
-                    end
-                end
+                S ->> C: Submit canister call requests <br /> - without 'waitFor' <br /> - with 'waitFor' where prededing request finished successfully
+                S ->> S: Wait for the canister call results
 
-                alt If validateCanister exist
-                    S ->> VC: Send the contentMap for checking is it success or not
-                    VC ->> S: Return bool response as fixed schema
+
+                alt If tx opted to validate whether the request was successfully
+                    S ->> VC: Call check with validation canister using contentMap
+                    VC ->> S: Return success or failure as bool (new ICRC)
                 end
 
                 alt If the canister called is success
