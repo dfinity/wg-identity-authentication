@@ -51,12 +51,12 @@ There is one parameter for this standard
 
 2. The signer fetches consent messages and shows a warning to user to approve the batch transaction.
 
-3. Upon receiving the requests, the signer pick all requests without `waitFor` and execute them in parallel.
-
-- The signer is responsibled for handling the order of execution and pick next request if they defined `waitFor`
+3. Upon user approval, the signer executes the requests (the Signer is responsible for handling 'waitFor' in the way below)
+- Requests without 'waitFor' are executed in parallel immediately
+- Requests with 'waitFor' are only executed if previous-in-line request is successful (response was validated with Canister)
 - If any request failed all the request in queue won't not execute and return with error code `1001`
 - Optional:
-  - The response from canister only have `contentMap` `certificate`, signer doesn't know is the request success or not. So signer can use validateCanister to parse the response and get the boolean response which will need another request
+  - The response from canister only includes `contentMap` and `certificate`, so signer knows that the canister received the call request, but not whether the request was sucessfully processed. Optionally, transactions can be defined with 'waitFor'. These requests are only called if previous-in-line requests were successfully processed. Signer checks for the state of the previous-in-line request by making an additional call to validateCanister, after receviing a response, to check if the previous-in-line canister was processed sucessfully or not.
   - **Because the cost of validate response so we recommended developer using this batch transaction keep in mind that your canister should have validation before doing any business logic**
 
 4. The signer, once it has collected responses from all the transactions, displays a response message to the user, and forwards the response to the relying partner.
