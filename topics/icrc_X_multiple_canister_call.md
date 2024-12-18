@@ -1,8 +1,8 @@
 # ICRC-X: Call batch canisters
 
-[![Status Badge](https://img.shields.io/badge/STATUS-DRAFT-ffcc00.svg)](#)
-[![Extension Badge](https://img.shields.io/badge/Extends-ICRC--25-ffcc222.svg)](./icrc_25_signer_interaction_standard.md)
-[![Extension Badge](https://img.shields.io/badge/Extends-ICRC--49-ffcc222.svg)](./icrc_49_call_canister.md)
+[![Status Badge](https://img.shields.io/badge/STATUS-ISSUE-e7a237.svg)](#)
+[![Extension Badge](https://img.shields.io/badge/EXTENDS-ICRC--25-ed1e7a.svg)](./icrc_25_signer_interaction_standard.md)
+[![Extension Badge](https://img.shields.io/badge/Extends-ICRC--49-ed1e7a.svg)](./icrc_49_call_canister.md)
 
 <!-- TOC -->
 
