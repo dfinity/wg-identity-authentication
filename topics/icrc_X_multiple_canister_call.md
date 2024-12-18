@@ -65,8 +65,6 @@ There is one parameter for this standard
 
 ## Flow
 
-### Parallel Execution
-
 ```mermaid
 sequenceDiagram
     participant RP as Relying Party
