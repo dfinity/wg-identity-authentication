@@ -53,12 +53,12 @@ There is one parameter for this standard
 3. Upon user approval, the signer executes the requests (the Signer is responsible for handling 'waitFor' in the way below)
 
 - Requests without 'waitFor' are executed in parallel immediately
-- Requests with 'waitFor' are only executed if previous-in-line request is successful (response was validated with Canister)
+- Requests with 'waitFor' are only executed if another request they are dependent on are successfully finished
 - If any request failed all the request in queue won't not execute and return with error code `1001`
-- Optional:
-  - The response from canister only includes `contentMap` and `certificate`, so signer knows that the canister received the call request, but not whether the request was sucessfully processed. Optionally, transactions can be defined with 'waitFor'. These requests are only called if previous-in-line requests were successfully processed. Signer checks for the state of the previous-in-line request by making an additional call to validateCanister, after receviing a response, to check if the previous-in-line canister was processed sucessfully or not.
-  - **Because the cost of validate response so we recommended developer using this batch transaction keep in mind that your canister should have validation before doing any business logic**
 
+NOTE:
+The response from canister only includes `contentMap` and `certificate`, so signer knows that the canister received the call request, but not whether the request was sucessfully processed. Optionally, transactions can be defined with 'waitFor'. These requests are only called if another requests they are dependent on were successfully processed. Signer checks for the state of the requests they are dependent on by making an additional call to validateCanister, after receviing a response, to check if that request was processed sucessfully or not.
+  
 4. The signer, once it has collected responses from all the transactions, displays a response message to the user, and forwards the response to the relying partner.
 
 5. The relying partner, if any of the transactions failed, implements error handling. The response of the individual transactions will be aggregated into the response of the batch call. If there are any errors in the response, it is up to the relying party to decide how to handle the error.
