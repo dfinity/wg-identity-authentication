@@ -64,7 +64,7 @@ There is one parameter for this standard
 5. The relying partner, if any of the transactions failed, implements error handling. The response of the individual transactions will be aggregated into the response of the batch call. If there are any errors in the response, it is up to the relying party to decide how to handle the error.
 
 ## Error validation
-ICRCX introduces another standard for signer to check if a call request was success or not. 
+ICRCX introduces another standard for signer to check if a call request was successfully processed or not. 
 
 Currently, Signers do not parse responses from canisters and nor do the responses contain any information about whether the call request was processed successfully. A target casnister response only lets the Signer know that the call request was received and whether any of the following errors occurred: [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-3).
 
