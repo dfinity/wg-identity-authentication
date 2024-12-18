@@ -1,7 +1,8 @@
 # ICRC-27: Accounts
 
-[![Status Badge](https://img.shields.io/badge/STATUS-WG_APPROVED-purple.svg)](https://github.com/orgs/dfinity/projects/31)
-[![Extension Badge](https://img.shields.io/badge/Extends-ICRC--25-ffcc222.svg)](./icrc_25_signer_interaction_standard.md)
+![APPROVED] [![EXTENDS 25]](./icrc_25_signer_interaction_standard.md)
+
+**Authors:** [Thomas Gladdines](https://github.com/sea-snake)
 
 <!-- TOC -->
 * [ICRC-27: Accounts](#icrc-27-accounts)
@@ -136,3 +137,7 @@ signer does not have the capability to show and transfer tokens of this token st
 
 A relying party MAY only transfer unsupported tokens to a signer account if the relying party is at least able to offer
 the capability to show and transfer the tokens held by the signer account itself.
+
+[APPROVED]: https://img.shields.io/badge/STATUS-APPROVED-ed1e7a.svg
+
+[EXTENDS 25]: https://img.shields.io/badge/EXTENDS-ICRC--25-ed1e7a.svg

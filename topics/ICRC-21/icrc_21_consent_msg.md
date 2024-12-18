@@ -1,6 +1,8 @@
 # ICRC-21: Canister Call Consent Messages
 
-[![Status Badge](https://img.shields.io/badge/STATUS-WG_APPROVED-purple.svg)](https://github.com/orgs/dfinity/projects/31)
+![APPROVED]
+
+**Authors:** [Frederik Rothenberger](https://github.com/frederikrothenberger)
 
 ## Summary
 This specification describes a protocol for obtaining human-readable consent messages for canister calls. These messages are intended to be shown to users to help them make informed decisions about whether to approve a canister call / sign a transaction.
@@ -231,3 +233,5 @@ The message will then be shown to the user in the following context:
 │  └───────────┘   └───────────┘  │
 └─────────────────────────────────┘
 ```
+
+[APPROVED]: https://img.shields.io/badge/STATUS-APPROVED-ed1e7a.svg
