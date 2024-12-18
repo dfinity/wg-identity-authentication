@@ -8,7 +8,10 @@
 
 - [ICRC-X: Call batch canisters](#icrc-x-call-batch-canisters)
   - [Summary](#summary)
+  - [Request Params](#request-params)
   - [Processing](#processing)
+  - [Flow](#flow)
+    - [Parallel Execution](#parallel-execution)
     - [Examples](#examples)
       - [Successful Batch Call](#successful-batch-call)
       - [Batch Call with Error](#batch-call-with-error)
@@ -18,35 +21,51 @@
 
 This method can be used by the relying party to request a batch call to 3rd party canister executed by the signer using the requested identity. In order to prevent misuse of this method all `icrcX_call_batch_canisters` requests are subject to user approval.
 
-There is two main parameter for this standard
+## Request Params
 
-1. `mode` : The mode to execute transaction in sequence or in parallel
-2. `requests` : An array of canister call requests
+There is one parameter for this standard
 
-Unfortunately there is currently no mode to execute all transactions in the batch in one block. The transactions are handled as independent transactions that are executed in parallel or in sequence. However, ICRCX allows signer to receive approval for all transactions in the batch from the user with one approval action.
+`sender (text)`: The principal (textual representation) requested to execute the call.
+
+`requests (vec request)` : An array of `request` to call canister
+
+**request schema**
+
+`id (text)` : Identifier of request in array
+
+`canisterId (text)` : The id of the canister on which the call should be executed.
+
+`method (text)` : The name of the call method to be executed.
+
+`arg (text)` : The arguments for the call
+
+`waitFor (opt vec text)`: An optional list of request ids that must be completed before executing this call.
+
+`validateCanister (opt text)` : An optional canister id for handling validate the content of `contentMap` in response is success or fail
 
 ## Processing
 
 **How it works**
 
-1. Relying party requests a ICRCX batch transaction request to the signer. The request can be either `parallel` mode or `sequence` mode (see more details below).
+1. Relying party requests a ICRCX batch transaction request to the signer.
 
 2. The signer fetches consent messages and shows a warning to user to approve the batch transaction.
 
-3. The signer submits canister calls to target canisters:
+3. Upon receiving the requests, the signer pick all requests without `waitFor` and execute them in parallel.
 
-- mode `parallel`: Execute all requests simultaneously, without waiting for any individual request to complete before starting the next. All transactions will be started. But it is not guaranteed that all transactions will succeed.
-- mode `sequence`:
-  - Execute each request one after the other, ensuring that each request is completed before starting the next one. If any transaction fails, the execution of the batch will stop without executing remaining queued transactions.
-  - Evaluate the result of processing the request:
-    1.  If the result is a successful response, add the result to the batch response. Proceed with processing the next request in the batch.
-    2.  If the result is an error, add an error to the batch response and stop processing the batch. For any request in the batch that has not been processed yet, add an error response with code 10101 to the batch response.
+- The signer is responsibled for handling the order of execution and pick next request if they defined `waitFor`
+- If any request failed all the request in queue won't not execute and return with error code `1001`
+- Optional:
+  - The response from canister only have `contentMap` `certificate`, signer doesn't know is the request success or not. So signer can use validateCanister to parse the response and get the boolean response which will need another request
+  - **Because the cost of validate response so we recommended developer using this batch transaction keep in mind that your canister should have validation before doing any business logic**
 
 4. The signer, once it has collected responses from all the transactions, displays a response message to the user, and forwards the response to the relying partner.
 
 5. The relying partner, if any of the transactions failed, implements error handling. The response of the individual transactions will be aggregated into the response of the batch call. If there are any errors in the response, it is up to the relying party to decide how to handle the error.
 
-**Flow**
+## Flow
+
+### Parallel Execution
 
 ```mermaid
 sequenceDiagram
@@ -54,6 +73,7 @@ sequenceDiagram
     participant S as Signer
     participant U as User
     participant C as Target Canister
+    participant VC as Validate Canister
 
     RP ->> S: Request batch canisters call
     alt Relying party has not been granted the `icrcX_call_canister` permission scope<br>or the request does not comply with scope restrictions
@@ -72,12 +92,33 @@ sequenceDiagram
 
         alt Approved
             U ->> S: Approve request
-            Note over S,C: Call the request for each canister in one of following two ways: <br/> - `parallel` <br /> - `sequence` abort if result is not success
-                %% this is a comment
+            Note over S,C: ICRC X execution
 
-                S ->> C: Submit canister call
-                S ->> S: Wait for the canister call result
-                S ->> S: Add call result to batch call response
+            loop until response length = request length
+                alt requests without `waitFor`
+                    S ->> C: Submit canister call requests
+                    S ->> S: Wait for the canister call results
+                else requests with `waitFor`
+                    S ->> S: Check the id in waitFor have the response yet
+                    alt If the id exist in response
+                        S ->> C: Submit canister call request
+                        S ->> S: Wait for the canister call results
+                    end
+                end
+
+                alt If validateCanister exist
+                    S ->> VC: Send the contentMap for checking is it success or not
+                    VC ->> S: Return bool response as fixed schema
+                end
+
+                alt If the canister is success
+                    S ->> S: Add call result to batch call response
+                else If the canister called is failed
+                    S ->> S: Add error to batch call response
+                    S ->> S: Add error with code `1001` for other non-execute request to batch call response
+                end
+            end
+
             Note over S,C: End of the execution
 
         S ->> U: Display success/failed message
@@ -95,7 +136,7 @@ sequenceDiagram
 
 #### Successful Batch Call
 
-Request
+Approve request, swap and then call birdge method
 
 ```json
 {
@@ -103,20 +144,35 @@ Request
   "jsonrpc": "2.0",
   "method": "icrcX_batch_call_canisters",
   "params": {
-    "mode": "sequence",
     "sender": "b7gqo-ulk5n-2kpo7-oalt7-p2kyl-o4j5l-kiuwo-eeybr-dab4l-ur6up-pqe",
     "requests": [
       {
-        "id": 1,
-        "canisterId": "xhy27-fqaaa-aaaao-a2hlq-ca",
-        "method": "transfer",
+        "id": "1",
+        "canisterId": "eeddf-fqaaa-aaaao-a2hlq-ca",
+        "method": "icrc2_approve",
         "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdV+ztKgq7E4l1ffuTuwEmw8AtYSjlrJ+WLO5ofQIAAMgB"
       },
       {
-        "id": 2,
-        "canisterId": "xhy27-fqaaa-aaaao-a2hlq-ca",
-        "method": "transfer",
+        "id": "2",
+        "canisterId": "aaabb-fqaaa-aaaao-a2hlq-ca",
+        "method": "icrc2_approve",
         "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdV+ztKgq7E4l1ffuTuwEmw8AtYSjlrJ+WLO5ofQIAAMgB"
+      },
+      {
+        "id": "3",
+        "canisterId": "xyzzz-fqaaa-aaaao-a2hlq-ca",
+        "method": "swap",
+        "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdV+ztKgq7E4l1ffuTuwEmw8AtYSjlrJ+WLO5ofQIAAMgB",
+        "waitFor": ["1", "2"]
+      },
+      ,
+      {
+        "id": "4",
+        "canisterId": "bbbbb-fqaaa-aaaao-a2hlq-ca",
+        "method": "bridge_to_eth",
+        "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdV+ztKgq7E4l1ffuTuwEmw8AtYSjlrJ+WLO5ofQIAAMgB",
+        "waitFor": ["3"],
+        "validateCanister": "xyzzz-fqaaa-aaaao-a2hlq-ca"
       }
     ]
   }
@@ -132,14 +188,28 @@ Response
   "result": {
     "responses": [
       {
-        "id": 1,
+        "id": "1",
         "result": {
           "contentMap": "2dn3p2NhcmdYTkRJREwEbXtuAGwCs7DawwNorYbKgwUBbAP7ygECot6U6wYB2KOMqA19AQMBHVfs7SoKuxOJdX37k7sBJsPALWEo5ayflizuaH0CAADIAWtjYW5pc3Rlcl9pZEoAAAAAAcDR1wEBbmluZ3Jlc3NfZXhwaXJ5GxeNX/65y4YAa21ldGhvZF9uYW1laHRyYW5zZmVyZW5vbmNlUFF4+hAimFhoqkdUcIchz0xscmVxdWVzdF90eXBlZGNhbGxmc2VuZGVyWB1q63Snu+4C5/fpWFu4nq1IpZxCYDEYA8XSPqPfAg==",
           "certificate": "2dn3omR0cmVlgwGDAYIEWCAPzKZJY/emKhi2GGtBrnHh4cdttATd4+9GtJrNCBepb4MBgwJOcmVxdWVzdF9zdGF0dXODAYIEWCCCgynUaonrKCCywghWCSk9BeDqMoI4yf15nxyU/5JZv4MBggRYIDG7WdzQ9sGWI1MpxizUzxubsEBuNkTT94UOZ9USbzNvgwGCBFggawwbTHxnPUzBAUhWBRjk0nzPs2fPpJlaIYtj5AvcX+ODAYIEWCDiFLyaWuMWjtVurCQcSgny/cqfM8S6qrdihVq7nPz1FoMCWCD/8jdeccvqHVYf06Hw7qPXIDNimC1Uyf47VsvgqKpPiIMBgwJFcmVwbHmCA1RESURMAWsCvIoBfcX+0gFxAQAABIMCRnN0YXR1c4IDR3JlcGxpZWSCBFgg7qZngcNt2+B/RuF44W3LRsKWXG6QQg2L6GdZgJ6Nb3+DAYIEWCAx3tU/mhHfX+wDzF003eSJYN8Nebou8rTeGyxr/rUa1YMCRHRpbWWCA0nw9+r88fjXxhdpc2lnbmF0dXJlWDCXNshvwWG1jGViP7ELePGHCThBw9mts45FxIy4gZATkUEsPeJ6y+cjbn2REmB0Soo="
         }
       },
       {
-        "id": 2,
+        "id": "2",
+        "result": {
+          "contentMap": "2dn3p2NhcmdYTkRJREwEbXtuAGwCs7DawwNorYbKgwUBbAP7ygECot6U6wYB2KOMqA19AQMBHVfs7SoKuxOJdX37k7sBJsPALWEo5ayflizuaH0CAADIAWtjYW5pc3Rlcl9pZEoAAAAAAcDR1wEBbmluZ3Jlc3NfZXhwaXJ5GxeNX/65y4YAa21ldGhvZF9uYW1laHRyYW5zZmVyZW5vbmNlUFF4+hAimFhoqkdUcIchz0xscmVxdWVzdF90eXBlZGNhbGxmc2VuZGVyWB1q63Snu+4C5/fpWFu4nq1IpZxCYDEYA8XSPqPfAg==",
+          "certificate": "2dn3omR0cmVlgwGDAYIEWCAPzKZJY/emKhi2GGtBrnHh4cdttATd4+9GtJrNCBepb4MBgwJOcmVxdWVzdF9zdGF0dXODAYIEWCCCgynUaonrKCCywghWCSk9BeDqMoI4yf15nxyU/5JZv4MBggRYIDG7WdzQ9sGWI1MpxizUzxubsEBuNkTT94UOZ9USbzNvgwGCBFggawwbTHxnPUzBAUhWBRjk0nzPs2fPpJlaIYtj5AvcX+ODAYIEWCDiFLyaWuMWjtVurCQcSgny/cqfM8S6qrdihVq7nPz1FoMCWCD/8jdeccvqHVYf06Hw7qPXIDNimC1Uyf47VsvgqKpPiIMBgwJFcmVwbHmCA1RESURMAWsCvIoBfcX+0gFxAQAABIMCRnN0YXR1c4IDR3JlcGxpZWSCBFgg7qZngcNt2+B/RuF44W3LRsKWXG6QQg2L6GdZgJ6Nb3+DAYIEWCAx3tU/mhHfX+wDzF003eSJYN8Nebou8rTeGyxr/rUa1YMCRHRpbWWCA0nw9+r88fjXxhdpc2lnbmF0dXJlWDCXNshvwWG1jGViP7ELePGHCThBw9mts45FxIy4gZATkUEsPeJ6y+cjbn2REmB0Soo="
+        }
+      },
+      {
+        "id": "3",
+        "result": {
+          "contentMap": "2dn3p2NhcmdYTkRJREwEbXtuAGwCs7DawwNorYbKgwUBbAP7ygECot6U6wYB2KOMqA19AQMBHVfs7SoKuxOJdX37k7sBJsPALWEo5ayflizuaH0CAADIAWtjYW5pc3Rlcl9pZEoAAAAAAcDR1wEBbmluZ3Jlc3NfZXhwaXJ5GxeNX/65y4YAa21ldGhvZF9uYW1laHRyYW5zZmVyZW5vbmNlUFF4+hAimFhoqkdUcIchz0xscmVxdWVzdF90eXBlZGNhbGxmc2VuZGVyWB1q63Snu+4C5/fpWFu4nq1IpZxCYDEYA8XSPqPfAg==",
+          "certificate": "2dn3omR0cmVlgwGDAYIEWCAPzKZJY/emKhi2GGtBrnHh4cdttATd4+9GtJrNCBepb4MBgwJOcmVxdWVzdF9zdGF0dXODAYIEWCCCgynUaonrKCCywghWCSk9BeDqMoI4yf15nxyU/5JZv4MBggRYIDG7WdzQ9sGWI1MpxizUzxubsEBuNkTT94UOZ9USbzNvgwGCBFggawwbTHxnPUzBAUhWBRjk0nzPs2fPpJlaIYtj5AvcX+ODAYIEWCDiFLyaWuMWjtVurCQcSgny/cqfM8S6qrdihVq7nPz1FoMCWCD/8jdeccvqHVYf06Hw7qPXIDNimC1Uyf47VsvgqKpPiIMBgwJFcmVwbHmCA1RESURMAWsCvIoBfcX+0gFxAQAABIMCRnN0YXR1c4IDR3JlcGxpZWSCBFgg7qZngcNt2+B/RuF44W3LRsKWXG6QQg2L6GdZgJ6Nb3+DAYIEWCAx3tU/mhHfX+wDzF003eSJYN8Nebou8rTeGyxr/rUa1YMCRHRpbWWCA0nw9+r88fjXxhdpc2lnbmF0dXJlWDCXNshvwWG1jGViP7ELePGHCThBw9mts45FxIy4gZATkUEsPeJ6y+cjbn2REmB0Soo="
+        }
+      },
+      {
+        "id": "4",
         "result": {
           "contentMap": "2dn3p2NhcmdYTkRJREwEbXtuAGwCs7DawwNorYbKgwUBbAP7ygECot6U6wYB2KOMqA19AQMBHVfs7SoKuxOJdX37k7sBJsPALWEo5ayflizuaH0CAADIAWtjYW5pc3Rlcl9pZEoAAAAAAcDR1wEBbmluZ3Jlc3NfZXhwaXJ5GxeNX/65y4YAa21ldGhvZF9uYW1laHRyYW5zZmVyZW5vbmNlUFF4+hAimFhoqkdUcIchz0xscmVxdWVzdF90eXBlZGNhbGxmc2VuZGVyWB1q63Snu+4C5/fpWFu4nq1IpZxCYDEYA8XSPqPfAg==",
           "certificate": "2dn3omR0cmVlgwGDAYIEWCAPzKZJY/emKhi2GGtBrnHh4cdttATd4+9GtJrNCBepb4MBgwJOcmVxdWVzdF9zdGF0dXODAYIEWCCCgynUaonrKCCywghWCSk9BeDqMoI4yf15nxyU/5JZv4MBggRYIDG7WdzQ9sGWI1MpxizUzxubsEBuNkTT94UOZ9USbzNvgwGCBFggawwbTHxnPUzBAUhWBRjk0nzPs2fPpJlaIYtj5AvcX+ODAYIEWCDiFLyaWuMWjtVurCQcSgny/cqfM8S6qrdihVq7nPz1FoMCWCD/8jdeccvqHVYf06Hw7qPXIDNimC1Uyf47VsvgqKpPiIMBgwJFcmVwbHmCA1RESURMAWsCvIoBfcX+0gFxAQAABIMCRnN0YXR1c4IDR3JlcGxpZWSCBFgg7qZngcNt2+B/RuF44W3LRsKWXG6QQg2L6GdZgJ6Nb3+DAYIEWCAx3tU/mhHfX+wDzF003eSJYN8Nebou8rTeGyxr/rUa1YMCRHRpbWWCA0nw9+r88fjXxhdpc2lnbmF0dXJlWDCXNshvwWG1jGViP7ELePGHCThBw9mts45FxIy4gZATkUEsPeJ6y+cjbn2REmB0Soo="
@@ -162,7 +232,6 @@ Request
   "params": {
     "mode": "",
     "sender": "b7gqo-ulk5n-2kpo7-oalt7-p2kyl-o4j5l-kiuwo-eeybr-dab4l-ur6up-pqe",
-    "isAnonymous": false,
     "requests": [
       {
         "id": 1,
