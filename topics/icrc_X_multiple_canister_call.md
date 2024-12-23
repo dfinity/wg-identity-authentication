@@ -57,14 +57,15 @@ There is one parameter for this standard
 - If any request failed all the request in queue won't not execute and return with error code `1001`
 
   NOTE:
-  The response from canister only includes `contentMap` and `certificate`, so signer knows that the canister received the call         request, but not whether the request was sucessfully processed. Optionally, transactions can be defined with 'waitFor'. These requests are only called if another requests they are dependent on were successfully processed. Signer checks for the state of the requests they are dependent on by making an additional call to validateCanister, after receviing a response, to check if that request was processed sucessfully or not.
-  
+  The response from canister only includes `contentMap` and `certificate`, so signer knows that the canister received the call request, but not whether the request was sucessfully processed. Optionally, transactions can be defined with 'waitFor'. These requests are only called if another requests they are dependent on were successfully processed. Signer checks for the state of the requests they are dependent on by making an additional call to validateCanister, after receviing a response, to check if that request was processed sucessfully or not.
+
 4. The signer, once it has collected responses from all the transactions, displays a response message to the user, and forwards the response to the relying partner.
 
 5. The relying partner, if any of the transactions failed, implements error handling. The response of the individual transactions will be aggregated into the response of the batch call. If there are any errors in the response, it is up to the relying party to decide how to handle the error.
 
 ## Error validation
-ICRCX introduces another standard for signer to check if a call request was successfully processed or not. 
+
+ICRCX introduces another standard for signer to check if a call request was successfully processed or not.
 
 Currently, Signers do not parse responses from canisters and nor do the responses contain any information about whether the call request was processed successfully. A target casnister response only lets the Signer know that the call request was received and whether any of the following errors occurred: [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-3).
 
@@ -174,16 +175,15 @@ Approve request, swap and then call birdge method
         "canisterId": "xyzzz-fqaaa-aaaao-a2hlq-ca",
         "method": "swap",
         "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdV+ztKgq7E4l1ffuTuwEmw8AtYSjlrJ+WLO5ofQIAAMgB",
-        "waitFor": ["1", "2"]
+        "waitFor": ["1", "2"],
+        "validateCanister": "xyzzz-fqaaa-aaaao-a2hlq-ca"
       },
-      ,
       {
         "id": "4",
         "canisterId": "bbbbb-fqaaa-aaaao-a2hlq-ca",
         "method": "bridge_to_eth",
         "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdV+ztKgq7E4l1ffuTuwEmw8AtYSjlrJ+WLO5ofQIAAMgB",
-        "waitFor": ["3"],
-        "validateCanister": "xyzzz-fqaaa-aaaao-a2hlq-ca"
+        "waitFor": ["3"]
       }
     ]
   }
@@ -233,7 +233,7 @@ Response
 
 #### Batch Call with Error
 
-Request
+1. Request failed because network error
 
 ```json
 {
@@ -322,6 +322,95 @@ Response
 }
 ```
 
+3. Request failed because validate error
+
+```json
+{
+  "id": 1,
+  "jsonrpc": "2.0",
+  "method": "icrcX_batch_call_canisters",
+  "params": {
+    "mode": "",
+    "sender": "b7gqo-ulk5n-2kpo7-oalt7-p2kyl-o4j5l-kiuwo-eeybr-dab4l-ur6up-pqe",
+    "requests": [
+      {
+        "id": 1,
+        "params": {
+          "canisterId": "xhy27-fqaaa-aaaao-a2hlq-ca",
+          "method": "transfer",
+          "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdV+ztKgq7E4l1ffuTuwEmw8AtYSjlrJ+WLO5ofQIAAMgB"
+        }
+      },
+      {
+        "id": 2,
+        "params": {
+          "canisterId": "xhy27-fqaaa-aaaao-a2hlq-ca",
+          "method": "transfer",
+          "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdV+ztKgq7E4l1ffuTuwEmw8AtYSjlrJ+WLO5ofQIAAMgB"
+        }
+      },
+      {
+        "id": 3,
+        "params": {
+          "canisterId": "xxxxx-fqaaa-aaaao-a2hlq-ca",
+          "method": "swap",
+          "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdV+ztKgq7E4l1ffuTuwEmw8AtYSjlrJ+WLO5ofQIAAMgB"
+        }
+      },
+      {
+        "id": 4,
+        "params": {
+          "canisterId": "yyyyy-fqaaa-aaaao-a2hlq-ca",
+          "method": "bridge_to_eth",
+          "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdV+ztKgq7E4l1ffuTuwEmw8AtYSjlrJ+WLO5ofQIAAMgB"
+        }
+      }
+    ]
+  }
+}
+```
+
+Response
+
+```json
+{
+  "id": 1,
+  "jsonrpc": "2.0",
+  "result": {
+    "responses": [
+      {
+        "id": 1,
+        "result": {
+          "contentMap": "2dn3p2NhcmdYTkRJREwEbXtuAGwCs7DawwNorYbKgwUBbAP7ygECot6U6wYB2KOMqA19AQMBHVfs7SoKuxOJdX37k7sBJsPALWEo5ayflizuaH0CAADIAWtjYW5pc3Rlcl9pZEoAAAAAAcDR1wEBbmluZ3Jlc3NfZXhwaXJ5GxeNX/65y4YAa21ldGhvZF9uYW1laHRyYW5zZmVyZW5vbmNlUFF4+hAimFhoqkdUcIchz0xscmVxdWVzdF90eXBlZGNhbGxmc2VuZGVyWB1q63Snu+4C5/fpWFu4nq1IpZxCYDEYA8XSPqPfAg==",
+          "certificate": "2dn3omR0cmVlgwGDAYIEWCAPzKZJY/emKhi2GGtBrnHh4cdttATd4+9GtJrNCBepb4MBgwJOcmVxdWVzdF9zdGF0dXODAYIEWCCCgynUaonrKCCywghWCSk9BeDqMoI4yf15nxyU/5JZv4MBggRYIDG7WdzQ9sGWI1MpxizUzxubsEBuNkTT94UOZ9USbzNvgwGCBFggawwbTHxnPUzBAUhWBRjk0nzPs2fPpJlaIYtj5AvcX+ODAYIEWCDiFLyaWuMWjtVurCQcSgny/cqfM8S6qrdihVq7nPz1FoMCWCD/8jdeccvqHVYf06Hw7qPXIDNimC1Uyf47VsvgqKpPiIMBgwJFcmVwbHmCA1RESURMAWsCvIoBfcX+0gFxAQAABIMCRnN0YXR1c4IDR3JlcGxpZWSCBFgg7qZngcNt2+B/RuF44W3LRsKWXG6QQg2L6GdZgJ6Nb3+DAYIEWCAx3tU/mhHfX+wDzF003eSJYN8Nebou8rTeGyxr/rUa1YMCRHRpbWWCA0nw9+r88fjXxhdpc2lnbmF0dXJlWDCXNshvwWG1jGViP7ELePGHCThBw9mts45FxIy4gZATkUEsPeJ6y+cjbn2REmB0Soo="
+        }
+      },
+      {
+        "id": 2,
+        "result": {
+          "contentMap": "2dn3p2NhcmdYTkRJREwEbXtuAGwCs7DawwNorYbKgwUBbAP7ygECot6U6wYB2KOMqA19AQMBHVfs7SoKuxOJdX37k7sBJsPALWEo5ayflizuaH0CAADIAWtjYW5pc3Rlcl9pZEoAAAAAAcDR1wEBbmluZ3Jlc3NfZXhwaXJ5GxeNX/65y4YAa21ldGhvZF9uYW1laHRyYW5zZmVyZW5vbmNlUFF4+hAimFhoqkdUcIchz0xscmVxdWVzdF90eXBlZGNhbGxmc2VuZGVyWB1q63Snu+4C5/fpWFu4nq1IpZxCYDEYA8XSPqPfAg==",
+          "certificate": "2dn3omR0cmVlgwGDAYIEWCAPzKZJY/emKhi2GGtBrnHh4cdttATd4+9GtJrNCBepb4MBgwJOcmVxdWVzdF9zdGF0dXODAYIEWCCCgynUaonrKCCywghWCSk9BeDqMoI4yf15nxyU/5JZv4MBggRYIDG7WdzQ9sGWI1MpxizUzxubsEBuNkTT94UOZ9USbzNvgwGCBFggawwbTHxnPUzBAUhWBRjk0nzPs2fPpJlaIYtj5AvcX+ODAYIEWCDiFLyaWuMWjtVurCQcSgny/cqfM8S6qrdihVq7nPz1FoMCWCD/8jdeccvqHVYf06Hw7qPXIDNimC1Uyf47VsvgqKpPiIMBgwJFcmVwbHmCA1RESURMAWsCvIoBfcX+0gFxAQAABIMCRnN0YXR1c4IDR3JlcGxpZWSCBFgg7qZngcNt2+B/RuF44W3LRsKWXG6QQg2L6GdZgJ6Nb3+DAYIEWCAx3tU/mhHfX+wDzF003eSJYN8Nebou8rTeGyxr/rUa1YMCRHRpbWWCA0nw9+r88fjXxhdpc2lnbmF0dXJlWDCXNshvwWG1jGViP7ELePGHCThBw9mts45FxIy4gZATkUEsPeJ6y+cjbn2REmB0Soo="
+        }
+      },
+      {
+        "id": 3,
+        "error": {
+          "code": 1002,
+          "message": "Validation failed"
+        }
+      },
+      {
+        "id": 4,
+        "error": {
+          "code": 1001,
+          "message": "Not processed due to batch request failure"
+        }
+      }
+    ]
+  }
+}
+```
+
 ## Errors
 
 In addition to the errors defined in [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-3) this standard defines the following errors:
@@ -329,3 +418,4 @@ In addition to the errors defined in [ICRC-25](./icrc_25_signer_interaction_stan
 | Code | Message                                    | Meaning                                                                                          | Data                                                                                |
 | ---- | ------------------------------------------ | ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
 | 1001 | Not processed due to batch request failure | The message was not processed as one of the preceding request in the batch resulted in an error. | (optional) Error details: <ul> <li>`message` (`text`, optional): message</li> </ul> |
+| 1002 | Validation failed                          | The request is successfully called but the validate canister return false                        | (optional) Error details: <ul> <li>`message` (`text`, optional): message</li> </ul> |
