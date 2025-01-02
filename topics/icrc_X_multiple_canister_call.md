@@ -57,6 +57,22 @@ There is one parameter for this standard
    - Each sub-array of requests is executed in parallel.
    - The main array of sub-arrays is executed sequentially. The next sub-array is executed only if the previous sub-array has finished and passed validation.
 
+Eg:
+
+```json
+{
+  "requests" : [
+    ["1", "2"]
+    ["3"],
+    ["4"]
+  ]
+}
+```
+
+1. `request1` and `request2` execute in parallel
+2. After request 1 and 2 finished, request 3 is executed
+3. After request 3 finished, request 4 is executed
+
 **Execution Steps**
 
 1. The signer executes all requests in the first sub-array in parallel.
