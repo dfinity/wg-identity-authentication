@@ -52,12 +52,13 @@ There is one parameter for this standard
 
 2. The signer fetches consent messages and shows a warning to the user to approve the batch transaction.
 
-3. Upon user approval, the signer executes the requests as follows:
+3. Once the user approves, the signer processes the requests as follows:
 
-   - Each sub-array of requests is executed in parallel.
-   - The main array of sub-arrays is executed sequentially. The next sub-array is executed only if the previous sub-array has finished and passed validation.
+- The requets array is 2D array of canister call reuqest
+- The main array of sub-arrays is executed sequentially, with the next sub-array starting only after the previous one has completed and passed validation.
+- Each sub-array of requests is executed in parallel.
 
-Eg:
+Example
 
 ```json
 {
