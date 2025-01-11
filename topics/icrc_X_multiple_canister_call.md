@@ -5,7 +5,7 @@
 
 <!-- TOC -->
 
-- [ICRC-X: Call batch canisters](#icrc-x-call-batch-canisters)
+- [ICRC-X: Batch Call Canisters](#icrc-x-batch-call-canister)
   - [Summary](#summary)
   - [Request Params](#request-params)
   - [Processing](#processing)
