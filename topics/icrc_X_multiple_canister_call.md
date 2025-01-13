@@ -18,7 +18,7 @@
 
 ## Summary
 
-This method can be used by the relying party to request a batch call to 3rd party canister executed by the signer using the requested identity. In order to prevent misuse of this method all `icrcX_batch_call_canister` requests are subject to user approval.
+This method can be used by the relying party to request a batch call to 3rd party canister executed by the signer using the requested identity. To prevent misuses, `icrcX_batch_call_canister` method requires that signer get approval from users to process the requests.
 
 ## Request Params
 
