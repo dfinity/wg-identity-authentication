@@ -43,10 +43,9 @@ This standards builds on top of the canister call processing defined in [ICRC-49
 1. The relying party sends an ICRC-X batch canister call request to the signer.
 2. The signer fetches all consent messages for every request and asks the user to approve the batch transaction.
 3. Once the user approves, the signer processes the requests as follows:
-- Each row is defined as a sub-array of canister call requests.
-- The canister call requests in each row (the sub-array) are called in parallel.
-- The sub-array is deemed to be complete when all of its canister call requests are complete (sucessfully processed, not just called).
-- The sub-array of canister calls are executed in sequence, with the next sub-array starting only after the previous one has completed.
+- Each row has as a sub-array of canister call requests, which are called in parallel.
+- Each row (sub-array) is deemed to be complete when all of its canister call requests are complete (sucessfully processed, not just called).
+- The rows (sub-arrays) are executed in sequence, with the next row starting only after the previous one has completed.
 
 Example
 
