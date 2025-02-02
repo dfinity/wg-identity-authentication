@@ -1,14 +1,15 @@
-# ICRC-X: Call batch canisters
+# ICRC-112: Call batch canisters
 
 [![Status Badge](https://img.shields.io/badge/STATUS-ISSUE-e7a237.svg)](#)
 [![Extension Badge](https://img.shields.io/badge/EXTENDS-ICRC--25-ed1e7a.svg)](./icrc_25_signer_interaction_standard.md)
 
 <!-- TOC -->
 
-- [ICRC-X: Batch Call Canisters](#icrc-x-batch-call-canister)
+- [ICRC-112: Call batch canisters](#icrc-112-call-batch-canisters)
   - [Summary](#summary)
   - [Request Params](#request-params)
   - [Processing](#processing)
+    - [How it works](#how-it-works)
   - [Error validation](#error-validation)
   - [Flow](#flow)
     - [Examples](#examples)
@@ -18,19 +19,21 @@
 
 ## Summary
 
-This method can be used by the relying party to request a batch call to 3rd party canister executed by the signer using the requested identity. To prevent misuses, `icrcX_batch_call_canister` method requires that signer get approval from users to process the requests.
+This method can be used by the relying party to request a batch call to 3rd party canister executed by the signer using the requested identity. To prevent misuses, `icrc_112_batch_call_canister` method requires that signer get approval from users to process the requests.
 
 ## Request Params
 
 **`sender` (`text`):** The principal (textual representation) requested to execute the call.
 
 `requests (`record` `array`)` : A list of requests
+
 - **`canisterId` (`text`)`:** The id of the canister on which the call should be executed.
 - **`method` (`text`)`:** The name of the call method to be executed.
 - **`arg` (`text`)`:** The arguments for the call.
 - **`nonce` (`blob` optional):** Arbitrary data of length at most 32 bytes, typically randomly generated. This can be used to create distinct requests with otherwise identical fields.
 
 **`validation` (`record` optional)`:** Map with validation fields
+
 - **`canisterId` (`text`):** Canister with validation method
 - **`method` (`text`):** Method name to call for validation
 
@@ -43,6 +46,7 @@ This standards builds on top of the canister call processing defined in [ICRC-49
 1. The relying party sends an ICRC-X batch canister call request to the signer.
 2. The signer fetches all consent messages for every request and asks the user to approve the batch transaction.
 3. Once the user approves, the signer processes the requests as follows:
+
 - Each row has as a sub-array of canister call requests, which are called in parallel.
 - Each row (sub-array) is deemed complete when all of its canister call requests are complete (sucessfully processed, not just called).
 - The rows (sub-arrays) are executed in sequence, with the next row starting only after the previous one has completed.
@@ -89,7 +93,7 @@ Example
 
 ## Error validation
 
-ICRCX introduces another standard for signer to check if a call request was successfully processed or not.
+ICRC-112 introduces another standard for signer to check if a call request was successfully processed or not.
 
 Currently, Signers do not parse responses from canisters and nor do the responses contain any information about whether the call request was processed successfully. A target casnister response only lets the Signer know that the call request was received and whether any of the following errors occurred: [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-3).
 
@@ -120,7 +124,7 @@ sequenceDiagram
     participant VC as Validate Canister
 
     RP ->> S: Request batch canister call
-    alt Relying party has not been granted the `icrcX_call_canister` permission scope<br>or the request does not comply with scope restrictions
+    alt Relying party has not been granted the `icrc_112_call_canister` permission scope<br>or the request does not comply with scope restrictions
         S ->> RP: Error response: Permission not granted (3000)
     else
         alt Validation unavailable and multiple sub-arrays in requests
@@ -145,7 +149,7 @@ sequenceDiagram
                     S ->> S: Wait for the canister call result
                     alt Call failed
                         S ->> U: Display failure message
-                        S ->> RP: Error response: Network error (4000) | Generic error 
+                        S ->> RP: Error response: Network error (4000) | Generic error
                     end
                 end
                 alt Validation available
@@ -177,7 +181,7 @@ Parallel approve request, swap and then call bridge method
 {
   "id": 1,
   "jsonrpc": "2.0",
-  "method": "icrcX_batch_call_canisters",
+  "method": "icrc_112_batch_call_canisters",
   "params": {
     "sender": "b7gqo-ulk5n-2kpo7-oalt7-p2kyl-o4j5l-kiuwo-eeybr-dab4l-ur6up-pqe",
     "validation": {
@@ -267,7 +271,7 @@ Response
 {
   "id": 1,
   "jsonrpc": "2.0",
-  "method": "icrcX_batch_call_canisters",
+  "method": "icrc_112_batch_call_canisters",
   "params": {
     "sender": "b7gqo-ulk5n-2kpo7-oalt7-p2kyl-o4j5l-kiuwo-eeybr-dab4l-ur6up-pqe",
     "validation": {
@@ -355,7 +359,7 @@ Response
 {
   "id": 1,
   "jsonrpc": "2.0",
-  "method": "icrcX_batch_call_canisters",
+  "method": "icrc_112_batch_call_canisters",
   "params": {
     "sender": "b7gqo-ulk5n-2kpo7-oalt7-p2kyl-o4j5l-kiuwo-eeybr-dab4l-ur6up-pqe",
     "validation": {
@@ -446,6 +450,6 @@ In addition to the errors defined in [ICRC-25](./icrc_25_signer_interaction_stan
 | Code | Message                                    | Meaning                                                                                          | Data                                                                                |
 | ---- | ------------------------------------------ | ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
 | 1001 | Not processed due to batch request failure | The message was not processed as one of the preceding request in the batch resulted in an error. | (optional) Error details: <ul> <li>`message` (`text`, optional): message</li> </ul> |
-| 1002 | Validation required                        | Validation argument is missing but required for multiple sub-arrays of requests                                                                 | (optional) Error details: <ul> <li>`message` (`text`, optional): message</li> </ul> |
+| 1002 | Validation required                        | Validation argument is missing but required for multiple sub-arrays of requests                  | (optional) Error details: <ul> <li>`message` (`text`, optional): message</li> </ul> |
 | 1003 | Validation failed                          | The request is successfully called but the validate canister return false                        | (optional) Error details: <ul> <li>`message` (`text`, optional): message</li> </ul> |
-| 1004 | Too many requests                           | The request array reached the limit, defined by the signer                                           | (optional) Error details: <ul> <li>`message` (`text`, optional): message</li> </ul> |
+| 1004 | Too many requests                          | The request array reached the limit, defined by the signer                                       | (optional) Error details: <ul> <li>`message` (`text`, optional): message</li> </ul> |
