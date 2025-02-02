@@ -9,7 +9,6 @@
 - [ICRC-Y: Validate batch response](#icrc-y-validate-batch-response)
   - [Summary](#summary)
   - [Methods](#methods)
-  - [Methods](#methods-1)
     - [icrcy_validate](#icrcy_validate)
     - [icrc10_supported_standards](#icrc10_supported_standards)
   - [Use-Cases](#use-cases)
@@ -20,11 +19,23 @@ This standard is used for validating the response of batch transactions to ensur
 
 ## Methods
 
-## Methods
-
 ### icrcy_validate
 
-Return
+This method received the response from previous canister call send it as blob.
+
+Eg: Canister call response
+
+```
+// signer received payload
+{
+  "contentMap": "2dn3p2NhcmdYTkRscmVxdWVzdF90eXBlZGNhbGxmc2VuZGVyWB1q63Snu+4C5/fpWFu4nq1IpZxCYDEYA8XSPqPfAg==",
+  "certificate": "..."
+}
+```
+
+It can be `Ok` or `Err` in Rust and Motoko. In order to decide continue execute ICRC-112 or not. This validate canister have to parse the contentMap and return the boolean value of that request
+
+**Candid**
 
 ```
 icrcy_validate : (blob) -> bool
