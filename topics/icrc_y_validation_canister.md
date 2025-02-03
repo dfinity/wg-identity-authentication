@@ -38,7 +38,14 @@ It can be `Ok` or `Err` in Rust and Motoko. In order to decide continue execute 
 **Candid**
 
 ```
-icrcy_validate : (blob) -> bool
+type CanisterCall = record {
+    canister_id: principal;
+    method: text;
+    nonce: optional blob;
+    arg: blob;
+    res: blob;
+};
+icrcy_validate : (CanisterCall) -> bool
 ```
 
 ### icrc10_supported_standards
