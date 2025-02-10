@@ -93,7 +93,7 @@ Example
 
 ## Error validation
 
-ICRC-112 introduces another standard for signer to check if a call request was successfully processed or not.
+ICRC-112 introduces another standard [ICRC-114](https://github.com/dfinity/wg-identity-authentication/pull/225) for signer to check if a call request was successfully processed or not.
 
 Currently, Signers do not parse responses from canisters and nor do the responses contain any information about whether the call request was processed successfully. A target casnister response only lets the Signer know that the call request was received and whether any of the following errors occurred: [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-3).
 
@@ -112,6 +112,8 @@ When Signer handles requests that have dependencies and need to be executed in c
   "certificate": "..."
 }
 ```
+
+**NOTE**: Validation would only be used where absolutely needed to make the sequence possible, but not beyond that. There for the last set doesn't need validation.
 
 ## Flow
 
