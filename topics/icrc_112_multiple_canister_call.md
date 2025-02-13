@@ -1,7 +1,8 @@
 # ICRC-112: Batch Canister Call
 
-[![Status Badge](https://img.shields.io/badge/STATUS-ISSUE-e7a237.svg)](#)
-[![Extension Badge](https://img.shields.io/badge/EXTENDS-ICRC--25-ed1e7a.svg)](./icrc_25_signer_interaction_standard.md)
+![DRAFT] [![EXTENDS 25]](./icrc_25_signer_interaction_standard.md)
+
+**Authors:** [Long Tran](https://github.com/baolongt), [Thomas Gladdines](https://github.com/sea-snake)
 
 <!-- TOC -->
 
