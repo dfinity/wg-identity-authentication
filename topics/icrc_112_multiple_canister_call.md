@@ -1,4 +1,4 @@
-# ICRC-112: Call batch canisters
+# ICRC-112: Batch Canister Call
 
 [![Status Badge](https://img.shields.io/badge/STATUS-ISSUE-e7a237.svg)](#)
 [![Extension Badge](https://img.shields.io/badge/EXTENDS-ICRC--25-ed1e7a.svg)](./icrc_25_signer_interaction_standard.md)
