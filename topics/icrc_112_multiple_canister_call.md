@@ -42,79 +42,34 @@ This method can be used by the relying party to request a batch call to 3rd part
 
 This standards builds on top of the canister call processing defined in [ICRC-49](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_49_call_canister.md), go [here](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_49_call_canister.md#message-processing) for details regarding canister call execution, processing and verification on the relying party side. All requirements, recommendations, guidelines, warnings and other details in the ICRC-49 standard should be strictly followed.
 
-### How it works
+1. The relying party submits a batch request with multiple calls grouped into sub-arrays.
+2. Execution starts with the first sub-array, and calls within it run in parallel.
+3. Validation is required if there are multiple sub-arrays, but must be skipped for the last one.
+   - After each request in a sub-array completes, its result is sent to the [ICRC-114](https://github.com/dfinity/wg-identity-authentication/pull/225) validation canister.
+   - If validation fails for any request, execution stops with error code `1003` for `Validation failed`
+   - If validation passes, execution continues with the next sub-array.
+4. The final response is returned with the results of each call. For any requests not executed due to validation error or execution error, respond with error code `1001` for `Not processed due to batch request failure`
 
-1. The relying party sends an ICRC-X batch canister call request to the signer.
-2. The signer fetches all consent messages for every request and asks the user to approve the batch transaction.
-3. Once the user approves, the signer processes the requests as follows:
+### Example Execution Order
 
-- Each row has as a sub-array of canister call requests, which are called in parallel.
-- Each row (sub-array) is deemed complete when all of its canister call requests are complete (sucessfully processed, not just called).
-- The rows (sub-arrays) are executed in sequence, with the next row starting only after the previous one has completed.
-
-Example
-
-```json
+```js
 {
-  "requests" : [
-    [r1, r2]
-    [r3],
-    [r4]
+  "requests": [
+    [request1, request2],   // These execute in parallel
+    [request3],             // Executes only after request1 and request2 complete
+    [request4]              // Executes only after request3 completes, no validation needed
   ]
 }
 ```
 
-1. First `r1` and `r2` are executed in parallel.
-2. After `r1` and `r2` are both finished, `r3` is executed.
-3. After `r3` is finished, `r4` is executed.
+### Notes
 
-**Execution Steps**
+- The maximum number of requests is defined by the signer. For example, depending on the type of calls made, a signer can choose to raise or lower the limit. If too many requests are sent the signer may respond with error code `1004` for `Too many requests`
 
-1. The signer executes all requests in the first sub-array in parallel.
-2. After all requests in the sub-array are completed, the signer validates the results.
-   - If validation is successful, the signer proceeds to the next sub-array.
-   - If validation fails, the current failed requests respond with error code `1003` for `Validation failed`.
-3. This process repeats until all sub-arrays are executed or an error occurs.
-   - If any errors occur, the current request should respond with an error as defined in [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-3).
-4. For any requests not executed due to validation error or execution error, respond with error code `1001` for `Not processed due to batch request failure`.
+- It's up to the signer how to display the sequence of parallel requests to the user for approval. But it's recommended to show some sort of progress indicator to the user after approval, particularly for longer sequences.
 
-**Note:**
+- The relying party handles any errors if any transactions failed. The responses of individual transactions are aggregated into the response of the batch call. It is up to the relying party to decide how to handle any errors in the response.
 
-1. The response from the canister includes only `contentMap` and `certificate`, indicating that the canister received the call request but not whether it was successfully processed.
-
-2. The sequence is defined by the order in the main array.
-
-3. A sequence with multiple sub-arrays requires a validation property; otherwise, it returns error code `1002` for `Validation required`.
-
-4. The maximum number of requests is defined by the signer. For example, depending on the type of calls made, a signer can choose to raise or lower the limit.
-
-5. Once the signer has collected responses from all transactions, it displays a response message to the user and forwards the response to the relying party.
-
-6. The relying party handles any errors if any transactions failed. The responses of individual transactions are aggregated into the response of the batch call. It is up to the relying party to decide how to handle any errors in the response.
-
-## Error validation
-
-ICRC-112 introduces another standard [ICRC-114](https://github.com/dfinity/wg-identity-authentication/pull/225) for signer to check if a call request was successfully processed or not.
-
-Currently, Signers do not parse responses from canisters and nor do the responses contain any information about whether the call request was processed successfully. A target casnister response only lets the Signer know that the call request was received and whether any of the following errors occurred: [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-3).
-
-When Signer handles requests that have dependencies and need to be executed in certain order, Signer takes the `contentMap` from the first call request response, and make another call to the target canister request to receive as true or false whether the call request was successful or not. Once Signer validates that the first call request was successfully processed, Signer can execute the second call request that had a dependency on the first.
-
-```
-// canister response
-{
-  "result" : true
-}
-
-// signer received payload
-{
-  // this content map can be fixed
-  "contentMap": "2dn3p2NhcmdYTkRscmVxdWVzdF90eXBlZGNhbGxmc2VuZGVyWB1q63Snu+4C5/fpWFu4nq1IpZxCYDEYA8XSPqPfAg==",
-  "certificate": "..."
-}
-```
-
-**NOTE**: Validation would only be used where absolutely needed to make the sequence possible, but not beyond that. There for the last set doesn't need validation.
 
 ## Flow
 
@@ -456,3 +411,7 @@ In addition to the errors defined in [ICRC-25](./icrc_25_signer_interaction_stan
 | 1002 | Validation required                        | Validation argument is missing but required for multiple sub-arrays of requests                  | (optional) Error details: <ul> <li>`message` (`text`, optional): message</li> </ul> |
 | 1003 | Validation failed                          | The request is successfully called but the validate canister return false                        | (optional) Error details: <ul> <li>`message` (`text`, optional): message</li> </ul> |
 | 1004 | Too many requests                          | The request array reached the limit, defined by the signer                                       | (optional) Error details: <ul> <li>`message` (`text`, optional): message</li> </ul> |
+
+[DRAFT]: https://img.shields.io/badge/STATUS-DRAFT-f25a24.svg
+
+[EXTENDS 25]: https://img.shields.io/badge/EXTENDS-ICRC--25-ed1e7a.svg
