@@ -6,12 +6,12 @@
 
 <!-- TOC -->
 
-- [ICRC-112: Call batch canisters](#icrc-112-call-batch-canisters)
+- [ICRC-112: Batch Canister Call](#icrc-112-batch-canister-call)
   - [Summary](#summary)
   - [Request Params](#request-params)
   - [Processing](#processing)
-    - [How it works](#how-it-works)
-  - [Error validation](#error-validation)
+    - [Example Execution Order](#example-execution-order)
+    - [Notes](#notes)
   - [Flow](#flow)
     - [Examples](#examples)
       - [Successful Batch Call](#successful-batch-call)
