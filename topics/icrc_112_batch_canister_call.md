@@ -70,7 +70,6 @@ This standards builds on top of the canister call processing defined in [ICRC-49
 
 - The relying party handles any errors if any transactions failed. The responses of individual transactions are aggregated into the response of the batch call. It is up to the relying party to decide how to handle any errors in the response.
 
-
 ## Flow
 
 ```mermaid
@@ -413,9 +412,4 @@ In addition to the errors defined in [ICRC-25](./icrc_25_signer_interaction_stan
 | 1004 | Too many requests                          | The request array reached the limit, defined by the signer                                       | (optional) Error details: <ul> <li>`message` (`text`, optional): message</li> </ul> |
 
 [DRAFT]: https://img.shields.io/badge/STATUS-DRAFT-f25a24.svg
-
-[EXTENDS 25]: https://img.shields.io/badge/EXTENDS-ICRC--25-ed1e7a.svg
-
-[DRAFT]: https://img.shields.io/badge/STATUS-DRAFT-f25a24.svg
-
 [EXTENDS 25]: https://img.shields.io/badge/EXTENDS-ICRC--25-ed1e7a.svg
