@@ -415,3 +415,7 @@ In addition to the errors defined in [ICRC-25](./icrc_25_signer_interaction_stan
 [DRAFT]: https://img.shields.io/badge/STATUS-DRAFT-f25a24.svg
 
 [EXTENDS 25]: https://img.shields.io/badge/EXTENDS-ICRC--25-ed1e7a.svg
+
+[DRAFT]: https://img.shields.io/badge/STATUS-DRAFT-f25a24.svg
+
+[EXTENDS 25]: https://img.shields.io/badge/EXTENDS-ICRC--25-ed1e7a.svg
