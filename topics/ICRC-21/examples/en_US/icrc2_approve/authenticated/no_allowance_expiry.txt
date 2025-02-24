@@ -6,9 +6,7 @@ Your account: {{your_account}}
 
 Requested allowance: {{requested_allowance}}
  
-Current allowance: {{current_allowance}}
- 
-Expiration date: {{expiration_date}}
+This authorization does not have an expiration date.
 
 Approval fee: {{approval_fee}}
  

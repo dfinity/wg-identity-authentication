@@ -13,3 +13,6 @@ Friday, February 21, 2025, at 09:56:45 UTC
 
 **Approval fee:** `{{approval_fee}}`  
 Charged for processing the authorization.
+
+**Transaction memo:**  
+`{{transaction_memo}}`

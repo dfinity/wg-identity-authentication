@@ -8,10 +8,8 @@ Requested allowance: {{requested_allowance}}
  
 Current allowance: {{current_allowance}}
  
-This authorization does not have an expiration date.
+Expiration date: {{expiration_date}}
 
 Approval fee: {{approval_fee}}
  
 Fee paid by: {{your_account}}
- 
-Transaction memo: {{transaction_memo}}

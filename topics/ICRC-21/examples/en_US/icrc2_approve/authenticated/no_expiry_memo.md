@@ -22,6 +22,3 @@ Charged for processing the authorization.
 
 **Fee paid by:**  
 `{{your_account}}`
-
-**Transaction memo:**  
-`{{transaction_memo}}`

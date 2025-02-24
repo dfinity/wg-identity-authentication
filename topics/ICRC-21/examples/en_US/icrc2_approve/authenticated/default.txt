@@ -6,6 +6,8 @@ Your account: {{your_account}}
 
 Requested allowance: {{requested_allowance}}
  
+Current allowance: {{current_allowance}}
+ 
 Expiration date: {{expiration_date}}
 
 Approval fee: {{approval_fee}}

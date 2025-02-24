@@ -1,0 +1,9 @@
+You are approving a transfer of funds from your account.
+ 
+Recipient address: {{recipient_address}}
+ 
+Your account: {{your_account}}
+
+Transfer amount: {{transfer_amount}}
+ 
+Transfer fee: {{transfer_fee}}
