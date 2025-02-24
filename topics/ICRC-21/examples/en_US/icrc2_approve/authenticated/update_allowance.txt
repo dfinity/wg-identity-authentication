@@ -1,0 +1,17 @@
+You are authorizing another address to withdraw funds from your account.
+ 
+Authorized address: {{authorized_address}}
+ 
+Your account: {{your_account}}
+
+Requested allowance: {{requested_allowance}}
+ 
+Current allowance: {{current_allowance}}
+ 
+Expiration date: {{expiration_date}}
+
+Approval Fee: {{approval_fee}}
+ 
+Fee paid by: {{your_account}}
+ 
+Transaction memo: {{transaction_memo}}
