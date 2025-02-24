@@ -12,43 +12,106 @@ anonymously since the cold signer is not able to call the canister itself direct
 It's recommended to show the authenticated ICRC-21 consent message to the user before letting the user interact with the
 cold signer, where it will once more see a consent message, this time likely shorter due to it being anonymous.
 
-## Device Specs
+## Generic Display
 
-The ICRC-21 standard specifies two device specs, which are briefly discussed here.
+This device spec renders Markdown messages, the examples available in this repo follow the below guidelines.
 
-### Generic Display
+#### Title
 
-This device spec renders Markdown messages, keep the following guidelines in mind during implementation:
+Always define a title `#`, but keep is short `action + subject` e.g. `Approve transfer`.
 
-- Always define a title `#`, keep it short.
-- Add a paragraph to explain the request in more detail.
-- Group details with headers `**header:**` into blocks.
-- Add a paragraph to each detail to explain where needed.
-- Limit line length where needed, consider line breaks (ending a line with two empty spaces).
-- Use `` `code` `` tags for account addresses, token amounts and transaction memo.
-- Always
-  use [ICRC-1 textual encoding of accounts](https://internetcomputer.org/docs/current/references/icrc1-standard#textual-encoding-of-accounts)
-  if possible.
-- Avoid separately mentioning the subaccount where possible, instead use
-  the [non-default account](https://internetcomputer.org/docs/current/references/icrc1-standard#non-default-accounts)
-  syntax.
-- Attempt to decode the memo at UFT-8 string else fallback to a hex string.
+#### Explanation
 
-### Line Display
+After the title, use a paragraph to explain the request in more detail.
+
+#### Sections
+
+Group sections with labels: `**label:**`, this keeps it as a single readable message in comparison to adding headers.
+
+#### Additional explanations
+
+Add additional explanations where needed for each section, use line breaks over empty lines (two spaces at the end of
+the line).
+
+#### Account address
+
+Always
+use [ICRC-1 textual encoding of accounts](https://internetcomputer.org/docs/current/references/icrc1-standard#textual-encoding-of-accounts)
+if possible. Avoid separately mentioning the subaccount, instead use
+the [non-default account](https://internetcomputer.org/docs/current/references/icrc1-standard#non-default-accounts)
+syntax.
+
+Wrap account addresses in `` `code` `` tags.
+
+#### Token amounts
+
+Show amounts with decimals followed by token symbol. Truncate trailing zeros e.g. `32.716 ICP` and wrap in `` `code` ``
+tags
+
+#### Date and time
+
+As defined in
+the [ICRC-21 spec](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/ICRC-21/ICRC-21.did#L8),
+render date and/or time in human-readable format based on received BCP-47 language, fallback to UTC if offset is not
+defined.
+
+#### Transaction memo
+
+Attempt to decode the memo as UFT-8 string else fallback to a hex string. Always wrap in `` `code` ``
+tags.
+
+## Line Display
 
 This device spec renders plaintext messages, line display requests can contain any `characters_per_line` and
-`lines_per_page` values.
+`lines_per_page` values. This means that consent messages should be short and flexible to render on most displays.
 
-Keep the following line display specific guidelines in mind during implementation:
+The examples available in this repo follow the below guidelines.
 
-- No Markdown syntax, only plaintext is supported.
-- Avoid a title, instead directly start with a paragraph that explains the request.
-- Use blank lines between block of details, add a space on the blank line if the blocks belong together.
-- An explanation of a detail should be its own block, but an empty space can be used to indicate they belong together.
-- Avoid explanations where acceptable to keep the number of lines at a minimum.
-- When splitting the message into multiple pages, split based on blank lines first before blank lines with spaces.
-- Split paragraphs always at whitespace characters if possible.
-- Split account addresses always at `-` character if possible, avoid splitting at `.` subaccount separator.
+#### Title
+
+Avoid a title, instead directly start with a paragraph that explains the request.
+
+#### Blocks
+
+The following example consists of 7 blocks, separated with empty lines:
+
+```txt
+You are authorizing another address to withdraw funds from your account.
+ 
+Authorized address: {{authorized_address}}
+
+Requested allowance: {{requested_allowance}}
+ 
+This is the withdrawal limit that will apply upon approval. Until then, any existing allowance remains in effect.
+
+Expiration date: {{expiration_date}}
+ 
+Approval fee: {{approval_fee}}
+ 
+Transaction memo: {{transaction_memo}}
+```
+
+A single space ` ` on an empty line indicates that blocks should be put on the same page (if possible).
+
+An explanation like `This is...in effect.` for the `Requested allowance` is an example of a block that should be put
+together on the same page by adding a single space ` ` on the empty line above it. Overall it's recommended to avoid
+explanations where possible to keep the number of blocks, and thus lines to a minimum.
+
+#### Characters per line
+
+- Wrap sentences always at white space characters where possible, consider a library that handles this.
+- Prioritize moving values (e.g. 34.87 ICP) onto a new line over splitting a line into multiple.
+- If a word is too long for a line, break the word into multiple lines to maintain the characters per line limit.
+- Wrap account addresses always at `-` characters at the end of the line.
+
+#### Pages from lines
+
+Split blocks first on empty lines (without a single space) to create pages
+
+If any of the resulting pages still has too many lines:
+
+1. Split these pages on remaining empty lines (with a single space).
+2. If that still results in too many lines, split after `lines_per_page`.
 
 #### Example JS implementation
 
@@ -59,7 +122,7 @@ import fs from 'fs';
 const charactersPerLine = 32;
 const linesPerPage = 8;
 
-// Utility method to wrap addresses on `-` characters
+// Utility method to wrap account addresses on `-` characters
 const wrapAddress = (address, charactersPerLine) => (address + '-')
     .match(new RegExp('.{1,' + (charactersPerLine - 1) + '}(?=-)', 'g'))
     .map((line) => line.startsWith('-') ? line.slice(1) : line)
@@ -92,16 +155,23 @@ text = wrapAnsi(text, charactersPerLine, {
 });
 
 const pages = text
-    // Split block of details based on blank lines
+    // Split block based on empty lines
     .split('\n\n')
-    // Blocks of details that belong together have a space on the
-    // blank line between them to prevent them from being split, 
-    // unless they cannot be rendered together on a single page.
+    // If a block has more lines than allowed, split it 
+    // into multiple based on empty lines with a space.
     .flatMap(block => block.split('\n').length > linesPerPage ? block.split('\n \n') : block)
-    // Create pages with lines from blocks of details
+    // If a block still has more lines than allowed, 
+    // split it into multiple based on lines per page.
+    .flatMap(block => {
+        const lines = block.split('\n');
+        return Array
+            .from({length: Math.ceil(lines / linesPerPage)})
+            .map((_, index) => lines.slice(index * linesPerPage, (index + 1) * linesPerPage));
+    })
+    // Create pages with lines from blocks
     .reduce((pages, block) => {
         const lastPage = pages[pages.length - 1];
-        let lines = block.split('\n');
+        const lines = block.split('\n');
         if (lastPage.length + lines.length + 1 > linesPerPage) {
             pages.push(lines);
         } else {
