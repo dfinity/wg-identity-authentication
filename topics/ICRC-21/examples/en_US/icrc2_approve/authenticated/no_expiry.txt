@@ -8,7 +8,7 @@ Requested allowance: {{requested_allowance}}
  
 This authorization does not have an expiration date.
 
-Approval Fee: {{approval_fee}}
+Approval fee: {{approval_fee}}
  
 Fee paid by: {{your_account}}
  

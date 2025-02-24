@@ -8,6 +8,6 @@ This is the withdrawal limit that will apply upon approval. Until then, any exis
 
 This authorization does not have an expiration date.
  
-Approval Fee: {{approval_fee}}
+Approval fee: {{approval_fee}}
  
 Transaction memo: {{transaction_memo}}

@@ -2,16 +2,16 @@
 
 You are authorizing another address to withdraw funds from your account.
 
-**Authorized address**:  
+**Authorized address:**  
 `{{authorized_address}}`
 
-**Your account**:  
+**Your account:**  
 `{{your_account}}`
 
 **Requested allowance:** `{{requested_allowance}}`  
 This is the withdrawal limit that will apply upon approval.
 
-**Expiration date**:    
+**Expiration date:**    
 {{expiration_date}}
 
 **Approval fee:** `{{approval_fee}}`  

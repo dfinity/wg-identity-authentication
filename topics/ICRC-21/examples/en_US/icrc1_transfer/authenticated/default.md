@@ -2,10 +2,10 @@
 
 You are approving a transfer of funds from your account.
 
-**Recipient address**:  
+**Recipient address:**  
 `{{recipient_address}}`
 
-**Your account**:  
+**Your account:**  
 `{{your_account}}`
 
 **Transfer amount:** `{{transfer_amount}}`  

@@ -10,7 +10,7 @@ Current allowance: {{current_allowance}}
  
 Expiration date: {{expiration_date}}
 
-Approval Fee: {{approval_fee}}
+Approval fee: {{approval_fee}}
  
 Fee paid by: {{your_account}}
  

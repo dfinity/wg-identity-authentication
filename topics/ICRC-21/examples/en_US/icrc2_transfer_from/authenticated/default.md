@@ -2,10 +2,10 @@
 
 You are approving a transfer of funds from a withdrawal account.
 
-**Recipient address**:  
+**Recipient address:**  
 `{{recipient_address}}`
 
-**Withdrawal account**:  
+**Withdrawal account:**  
 `{{withdrawal_account}}`
 
 **Transfer amount:** `{{transfer_amount}}`  

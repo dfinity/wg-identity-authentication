@@ -2,13 +2,13 @@
 
 You are authorizing another address to withdraw funds from your account.
 
-**Authorized address**:  
+**Authorized address:**  
 `sotir-herp2-u4mlq-ucvha-n5eli-ybrnf-p7uwm-dllud-k653x-jau4e-wae`
 
 **Requested allowance:** `{{requested_allowance}}`  
 This is the withdrawal limit that will apply upon approval. Until then, any existing allowance remains in effect.
 
-**Expiration date**:    
+**Expiration date:**    
 Friday, February 21, 2025, at 09:56:45 UTC
 
 **Approval fee:** `{{approval_fee}}`  
