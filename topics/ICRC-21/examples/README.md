@@ -1,6 +1,6 @@
-# ICRC-21 Consent Message Examples
+# ICRC-21: Canister Call Consent Message Examples
 
-This folder contains various consent messages examples for ICRC standards. These examples can be used as reference in
+This folder contains various consent message examples for ICRC standards. These examples can be used as reference in
 a ICRC-21 implementation. This document and the examples will be updated over time with best practices.
 
 ## Authenticated vs Anonymous
