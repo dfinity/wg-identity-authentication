@@ -85,17 +85,20 @@ Requested allowance: {{requested_allowance}}
 This is the withdrawal limit that will apply upon approval. Until then, any existing allowance remains in effect.
 
 Expiration date: {{expiration_date}}
- 
+  
 Approval fee: {{approval_fee}}
  
 Transaction memo: {{transaction_memo}}
 ```
 
-A single space ` ` on an empty line indicates that blocks should be put on the same page (if possible).
+A single space ` ` (or more) on an empty line indicates that blocks should be put on the same page (if possible).
 
 An explanation like `This is...in effect.` for the `Requested allowance` is an example of a block that should be put
-together on the same page by adding a single space ` ` on the empty line above it. Overall it's recommended to avoid
+together on the same page by adding a spaces on the empty line above it. Overall it's recommended to avoid
 explanations where possible to keep the number of blocks, and thus lines to a minimum.
+
+More than a single space can be used to indicate priority, the more spaces, the less likely the blocks will end up on
+different pages.
 
 #### Characters per line
 
@@ -106,12 +109,16 @@ explanations where possible to keep the number of blocks, and thus lines to a mi
 
 #### Pages from lines
 
-Split blocks first on empty lines (without a single space) to create pages
+Split blocks first on empty lines without a single space to create pages
 
 If any of the resulting pages still has too many lines:
 
-1. Split these pages on remaining empty lines (with a single space).
-2. If that still results in too many lines, split after `lines_per_page`.
+1. Split these pages on empty lines with a single space (if found).
+2. Still too many lines? Split on remaining empty lines with two spaces (if found).
+3. Still too many lines? Split on remaining empty lines with three spaces (if found).
+4. Still too many lines? Split on remaining empty lines with four spaces (if found).
+5. ...
+6. Still too many lines? Split after `lines_per_page`.
 
 #### Example JS implementation
 
@@ -127,6 +134,30 @@ const wrapAddress = (address, charactersPerLine) => (address + '-')
     .match(new RegExp('.{1,' + (charactersPerLine - 1) + '}(?=-)', 'g'))
     .map((line) => line.startsWith('-') ? line.slice(1) : line)
     .join('-\n');
+
+// Utility method to split blocks on empty lines with the fewest spaces till they fit into a page
+const splitOnSpaces = (block) => {
+    // If block is within page length, trim lines and return
+    if (block.split('\n').length <= linesPerPage) {
+        return block.split('\n').map((line) => line.trim()).join('\n');
+    }
+    // Find empty line with the fewest amount of spaces
+    const spaces = block.match(/\n +?\n/g).map((line) => line.length - 2).sort()[0] ?? 0;
+    // Force split if no empty lines are found
+    if (spaces === 0) {
+        return forceSplit(block);
+    }
+    // Split on empty lines with spaces and continue with resulting blocks
+    return block.split(`\n${' '.repeat(spaces)}\n`).flatMap(splitOnSpaces);
+}
+
+// Utility method to force split blocks that still have too many lines
+const forceSplit = (block) => {
+    const lines = block.split('\n');
+    return Array
+        .from({length: Math.ceil(lines / linesPerPage)})
+        .map((_, index) => lines.slice(index * linesPerPage, (index + 1) * linesPerPage));
+}
 
 // Use a line display template from the examples
 let text = fs.readFileSync('en_US/icrc2_approve/anonymous/default.txt', 'utf-8');
@@ -151,28 +182,21 @@ text = text.replace(/(.*){{(.*?)}}/g, (_, prefix, arg) =>
 text = wrapAnsi(text, charactersPerLine, {
     hard: true, // `charactersPerLine` is a hard limit, we can't go past it
     wordWrap: true, // Attempt to split words at spaces
-    trim: false // Don't remove spaces from blank lines
+    trim: false // Don't trim here, this would remove spaces from blank lines
 });
 
 const pages = text
-    // Split block based on empty lines
+    // Split into blocks based on empty lines
     .split('\n\n')
-    // If a block has more lines than allowed, split it 
-    // into multiple based on empty lines with a space.
-    .flatMap(block => block.split('\n').length > linesPerPage ? block.split('\n \n') : block)
-    // If a block still has more lines than allowed, 
-    // split it into multiple based on lines per page.
-    .flatMap(block => {
-        const lines = block.split('\n');
-        return Array
-            .from({length: Math.ceil(lines / linesPerPage)})
-            .map((_, index) => lines.slice(index * linesPerPage, (index + 1) * linesPerPage));
-    })
-    // Create pages with lines from blocks
+    // If a block has more lines than allowed, split it into 
+    // multiple based on empty lines with one or more spaces.
+    .flatMap(splitOnSpaces)
+    // Create pages with lines from blocks,
+    // combine onto a single page if it fits.
     .reduce((pages, block) => {
         const lastPage = pages[pages.length - 1];
         const lines = block.split('\n');
-        if (lastPage.length + lines.length + 1 > linesPerPage) {
+        if (lastPage.length > 0 && lastPage.length + lines.length + 1 > linesPerPage) {
             pages.push(lines);
         } else {
             if (lastPage.length > 0) {
@@ -190,7 +214,7 @@ const pages = text
         'You are authorizing another',
         'address to withdraw funds from',
         'your account.',
-        ' ',
+        '',
         'Authorized address:',
         'k2t6j-2nvnp-4zjm3-25dtz-6xhaa-',
         'c7boj-5gayf-oj3xs-i43lp-teztq-',
@@ -198,7 +222,7 @@ const pages = text
     ],
     [
         'Requested allowance: 324.76 ICP',
-        ' ',
+        '',
         'This is the withdrawal limit',
         'that will apply upon approval.',
         'Until then, any existing',
@@ -206,9 +230,9 @@ const pages = text
     ], [
         'Expiration date:',
         'Fri, Feb 21, 2025, 09:56 UTC',
-        ' ',
+        '',
         'Approval fee: 0.0001 ICP',
-        ' ',
+        '',
         'Transaction memo:',
         '48656c6c6f20576f726c64',
     ]
