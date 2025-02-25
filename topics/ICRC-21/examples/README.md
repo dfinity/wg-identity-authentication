@@ -149,7 +149,7 @@ const splitOnSpaces = (block) => {
     }
     // Split on empty lines with spaces and continue with resulting blocks
     return block.split(`\n${' '.repeat(spaces)}\n`).flatMap(splitOnSpaces);
-}
+};
 
 // Utility method to force split blocks that still have too many lines
 const forceSplit = (block) => {
@@ -157,7 +157,7 @@ const forceSplit = (block) => {
     return Array
         .from({length: Math.ceil(lines / linesPerPage)})
         .map((_, index) => lines.slice(index * linesPerPage, (index + 1) * linesPerPage));
-}
+};
 
 // Use a line display template from the examples
 let text = fs.readFileSync('en_US/icrc2_approve/anonymous/default.txt', 'utf-8');
