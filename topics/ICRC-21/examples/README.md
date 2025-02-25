@@ -109,7 +109,7 @@ different pages.
 
 #### Pages from lines
 
-Split blocks first on empty lines without a single space to create pages
+Split blocks first on empty lines without spaces to create pages
 
 If any of the resulting pages still has too many lines:
 
