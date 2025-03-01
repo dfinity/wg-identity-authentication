@@ -1,0 +1,34 @@
+{
+  "pages": [
+    {
+      "title": "Authorize withdrawals",
+      "content": "You are authorizing another address to withdraw funds from your account."
+    },
+    {
+      "title": "Authorized address",
+      "content": "{{authorized_address}}"
+    },
+    {
+      "title": "Requested allowance",
+      "content": "{{requested_allowance}}"
+    },
+    {
+      "content": "This is the withdrawal limit that will apply upon approval. Until then, any existing allowance remains in effect."
+    },
+    {
+      "title": "Expiration date",
+      "content": "{{expiration_date}}"
+    },
+    {
+      "title": "Approval fee",
+      "content": "{{approval_fee}}"
+    },
+    {
+      "content": "Charged for processing the authorization."
+    },
+    {
+      "title": "Transaction memo",
+      "content": "{{transaction_memo}}"
+    }
+  ]
+}

@@ -9,9 +9,6 @@ In most cases the ICRC-21 consent message request is made with the same caller t
 approval. But in some cases, particularly the cold signer flow, the ICRC-21 consent message request will be made
 anonymously since the cold signer is not able to call the canister itself directly.
 
-It's recommended to show the authenticated ICRC-21 consent message to the user before letting the user interact with the
-cold signer, where it will once more see a consent message, this time likely shorter due to it being anonymous.
-
 ## Generic Display
 
 This device spec renders Markdown messages, the examples available in this repo follow the below guidelines.

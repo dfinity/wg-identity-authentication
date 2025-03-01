@@ -23,15 +23,10 @@ type icrc21_consent_message_spec = record {
         // A generic display able to handle large documents and do line wrapping and pagination / scrolling.
         // Text must be Markdown formatted, no external resources (e.g. images) are allowed.
         GenericDisplay;
-        // Simple display able to handle lines of text with a maximum number of characters per line.
-        // Multiple pages can be used if the text does no fit on a single page.
+        // A simple display able to handle multiple pages with a title and content.
+        // It's able to do line wrapping and splits pages into multiple if they're too long.
         // Text must be plain text without any embedded formatting elements.
-        LineDisplay: record {
-            // Maximum number of characters that can be displayed per line.
-            characters_per_line: nat16;
-            // Maximum number of lines that can be displayed at once on a single page.
-            lines_per_page: nat16;
-        };
+        PageDisplay;
     };
 };
 
@@ -48,16 +43,15 @@ type icrc21_consent_message = variant {
     // Message for a generic display able to handle large documents and do proper line wrapping and pagination / scrolling.
     // Uses Markdown formatting, no external resources (e.g. images) are allowed.
     GenericDisplayMessage: text;
-    // Message for a simple display able to handle pages with multiple lines of text with a fixed maximum number of
-    // characters per line.
-    // Multiple pages can be used if the text does no fit on a single page.
+    // Message for a simple display able to handle multiple pages with a title and content.
+    // It's able to do line wrapping and splits pages into multiple if they're too long.
     // Uses plain text, without any embedded formatting elements.
-    LineDisplayMessage: record {
+    PageDisplayMessage: record {
         pages: vec record {
-            // Lines of text to be displayed on a single page.
-            // Must not have more entries (lines) than specified in the icrc21_consent_message_spec.
-            // Lines must not exceed the number of characters per line specified in the icrc21_consent_message_spec.
-            lines: vec text;
+            // Optional title shown above content e.g. Expiration date
+            title: opt text;
+            // Content shown below title e.g. Friday, February 21, 2025, at 09:56:45 UTC
+            content: text;
         };
     };
 };
