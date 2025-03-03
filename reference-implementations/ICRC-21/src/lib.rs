@@ -56,9 +56,8 @@ fn icrc21_canister_call_consent_message(
         Some(FieldsDisplay) => Ok(Icrc21ConsentInfo {
             metadata,
             consent_message: FieldsDisplayMessage {
-                title: "Review transaction to greet".into(),
-                fields: vec![("Greet".into(), name.clone())],
-                action: "Sign transaction to greet".into(),
+                intent: "Greet user".into(),
+                fields: vec![("User".into(), name.clone())],
             },
         }),
         Some(GenericDisplay) | None => Ok(Icrc21ConsentInfo {
@@ -175,9 +174,8 @@ mod test {
                     utc_offset_minutes: None,
                 },
                 consent_message: FieldsDisplayMessage {
-                    title: "Review transaction to greet".into(),
-                    fields: vec![("Greet".to_string(), "Alice".to_string())],
-                    action: "Sign transaction to greet".into()
+                    intent: "Greet user".into(),
+                    fields: vec![("User".to_string(), "Alice".to_string())],
                 },
             }
         );

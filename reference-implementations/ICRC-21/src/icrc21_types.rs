@@ -29,9 +29,8 @@ pub struct Icrc21ConsentMessageRequest {
 pub enum Icrc21ConsentMessage {
     GenericDisplayMessage(String),
     FieldsDisplayMessage {
-        title: String,
+        intent: String,
         fields: Vec<(String, String)>,
-        action: String,
     },
 }
 
