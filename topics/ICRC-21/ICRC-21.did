@@ -47,12 +47,10 @@ type icrc21_consent_message = variant {
     // It's able to do line wrapping and splits fields into multiple pages if they're too long.
     // Uses plain text, without any embedded formatting elements.
     FieldsDisplayMessage: record {
-        // Context and type of transaction, accurate and concise e.g. Review transaction to send ICP
+        // Context and type of transaction, accurate and concise e.g. Send ICP
         title: text;
         // Transaction fields for review e.g. Amount 234.73 ICP
         fields: vec record { text; text };
-        // The action taken by the user after review e.g. Sign transaction to send ICP
-        action: text;
     };
 };
 
