@@ -1,10 +1,11 @@
 use crate::icrc21_types::{
     Icrc21ConsentInfo, Icrc21ConsentMessage, Icrc21ConsentMessageMetadata,
     Icrc21ConsentMessageRequest, Icrc21DeviceSpec, Icrc21Error, Icrc21ErrorInfo,
-    Icrc21LineDisplayPage, Icrc21SupportedStandard,
+    Icrc21SupportedStandard,
 };
 use itertools::Itertools;
-use Icrc21DeviceSpec::GenericDisplay;
+use Icrc21ConsentMessage::{FieldsDisplayMessage, GenericDisplayMessage};
+use Icrc21DeviceSpec::{FieldsDisplay, GenericDisplay};
 use Icrc21Error::UnsupportedCanisterCall;
 
 mod icrc21_types;
@@ -52,81 +53,23 @@ fn icrc21_canister_call_consent_message(
     };
 
     match consent_msg_request.user_preferences.device_spec {
-        Some(Icrc21DeviceSpec::LineDisplay {
-            characters_per_line,
-            lines_per_page,
-        }) => Ok(Icrc21ConsentInfo {
+        Some(FieldsDisplay) => Ok(Icrc21ConsentInfo {
             metadata,
-            consent_message: Icrc21ConsentMessage::LineDisplayMessage {
-                pages: consent_msg_text_pages(
-                    &greet(name.clone()),
-                    characters_per_line,
-                    lines_per_page,
-                ),
+            consent_message: FieldsDisplayMessage {
+                title: "Review transaction to greet".into(),
+                fields: vec![("Greet".into(), name.clone())],
+                action: "Sign transaction to greet".into(),
             },
         }),
         Some(GenericDisplay) | None => Ok(Icrc21ConsentInfo {
             metadata,
-            consent_message: Icrc21ConsentMessage::GenericDisplayMessage(consent_msg_text_md(
-                &greet(name.clone()),
-            )),
+            consent_message: GenericDisplayMessage(consent_msg_text_md(&greet(name.clone()))),
         }),
     }
 }
 
 fn consent_msg_text_md(greeting: &str) -> String {
     format!("Produce the following greeting text:\n> {}", greeting)
-}
-
-fn consent_msg_text_pages(
-    greeting: &str,
-    characters_per_line: u16,
-    lines_per_page: u16,
-) -> Vec<Icrc21LineDisplayPage> {
-    let full_text = format!("Produce the following greeting text:\n \"{}\"", greeting);
-
-    // Split text into word chunks that fit on a line (breaking long words)
-    let words = full_text
-        .split_whitespace()
-        .flat_map(|word| {
-            word.chars()
-                .collect::<Vec<_>>()
-                .into_iter()
-                .chunks(characters_per_line as usize)
-                .into_iter()
-                .map(|chunk| chunk.collect::<String>())
-                .collect::<Vec<String>>()
-        })
-        .collect::<Vec<String>>();
-
-    // Add words to lines until the line is full
-    let mut lines = vec![];
-    let mut current_line = "".to_string();
-    for word in words {
-        if current_line.is_empty() {
-            // all words are guaranteed to fit on a line
-            current_line = word.to_string();
-            continue;
-        }
-        if current_line.len() + word.len() < characters_per_line as usize {
-            current_line.push(' ');
-            current_line.push_str(word.as_str());
-        } else {
-            lines.push(current_line);
-            current_line = word.to_string();
-        }
-    }
-    lines.push(current_line);
-
-    // Group lines into pages
-    lines
-        .into_iter()
-        .chunks(lines_per_page as usize)
-        .into_iter()
-        .map(|page| Icrc21LineDisplayPage {
-            lines: page.collect(),
-        })
-        .collect()
 }
 
 // Order dependent: do not move above any function annotated with #[candid_method]!
@@ -136,9 +79,9 @@ candid::export_service!();
 mod test {
     use super::*;
     use crate::__export_service;
-    use crate::icrc21_types::Icrc21ConsentMessage::{GenericDisplayMessage, LineDisplayMessage};
+    use crate::icrc21_types::Icrc21ConsentMessage::{FieldsDisplayMessage, GenericDisplayMessage};
     use crate::icrc21_types::Icrc21ConsentMessageSpec;
-    use crate::icrc21_types::Icrc21DeviceSpec::LineDisplay;
+    use crate::icrc21_types::Icrc21DeviceSpec::FieldsDisplay;
     use candid_parser::utils::{service_equal, CandidSource};
     use serde_bytes::ByteBuf;
     use std::path::Path;
@@ -212,7 +155,7 @@ mod test {
     }
 
     #[test]
-    fn should_return_line_display_message() -> Result<(), Icrc21Error> {
+    fn should_return_fields_display_message() -> Result<(), Icrc21Error> {
         let result = icrc21_canister_call_consent_message(Icrc21ConsentMessageRequest {
             arg: ByteBuf::from(candid::encode_one("Alice").unwrap()),
             method: "greet".to_string(),
@@ -221,10 +164,7 @@ mod test {
                     language: "en".to_string(),
                     utc_offset_minutes: None,
                 },
-                device_spec: Some(LineDisplay {
-                    characters_per_line: 20,
-                    lines_per_page: 3,
-                }),
+                device_spec: Some(FieldsDisplay),
             },
         })?;
         assert_eq!(
@@ -234,18 +174,10 @@ mod test {
                     language: "en".to_string(),
                     utc_offset_minutes: None,
                 },
-                consent_message: LineDisplayMessage {
-                    pages: vec![
-                        Icrc21LineDisplayPage {
-                            lines: ["Produce the", "following greeting", "text: \"Hello,"]
-                                .iter()
-                                .map(|s| s.to_string())
-                                .collect()
-                        },
-                        Icrc21LineDisplayPage {
-                            lines: vec!["Alice!\"".to_string()]
-                        }
-                    ]
+                consent_message: FieldsDisplayMessage {
+                    title: "Review transaction to greet".into(),
+                    fields: vec![("Greet", "Alice").into()],
+                    action: "Sign transaction to greet".into()
                 },
             }
         );
