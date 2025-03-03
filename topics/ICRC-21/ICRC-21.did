@@ -48,7 +48,7 @@ type icrc21_consent_message = variant {
     // Uses plain text, without any embedded formatting elements.
     FieldsDisplayMessage: record {
         // Context and type of transaction, accurate and concise e.g. Send ICP
-        title: text;
+        action: text;
         // Transaction fields for review e.g. Amount 234.73 ICP
         fields: vec record { text; text };
     };
