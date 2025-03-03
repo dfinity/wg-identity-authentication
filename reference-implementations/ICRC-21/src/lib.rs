@@ -176,7 +176,7 @@ mod test {
                 },
                 consent_message: FieldsDisplayMessage {
                     title: "Review transaction to greet".into(),
-                    fields: vec![("Greet", "Alice").into()],
+                    fields: vec![("Greet".to_string(), "Alice".to_string())],
                     action: "Sign transaction to greet".into()
                 },
             }
