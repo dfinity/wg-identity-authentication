@@ -449,7 +449,7 @@ In addition to the errors defined in [ICRC-25](./icrc_25_signer_interaction_stan
 | 1001 | Request not processed | The request was not executed. ICRC-112 execution stopped because it encountered an error with one of the preceding requests.  | (optional) Error details: <ul> <li>`message` (`text`, optional): message</li> </ul> |
 | 1002 | Validation required                        | The request was executed, but could not be validated. Signer does not support the standard used by the request, but validation argument was not provided.                  | (optional) Error details: <ul> <li>`message` (`text`, optional): message</li> </ul> |
 | 1003 | Validation failed                          | The request was executed, but validation failed.                          | (optional) Error details: <ul> <li>`message` (`text`, optional): message</li> </ul> |
-| 1004 | Too many requests                          | The request was not executed. The request array reached the limit, defined by the signer                                       | (optional) Error details: <ul> <li>`message` (`text`, optional): message</li> </ul> |
+| 1004 | Too many requests                          | The request was not executed. The request array reached the limit defined by the signer.                                       | (optional) Error details: <ul> <li>`message` (`text`, optional): message</li> </ul> |
 
 [DRAFT]: https://img.shields.io/badge/STATUS-DRAFT-f25a24.svg
 [EXTENDS 25]: https://img.shields.io/badge/EXTENDS-ICRC--25-ed1e7a.svg
