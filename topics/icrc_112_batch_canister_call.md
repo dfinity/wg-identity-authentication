@@ -24,7 +24,7 @@
 
 Key differentiators of this method is that
 - it requires only one approval to execute all the requests in the batch
-- relying party can specify whether requests in the batch should be executed in parallel or in specfiiced sequences
+- relying party can specify whether requests in the batch should be executed in parallel or in certain sequences
 
 ## Request Params
 
@@ -50,7 +50,7 @@ This standards builds on top of the canister call processing defined in [ICRC-49
 
 **Parallel & sequence logic**
 
-Relying party can specify whether requests in ICRC-112 should be executed in parallel or in specfiiced sequences. Below is how such logic is handled.
+Relying party can specify whether requests in ICRC-112 should be executed in parallel or in specified sequences. Below is how such logic is handled.
 
 ICRC-112 is constructed as array & sub-array of requests. Please see example below.
 - The requests in the sub-array are executed in parallel. 
