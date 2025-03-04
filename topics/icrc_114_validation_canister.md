@@ -19,7 +19,7 @@ This standard is used for validating the response of batch transactions to ensur
 
 ## Methods
 
-### icrcy_validate
+### icrc114_validate
 
 This method received the response from previous canister call send it as blob.
 
