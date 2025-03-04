@@ -27,12 +27,7 @@ For example, this method is used by the signer when it executes a ICRC-112 batch
 
 First the signer needs to have received a response for canister call it is trying to validate. The signer will then make an ICRC-114 call, and includes the response as a blob.
 
-For exmaple, when the signer receives the response below, it will add the contentMap as a blob to the ICRC-114 call. ICRC-114 will return 
-- true if the validation was successful (request was successfully completed)
-- false if the validation failed (request was not successfully completed)
-
-With Rust or Motoko, instead of boolean value, it can be `Ok` or `Err`.
-
+For exmaple, when the signer receives the response below, it will add the contentMap as a blob to the ICRC-114 call. 
 ```
 // response of the canister call that signer is trying to validate
 {
@@ -40,6 +35,13 @@ With Rust or Motoko, instead of boolean value, it can be `Ok` or `Err`.
   "certificate": "..."
 }
 ```
+
+ICRC-114 will return 
+- true if the validation was successful (request was successfully completed)
+- false if the validation failed (request was not successfully completed)
+
+With Rust or Motoko, instead of boolean value, it can be `Ok` or `Err`.
+
 
 
 **Candid**
