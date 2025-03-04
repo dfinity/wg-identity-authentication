@@ -67,8 +67,9 @@ There is only one response from ICRC-112, which includes the results from indivi
 
 **Validation**
 
-If sequence logic is involved, the signer needs a way to validate whether a preceding request was successful before executing the next request. Because standards and canister calls vary, receiving a response is not sufficient to to validate that the request was successfully complete. Hence, ICRC-112 handles validation in the following way:
+If sequence logic is involved, the signer needs a way to validate whether a preceding request was successful before executing the next request. Because standards and canister calls vary, receiving a response is not sufficient to to validate that the request was successfully complete. 
 
+ICRC-112 defines validation success of a request in the following way:
 - If there is no sequence logic, request call should have received response 
 - If there is sequence logic, request call should have received response AND
   - If the signer supoprts the standard used by request, decoded certificate should have block id
