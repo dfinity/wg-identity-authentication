@@ -10,7 +10,7 @@
   - [Summary](#summary)
   - [Methods](#methods)
     - [icrcy_validate](#icrcy_validate)
-    - [icrc10_supported_standards](#icrc10_supported_standards)
+    - [icrc25_supported_standards](#icrc25_supported_standards)
   - [Use-Cases](#use-cases)
 
 ## Summary
