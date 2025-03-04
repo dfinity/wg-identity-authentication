@@ -25,7 +25,7 @@ For example, this method is used by the signer when it executes a ICRC-112 batch
 
 ### icrc114_validate
 
-First the signer needs to have received a response for canister call it is trying to validate. The signer will then make an ICRC-114 call, and include the response as a blob.
+First the signer needs to have received a response for canister call it is trying to validate. The signer will then make an ICRC-114 call, and includes the response as a blob.
 
 Eg: Canister call response
 
