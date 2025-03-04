@@ -43,9 +43,16 @@ This method can be used by the relying party to request a batch call to 3rd part
 This standards builds on top of the canister call processing defined in [ICRC-49](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_49_call_canister.md), go [here](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_49_call_canister.md#message-processing) for details regarding canister call execution, processing and verification on the relying party side. All requirements, recommendations, guidelines, warnings and other details in the ICRC-49 standard should be strictly followed.
 
 **Before execution**
-1. Relying party call `icrc25_request_permissions` to get list standard supported. If if in the response list there is standard relate to token like ICRC-1, 2, 7, etc.... it mean wallet can parse response
-2. If in the request have an ICRC method that is not supported by the wallet, the wallet return error code `2000: Not supported` 
-3. If the ICRC-112 requests included sequence request but there is no validateCanister provide or all method is not supported by wallet. Wallet should return error code `1002 : Validation required`
+It is best practice for a relying party to first call ICRC-25 to check which standards the signer supports. With ICRC-112, ICRC-25 can be useful in the following regard.
+
+ICRC-112 can execute the transactions in the batch in parallel and in specfiiced sequences. If sequence logic included in the ICRC-112 request, the signer needs a way to validate whether a transaction was successful before executing the next transaction. Hence, when sequence logic is involved, it is recommended
+- Relying party call `icrc25_request_permissions` to get list standard supported. Signers may recognize known standards such as ICRC-1, 2, 7, etc, but this is signer-specfic and not guaranteed. It is unlikely signers will recognize less known standards or custom canister calls.
+- Based on the standards returned on ICRC-25, relying party only includes transactions that use standards that the signer supports to its ICRC-112 request. The signer validates success by simiply confirming that decoded certificate includes a block id. Signer doesn't interpret any other contexts of the response.
+- If relying party needs to add to ICRC-112 transactions using standards that signer does not support, relying party should provide a fallback transaction status check, extra validateCanister call, that signer can use to validate transactions using standards that signer does not recognize.
+
+Following are some of the errors, related to validation and sequences, that relying party can encounter
+- `2000: Not supported` - if ICRC-112 request involves sequence logic, but there is a request that uses ICRC method that is not supported by the signer
+- `1002: Validation required` - if ICRC-112 request involves sequence logic, but there is no validateCanister provide or all method is not supported by signer
 
 **Execution**
 
