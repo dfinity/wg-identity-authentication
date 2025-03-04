@@ -42,9 +42,77 @@ This method can be used by the relying party to request a batch call to 3rd part
 
 This standards builds on top of the canister call processing defined in [ICRC-49](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_49_call_canister.md), go [here](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_49_call_canister.md#message-processing) for details regarding canister call execution, processing and verification on the relying party side. All requirements, recommendations, guidelines, warnings and other details in the ICRC-49 standard should be strictly followed.
 
-**Before execution**
+ 
 
-It is best practice for a relying party to first call ICRC-25 to check which standards the signer supports. With ICRC-112, ICRC-25 can be used in the following way.
+**Parallel & sequence logic**
+
+Relying party can specify whether requests in ICRC-112 should be executed in parallel or in specfiiced sequences. Below is how such logic is handled.
+
+ICRC-112 is constructed as array & sub-array of requests. Please see example below.
+- The requests in the sub-array are executed in parallel. 
+- The requests in the next array (if any) are executed only after all transactions in previous array are validated (how validation is done is described in next section)
+
+There is only one response from ICRC-112, which includes the results from individual request calls. 
+
+```js
+// Example execution order
+{
+  "requests": [
+    [request1, request2, request3],   // These execute in parallel
+    [request3, request4],             // Executes only after request1-3 are validated
+    [request5]                        // Executes only after request3-4 are validated (request 5 itself is not validated)
+  ]
+}
+```
+
+**Validation**
+
+If sequence logic is involved, the signer needs a way to validate whether a preceding request was successful before executing the next request. Because standards and canister calls vary, receiving a response is not sufficient to to validate that the request was successfully complete. Hence, ICRC-112 handles validation in the following way:
+
+
+
+| Sequence | No sequence    | Has sequence             | Has sequence                 |  
+| Tx       | Doesn't matter | Known                    | UnKnown                      |
+| -------- | -------------- | ------------------------ | ---------------------------- |
+| Tx known | Doesn't matter | Standard known to signer | Standard not known to signer |
+
+
+| Sequence | No sequence logic                                    | Has sequence                                                                                          | Data                                                                                |
+
+
+| Sequence | No sequence logic | Has sequence | Has sequence |
+| Tx known | Doesn't matter | Standard known to signer | Standard not known to signer |
+| ---- | ------------------------------------------ | ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
+| Response | received response | received response | received response |
+| Additional validation | none                        | decoded certificate includes block id                  | canisterValidation returned success |
+
+
+
+
+
+
+
+
+Validation is required if there are multiple sub-arrays (sequence logic), but must be skipped for the last one.
+   - After each request in a sub-array completes
+     - If it is not an ICRC standard, its result is sent to the [ICRC-114](https://github.com/dfinity/wg-identity-authentication/pull/225) validation canister.
+     - If it is in the [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md) supported standard, wallet have ability to parse it. 
+   - If validation fails for any request, execution stops with error code `1003` for `Validation failed`
+   - If validation passes, execution continues with the next sub-array.
+
+
+
+Relying party can specify whether requests in ICRC-112 should be executed in parallel or in specfiiced sequences. If sequence is specified, the signer needs a way to validate whether a preceding request was successful before executing the next request. Because standards and canister calls vary, receiving a response is not sufficient to to validate that the request was successfully complete. Hence, ICRC-112 handles validation in the following way:
+
+A request is deemed successful, if the signer received a response for the request AND 
+- no sequencing logic is used, there are no other conditions (since there is no validation involved)
+- sequencing logic is used and request uses a standard that signer recognizes, certificate includes a block id 
+- sequencing logic is used and request uses a standard that signer does not recognize, canisterValidation is called
+
+
+**ICRC-25**
+Prior to calling ICRC-112, it may be helpful to make an ICRC-25 request. By checking which standards that the signer supports, relying party can construct ICRC-112 request accordingly. 
+
 
 ICRC-112 can execute the transactions in the batch in parallel and in specfiiced sequences. If sequence logic included in the ICRC-112 request, the signer needs a way to validate whether a transaction was successful before executing the next transaction. Because standards and canister calls differ, receiving a response is not sufficient to to confirm that the request was successfully complete. Hence, when sequence logic is involved, it is recommended that:
 - Relying party call `icrc25_request_permissions` to get the list of standard supported by the signer. Signers may recognize known standards such as ICRC-1, 2, 7, etc, but this is signer-specfic and not guaranteed. It is unlikely signers will recognize less known standards or custom canister calls.
@@ -53,7 +121,10 @@ ICRC-112 can execute the transactions in the batch in parallel and in specfiiced
 
 Following are some of the errors, related to validation and sequences, that relying party can encounter
 - `2000: Not supported` - if ICRC-112 request involves sequence logic, but there is a request that uses ICRC method that is not supported by the signer
+- '1001: Batch request failure' - Not processed due to batch request failure
 - `1002: Validation required` - if ICRC-112 request involves sequence logic, but there is no validateCanister provide or all method is not supported by signer
+
+
 
 **Execution**
 
