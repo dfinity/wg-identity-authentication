@@ -25,7 +25,7 @@ For example, this method is used by the signer when it executes a ICRC-112 batch
 
 ### icrc114_validate
 
-This method received the response from previous canister call send it as blob.
+The response from the canister call that the signer is trying to validate is sent in ICRC-114 as a blob.
 
 Eg: Canister call response
 
