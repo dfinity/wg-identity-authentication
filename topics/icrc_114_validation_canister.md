@@ -34,7 +34,7 @@ For exmaple, when the signer receives the response below, it will add the conten
 With Rust or Motoko, instead of boolean value, it can be `Ok` or `Err`.
 
 ```
-// signer received payload
+// response of the canister call that signer is trying to validate
 {
   "contentMap": "2dn3p2NhcmdYTkRscmVxdWVzdF90eXBlZGNhbGxmc2VuZGVyWB1q63Snu+4C5/fpWFu4nq1IpZxCYDEYA8XSPqPfAg==",
   "certificate": "..."
