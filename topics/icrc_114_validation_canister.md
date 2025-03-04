@@ -37,7 +37,11 @@ Eg: Canister call response
 }
 ```
 
-It can be `Ok` or `Err` in Rust and Motoko. In order to decide continue execute ICRC-112 or not. This validate canister have to parse the contentMap and return the boolean value of that request
+When the signer receives the response above, it will add the contentMap as a blob to the ICRC-114 call. ICRC-114 will return 
+- true if the validation was successful (request was successfully completed)
+- false if the validation failed (request was not successfully completed)
+
+With Rust or Motoko, instead of boolean value, it can be `Ok` or `Err`.
 
 **Candid**
 
