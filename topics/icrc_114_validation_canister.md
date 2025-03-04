@@ -36,7 +36,7 @@ For exmaple, when the signer receives the response below, it will add the conten
 }
 ```
 
-ICRC-114 will return 
+When the signer makes the ICRC-114 call, it will return 
 - true if the validation was successful (request was successfully completed)
 - false if the validation failed (request was not successfully completed)
 
