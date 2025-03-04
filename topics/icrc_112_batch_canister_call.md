@@ -74,8 +74,8 @@ ICRC-112 defines validation success of a request in the following way:
 - If there is sequence logic, request call should have received response AND
   - If the signer supoprts the standard used by request, decoded certificate should have block id
   - If the signer does not support the standard used by request, canisterValidation call should return success
- 
-If the validation fails in any of the steps above, ICRC-112 will return a `1003` for `Validation failed` error.
+
+If the validation failed in any of the steps above, ICRC-112 will return a `1003` for `Validation failed` error.
 
 When there is a sequence logic and the request uses a standard that the signer recognizes, the signer checks if decoded certificate includes a block id. Signer provides this check on the signer to enable speedy execution. But it keeps the validation process simple by just checking if there is a block id. It doesn't interpret any other contexts of the response. 
 
