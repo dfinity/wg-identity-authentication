@@ -1,6 +1,6 @@
-# ICRC-Y: Validate batch response
+# ICRC-114: Validate batch response
 
-![APPROVED]
+![APPROVED] [![EXTENDS 25]](./icrc_25_signer_interaction_standard.md)
 
 **Authors:** [Long Tran](https://github.com/baolongt)
 
@@ -45,19 +45,13 @@ type CanisterCall = record {
     arg: blob;
     res: blob;
 };
-icrcy_validate : (CanisterCall) -> bool
+icrc114_validate : (vec CanisterCall) -> bool
 ```
 
-### icrc10_supported_standards
+## icrc25_supported_standards
 
-An implementation of ICRC-Y MUST implement the method icrc10_supported_standards as put forth in
-[ICRC-10](https://github.com/dfinity/ICRC/ICRCs/ICRC-10).
-
-The result of the call MUST always have at least the following entries:
-
-```
-// TODO: Fill detail url
-```
+An ICRC-25 compliant signer must implement the [icrc25_supported_standards](icrc_25_signer_interaction_standard.md#icrc25_supported_standards) method which returns the list of supported standards. 
+Any signer implementing ICRC-114 must include a record with the name field equal to "ICRC-114" in that list.
 
 ## Use-Cases
 
