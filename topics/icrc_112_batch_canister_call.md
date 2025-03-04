@@ -82,6 +82,7 @@ When there is a sequence logic but the request uses a standard that the signer d
 
 
 **Using ICRC-25 wtih ICRC-112**
+
 Not all signer support the same standards. Hence, prior to calling ICRC-112, it may be helpful to make an [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md) request to check which standards the signer supports. 
 
 Best practice would be to construct ICRC-112 using only standards that the signer supports. This would be the fastest solution, since the signer would do any validation logic directly on the signer.
