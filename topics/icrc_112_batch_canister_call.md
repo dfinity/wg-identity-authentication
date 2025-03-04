@@ -44,7 +44,7 @@ This standards builds on top of the canister call processing defined in [ICRC-49
 
 **Before execution**
 1. Relying party call `icrc25_request_permissions` to get list standard supported. If if in the response list there is standard relate to token like ICRC-1, 2, 7, etc.... it mean wallet can parse response
-2. If in the request have a ICRC method that is not supported by the wallet, the wallet return error code `2000: Not supported` 
+2. If in the request have an ICRC method that is not supported by the wallet, the wallet return error code `2000: Not supported` 
 3. If the ICRC-112 requests included sequence request but there is no validateCanister provide or all method is not supported by wallet. Wallet should return error code `1002 : Validation required`
 
 **Execution**
@@ -118,17 +118,25 @@ sequenceDiagram
                         S ->> RP: Error response: Network error (4000) | Generic error
                     end
                 end
-                alt Validation available
-                    S ->> VC: Send list with all requests and their responses
+
+                %% validation only one in both validation
+                alt method supported by wallet (eg: ICRC1, ICRC2, ICRC7, etc...)
+                    S ->> S: Parse response
+                else method not supported by wallet 
+                    S ->> VC: Send list with all requests and their responses via ICRC-114
                     VC ->> S: Return passed or failed
-                    alt Failed
-                        S ->> U: Display failed message
-                        S ->> RP: Error response: Validation failed (1003)
-                    end
+                end 
+
+                
+                alt Failed
+                    S ->> U: Display failed message
+                    S ->> RP: Error response: Validation failed (1003)
                 end
             end
+
             S ->> U: Display success message
             S ->> RP: Return the batch call response
+       
         else Rejected
             U ->> S: Reject request
             S ->> U: Display reject message
