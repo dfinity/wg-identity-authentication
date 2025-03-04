@@ -30,6 +30,7 @@ First the signer needs to have received a response for canister call it is tryin
 For exmaple, when the signer receives the response below, it will add the contentMap as a blob to the ICRC-114 call. ICRC-114 will return 
 - true if the validation was successful (request was successfully completed)
 - false if the validation failed (request was not successfully completed)
+With Rust or Motoko, instead of boolean value, it can be `Ok` or `Err`.
 
 ```
 // signer received payload
@@ -39,7 +40,6 @@ For exmaple, when the signer receives the response below, it will add the conten
 }
 ```
 
-With Rust or Motoko, instead of boolean value, it can be `Ok` or `Err`.
 
 **Candid**
 
