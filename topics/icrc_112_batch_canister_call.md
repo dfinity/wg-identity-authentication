@@ -77,7 +77,7 @@ ICRC-112 defines validation success of a request in the following way:
  
 If the validation fails in any of the steps above, ICRC-112 will return a `1003` for `Validation failed` error.
 
-When there is a sequence logic and the request uses a standard that the signer recognizes, the signer checks if decoded certificate includes a block id. With most standards such as ICRC-1 ICRC-2 ICRC-7, it is common practice to return block id when the request was successfully completed. Hence the block id check is handled directly on the signer so that no time is lost making external calls for validation. However, the signer keeps the validation process simple by just checking if there is a block id. It doesn't interpret any other contexts of the response. 
+When there is a sequence logic and the request uses a standard that the signer recognizes, the signer checks if decoded certificate includes a block id. Signer provides this check on the signer to enable speedy execution. But it keeps the validation process simple by just checking if there is a block id. It doesn't interpret any other contexts of the response. 
 
 When there is a sequence logic but the request uses a standard that the signer does not recognize, the signer resorts to a fallback transaction status check (canisterValidation call) that the relying party provided with ICRC-112. If the relying party did not provide canisterValidation call info, signer will return a `1002: Validation required` error when it encounters requests that uses standards that it does not recognize. The canisterValidation is implmeented as a separate standard [ICRC-114](https://github.com/dfinity/wg-identity-authentication/pull/225).
 
