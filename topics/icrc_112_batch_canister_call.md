@@ -43,6 +43,7 @@ This method can be used by the relying party to request a batch call to 3rd part
 This standards builds on top of the canister call processing defined in [ICRC-49](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_49_call_canister.md), go [here](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_49_call_canister.md#message-processing) for details regarding canister call execution, processing and verification on the relying party side. All requirements, recommendations, guidelines, warnings and other details in the ICRC-49 standard should be strictly followed.
 
 **Before execution**
+
 It is best practice for a relying party to first call ICRC-25 to check which standards the signer supports. With ICRC-112, ICRC-25 can be useful in the following regard.
 
 ICRC-112 can execute the transactions in the batch in parallel and in specfiiced sequences. If sequence logic included in the ICRC-112 request, the signer needs a way to validate whether a transaction was successful before executing the next transaction. Hence, when sequence logic is involved, it is recommended
