@@ -444,7 +444,7 @@ In addition to the errors defined in [ICRC-25](./icrc_25_signer_interaction_stan
 | ---- | ------------------------------------------ | ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
 | 1001 | Not processed due to batch request failure | The request was not executed. ICRC-112 execution stopped because it encountered an error with one of the preceding requests.  | (optional) Error details: <ul> <li>`message` (`text`, optional): message</li> </ul> |
 | 1002 | Validation required                        | The request was could not be validated. Signer does not support the standard used by the request, but validation argument was not provided.                  | (optional) Error details: <ul> <li>`message` (`text`, optional): message</li> </ul> |
-| 1003 | Validation failed                          | The request is successfully called but the validate canister return false                        | (optional) Error details: <ul> <li>`message` (`text`, optional): message</li> </ul> |
+| 1003 | Validation failed                          | The request validation failed. Signer does not support the standard used by the request, and the canisterValidation failed.                        | (optional) Error details: <ul> <li>`message` (`text`, optional): message</li> </ul> |
 | 1004 | Too many requests                          | The request array reached the limit, defined by the signer                                       | (optional) Error details: <ul> <li>`message` (`text`, optional): message</li> </ul> |
 
 [DRAFT]: https://img.shields.io/badge/STATUS-DRAFT-f25a24.svg
