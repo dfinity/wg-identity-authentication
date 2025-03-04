@@ -24,7 +24,7 @@
 
 Key differentiators of this method is that
 - it requires only one approval to execute all the requests in the batch
-- relying party can specify whether requests in the batch should be executed in parallel or in certain sequences
+- it can be specified whether requests in the batch should be executed in parallel or in certain sequences
 
 ## Request Params
 
