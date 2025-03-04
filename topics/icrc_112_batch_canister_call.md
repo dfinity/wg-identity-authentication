@@ -438,7 +438,7 @@ Response
 
 ## Errors
 
-In addition to the errors defined in [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-3) this standard defines the following errors:
+In addition to the errors defined in [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-3) this standard defines the following errors. Please note that if ICRC-112 stops executing becausse it encounters an error, it will mark all remaining requests that were never executed with 1001.
 
 | Code | Message                                    | Meaning                                                                                          | Data                                                                                |
 | ---- | ------------------------------------------ | ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------- |
