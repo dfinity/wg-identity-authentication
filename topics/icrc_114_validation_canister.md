@@ -15,7 +15,11 @@
 
 ## Summary
 
-This standard is used for validating the response of batch transactions to ensure that all requests have been processed correctly.
+This standard is used by the signer to validate that a request was successfully complete. 
+
+For example, this method is used by the signer when it executes a ICRC-112 batch request where requests need to be executed in certain sequence. In such cases, the signer needs to validate that preceding request was successfully complete, before executing the next. With known standards, signer can validate the requests by checking if there is a block id in the certificate. However, in cases where the request standard is unknown to the signer, the signer uses this method as a fallback to validate whether the request was successfully complete.
+
+
 
 ## Methods
 
