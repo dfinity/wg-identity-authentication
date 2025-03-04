@@ -59,7 +59,7 @@ Following are some of the errors, related to validation and sequences, that rely
 
 1. The relying party submits a batch request with multiple calls grouped into sub-arrays.
 2. Execution starts with the first sub-array, and calls within it run in parallel.  
-3. Validation is required if there are multiple sub-arrays, but must be skipped for the last one.
+3. Validation is required if there are multiple sub-arrays (sequence logic), but must be skipped for the last one.
    - After each request in a sub-array completes
      - If it is not an ICRC standard, its result is sent to the [ICRC-114](https://github.com/dfinity/wg-identity-authentication/pull/225) validation canister.
      - If it is in the [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md) supported standard, wallet have ability to parse it. 
