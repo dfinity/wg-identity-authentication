@@ -63,8 +63,8 @@ There is only one response from ICRC-112, which includes the results from indivi
 {
   "requests": [
     [request1, request2, request3],   // These execute in parallel
-    [request3, request4],             // Executes only after request1-3 are validated
-    [request5]                        // Executes only after request3-4 are validated (request 5 itself is not validated)
+    [request4, request5],             // Executes only after request1-3 are validated
+    [request6]                        // Executes only after request4-5 are validated (request 5 itself is not validated)
   ]
 }
 ```
