@@ -1,6 +1,6 @@
 # ICRC-114: Validate batch response
 
-![APPROVED] [![EXTENDS 25]](./icrc_25_signer_interaction_standard.md)
+![DRAFT] [![EXTENDS 25]](./icrc_25_signer_interaction_standard.md)
 
 **Authors:** [Long Tran](https://github.com/baolongt)
 
@@ -54,7 +54,7 @@ type CanisterCall = record {
     arg: blob;
     res: blob;
 };
-icrc114_validate : (vec CanisterCall) -> bool
+icrc114_validate : (CanisterCall) -> bool
 ```
 
 ## icrc25_supported_standards
@@ -78,3 +78,6 @@ sequenceDiagram
 
 
 ```
+
+[DRAFT]: https://img.shields.io/badge/STATUS-DRAFT-f25a24.svg
+[EXTENDS 25]: https://img.shields.io/badge/EXTENDS-ICRC--25-ed1e7a.svg
