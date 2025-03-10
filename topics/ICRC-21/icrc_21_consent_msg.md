@@ -2,7 +2,7 @@
 
 ![APPROVED]
 
-**Authors:** [Frederik Rothenberger](https://github.com/frederikrothenberger)
+**Authors:** [Frederik Rothenberger](https://github.com/frederikrothenberger), [Thomas Gladdines](https://github.com/sea-snake)
 
 ## Summary
 This specification describes a protocol for obtaining human-readable consent messages for canister calls. These messages are intended to be shown to users to help them make informed decisions about whether to approve a canister call / sign a transaction.

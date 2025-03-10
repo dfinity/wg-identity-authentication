@@ -9,10 +9,7 @@ pub struct Icrc21ConsentMessageMetadata {
 #[derive(CandidType, Deserialize)]
 pub enum Icrc21DeviceSpec {
     GenericDisplay,
-    LineDisplay {
-        characters_per_line: u16,
-        lines_per_page: u16,
-    },
+    FieldsDisplay,
 }
 
 #[derive(CandidType, Deserialize)]
@@ -29,14 +26,12 @@ pub struct Icrc21ConsentMessageRequest {
 }
 
 #[derive(CandidType, Deserialize, Eq, PartialEq, Debug)]
-pub struct Icrc21LineDisplayPage {
-    pub lines: Vec<String>,
-}
-
-#[derive(CandidType, Deserialize, Eq, PartialEq, Debug)]
 pub enum Icrc21ConsentMessage {
-    LineDisplayMessage { pages: Vec<Icrc21LineDisplayPage> },
     GenericDisplayMessage(String),
+    FieldsDisplayMessage {
+        intent: String,
+        fields: Vec<(String, String)>,
+    },
 }
 
 #[derive(CandidType, Deserialize, Eq, PartialEq, Debug)]
