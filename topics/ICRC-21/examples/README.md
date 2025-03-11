@@ -64,6 +64,10 @@ tags.
 This device spec renders messages with fields, the example JSON files available in this repo follow the below
 guidelines and inherits from the Generic Display guidelines.
 
+<img alt="ICRC-1 transfer on a Ledger Flex" width="600" src="example_icrc1_transfer_ledger.png"/>
+
+_Example ICRC-1 transfer on a Ledger Flex thats renders from FieldsDisplay spec_
+
 #### Intent
 
 Same as title in Generic Display, keep it a short intent (= action + subject) e.g. `Send Internet Computer`.
