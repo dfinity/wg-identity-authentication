@@ -66,7 +66,7 @@ guidelines and inherits from the Generic Display guidelines.
 
 <img alt="ICRC-1 transfer on a Ledger Flex" width="600" src="example_icrc1_transfer_ledger.png"/>
 
-_Example ICRC-1 transfer on a Ledger Flex thats renders from FieldsDisplay spec_
+_Example ICRC-1 transfer on a Ledger Flex thats renders from Fields Display spec_
 
 #### Intent
 
