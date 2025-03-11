@@ -1,7 +1,7 @@
 # ICRC-21: Canister Call Consent Message Examples
 
 This folder contains various consent message examples for ICRC standards. These examples can be used as reference in
-a ICRC-21 implementation. This document and the examples will be updated over time with best practices.
+an ICRC-21 implementation. This document and the examples will be updated over time with best practices.
 
 ## Authenticated vs Anonymous
 
@@ -11,11 +11,12 @@ anonymously since the cold signer is not able to call the canister itself direct
 
 ## Generic Display
 
-This device spec renders Markdown messages, the examples available in this repo follow the below guidelines.
+This device spec renders Markdown messages, the example Markdown files available in this repo follow the below
+guidelines.
 
 #### Title
 
-Always define a title `#`, but keep is short `action + subject` e.g. `Approve transfer`.
+Always define a title `#`, but keep it a short intent (= action + subject) e.g. `Send Internet Computer`.
 
 #### Explanation
 
@@ -23,11 +24,12 @@ After the title, use a paragraph to explain the request in more detail.
 
 #### Sections
 
-Group sections with labels: `**label:**`, this keeps it as a single readable message in comparison to adding headers.
+Avoid creating sections with headers, this keeps it as a short single readable message.
 
-#### Additional explanations
+#### Values
 
-Add additional explanations where needed for each section, use line breaks over empty lines (two spaces at the end of
+Label values with `**label:**`. Add additional explanations where needed for each value and use a line break over an
+empty lines (two spaces at the end of
 the line).
 
 #### Account address
@@ -52,186 +54,39 @@ the [ICRC-21 spec](https://github.com/dfinity/wg-identity-authentication/blob/ma
 render date and/or time in human-readable format based on received BCP-47 language, fallback to UTC if offset is not
 defined.
 
-#### Transaction memo
+#### Memo
 
 Attempt to decode the memo as UFT-8 string else fallback to a hex string. Always wrap in `` `code` ``
 tags.
 
-## Line Display
+## Fields Display
 
-This device spec renders plaintext messages, line display requests can contain any `characters_per_line` and
-`lines_per_page` values. This means that consent messages should be short and flexible to render on most displays.
+This device spec renders messages with fields, the example JSON files available in this repo follow the below
+guidelines and inherits from the Generic Display guidelines.
 
-The examples available in this repo follow the below guidelines.
+#### Intent
 
-#### Title
+Same as title in Generic Display, keep it a short intent (= action + subject) e.g. `Send Internet Computer`.
+This intent might be used within a given context e.g. `Review transaction to Send Internet Computer` and
+`Sign transaction to Send Internet Computer`.
 
-Avoid a title, instead directly start with a paragraph that explains the request.
+#### Values
 
-#### Blocks
+Since this device spec renders a list of fields with values, it's recommended to avoid explanations where possible and
+rely on clear field naming and ordering instead. If an explanation is really necessary, always use a separate field for
+this explanation.
 
-The following example consists of 7 blocks, separated with empty lines:
+## Using examples
 
-```txt
-You are authorizing another address to withdraw funds from your account.
- 
-Authorized address: {{authorized_address}}
+Example templates are structured in the `en_US/method/type` folders. The files are named either `default` (all fields
+have a value and/or are available) or `no_field1_field2_etc` (one or multiple fields have no value and/or are
+unavailable).
 
-Requested allowance: {{requested_allowance}}
- 
-This is the withdrawal limit that will apply upon approval. Until then, any existing allowance remains in effect.
+If the `authenticated` type folder is missing, the files from the `anonymous` folder should be used for both anonymous
+and authenticated consent message calls.
 
-Expiration date: {{expiration_date}}
-  
-Approval fee: {{approval_fee}}
- 
-Transaction memo: {{transaction_memo}}
-```
+Both the Markdown and JSON files can be read as UTF-8 string and ``{{variable}}`` can be replaced with
+actual values. The variable names within each method are consistent across Markdown and JSON files.
 
-A single space ` ` (or more) on an empty line indicates that blocks should be put on the same page (if possible).
-
-An explanation like `This is...in effect.` for the `Requested allowance` is an example of a block that should be put
-together on the same page by adding a spaces on the empty line above it. Overall it's recommended to avoid
-explanations where possible to keep the number of blocks, and thus lines to a minimum.
-
-More than a single space can be used to indicate priority, the more spaces, the less likely the blocks will end up on
-different pages.
-
-#### Characters per line
-
-- Wrap sentences always at white space characters where possible, consider a library that handles this.
-- Prioritize moving values (e.g. 34.87 ICP) onto a new line over splitting a line into multiple.
-- If a word is too long for a line, break the word into multiple lines to maintain the characters per line limit.
-- Wrap account addresses always at `-` characters at the end of the line.
-
-#### Pages from lines
-
-Split blocks first on empty lines without spaces to create pages
-
-If any of the resulting pages still has too many lines:
-
-1. Split these pages on empty lines with a single space (if found).
-2. Still too many lines? Split on remaining empty lines with two spaces (if found).
-3. Still too many lines? Split on remaining empty lines with three spaces (if found).
-4. Still too many lines? Split on remaining empty lines with four spaces (if found).
-5. ...
-6. Still too many lines? Split after `lines_per_page`.
-
-#### Example JS implementation
-
-```js
-import wrapAnsi from 'wrap-ansi';
-import fs from 'fs';
-
-const charactersPerLine = 32;
-const linesPerPage = 8;
-
-// Utility method to wrap account addresses on `-` characters
-const wrapAddress = (address, charactersPerLine) => (address + '-')
-    .match(new RegExp('.{1,' + (charactersPerLine - 1) + '}(?=-)', 'g'))
-    .map((line) => line.startsWith('-') ? line.slice(1) : line)
-    .join('-\n');
-
-// Utility method to split blocks on empty lines with the fewest spaces till they fit into a page
-const splitOnSpaces = (block) => {
-    // If block is within page length, trim lines and return
-    if (block.split('\n').length <= linesPerPage) {
-        return block.split('\n').map((line) => line.trim()).join('\n');
-    }
-    // Find empty line with the fewest amount of spaces
-    const spaces = block.match(/\n +?\n/g).map((line) => line.length - 2).sort()[0] ?? 0;
-    // Force split if no empty lines are found
-    if (spaces === 0) {
-        return forceSplit(block);
-    }
-    // Split on empty lines with spaces and continue with resulting blocks
-    return block.split(`\n${' '.repeat(spaces)}\n`).flatMap(splitOnSpaces);
-};
-
-// Utility method to force split blocks that still have too many lines
-const forceSplit = (block) => {
-    const lines = block.split('\n');
-    return Array
-        .from({length: Math.ceil(lines / linesPerPage)})
-        .map((_, index) => lines.slice(index * linesPerPage, (index + 1) * linesPerPage));
-};
-
-// Use a line display template from the examples
-let text = fs.readFileSync('en_US/icrc2_approve/anonymous/default.txt', 'utf-8');
-
-// Define arguments, wrap adresses already at this point
-const args = {
-    authorized_address: wrapAddress('k2t6j-2nvnp-4zjm3-25dtz-6xhaa-c7boj-5gayf-oj3xs-i43lp-teztq-6ae-6cc627i.1', charactersPerLine),
-    requested_allowance: '324.76 ICP',
-    expiration_date: 'Fri, Feb 21, 2025, 09:56 UTC',
-    approval_fee: '0.0001 ICP',
-    transaction_memo: '48656c6c6f20576f726c64'
-};
-
-// Insert arguments, wrap onto new line if it becomes too long
-text = text.replace(/(.*){{(.*?)}}/g, (_, prefix, arg) =>
-    prefix.length > 0 && (prefix + args[arg]).length > charactersPerLine
-        ? (prefix + '\n' + args[arg])
-        : (prefix + args[arg])
-);
-
-// Use library to wrap lines onto multiple lines
-text = wrapAnsi(text, charactersPerLine, {
-    hard: true, // `charactersPerLine` is a hard limit, we can't go past it
-    wordWrap: true, // Attempt to split words at spaces
-    trim: false // Don't trim here, this would remove spaces from blank lines
-});
-
-const pages = text
-    // Split into blocks based on empty lines
-    .split('\n\n')
-    // If a block has more lines than allowed, split it into 
-    // multiple based on empty lines with one or more spaces.
-    .flatMap(splitOnSpaces)
-    // Create pages with lines from blocks,
-    // combine onto a single page if it fits.
-    .reduce((pages, block) => {
-        const lastPage = pages[pages.length - 1];
-        const lines = block.split('\n');
-        if (lastPage.length > 0 && lastPage.length + lines.length + 1 > linesPerPage) {
-            pages.push(lines);
-        } else {
-            if (lastPage.length > 0) {
-                lastPage.push('');
-            }
-            lastPage.push(...lines);
-        }
-        return pages;
-    }, [[]]);
-```
-
-```js
-[
-    [
-        'You are authorizing another',
-        'address to withdraw funds from',
-        'your account.',
-        '',
-        'Authorized address:',
-        'k2t6j-2nvnp-4zjm3-25dtz-6xhaa-',
-        'c7boj-5gayf-oj3xs-i43lp-teztq-',
-        '6ae-6cc627i.1',
-    ],
-    [
-        'Requested allowance: 324.76 ICP',
-        '',
-        'This is the withdrawal limit',
-        'that will apply upon approval.',
-        'Until then, any existing',
-        'allowance remains in effect.',
-    ], [
-        'Expiration date:',
-        'Fri, Feb 21, 2025, 09:56 UTC',
-        '',
-        'Approval fee: 0.0001 ICP',
-        '',
-        'Transaction memo:',
-        '48656c6c6f20576f726c64',
-    ]
-]
-```
+Some variables can be filled with the arguments from the request itself while other variables need to be read from the
+canister state.

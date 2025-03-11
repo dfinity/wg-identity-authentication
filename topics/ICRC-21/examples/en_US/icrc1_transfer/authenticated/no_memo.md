@@ -1,15 +1,14 @@
-# Approve transfer
+# Send {{name}}
 
 You are approving a transfer of funds from your account.
 
-**Recipient address:**  
-`{{recipient_address}}`
+**From:**  
+`{{from}}`
 
-**Your account:**  
-`{{your_account}}`
+**Amount:** `{{amount}} {{symbol}}`
 
-**Transfer amount:** `{{transfer_amount}}`  
-This is the amount that will be transferred upon approval.
+**To:**  
+`{{to}}`
 
-**Transfer fee:** `{{transfer_fee}}`  
+**Fees:** `{{fees}} {{symbol}}`  
 Charged for processing the transfer.

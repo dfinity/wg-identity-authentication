@@ -1,0 +1,25 @@
+{
+  "intent": "Send {{name}}",
+  "fields": [
+    [
+      "From",
+      "{{from}}"
+    ],
+    [
+      "Amount",
+      "{{amount}} {{symbol}}"
+    ],
+    [
+      "To",
+      "{{to}}"
+    ],
+    [
+      "Fees",
+      "{{fees}} {{symbol}}"
+    ],
+    [
+      "Memo",
+      "{{memo}}"
+    ]
+  ]
+}

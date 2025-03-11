@@ -1,27 +1,27 @@
-# Authorize withdrawals
+# Approve spending
 
 You are authorizing another address to withdraw funds from your account.
 
-**Authorized address:**  
-`sotir-herp2-u4mlq-ucvha-n5eli-ybrnf-p7uwm-dllud-k653x-jau4e-wae`
+**From:**  
+`{{from}}`
 
-**Your account:**  
-`{{your_account}}`
+**Approve to spender:**  
+`{{spender}}`
 
-**Requested allowance:** `{{requested_allowance}}`  
+**Requested allowance:** `{{requested_allowance}} {{symbol}}`  
 This is the withdrawal limit that will apply upon approval.
 
-**Current allowance:** `{{current_allowance}}`  
-Until approval, this existing allowance remains in effect.
+**Existing allowance:** `{{existing_allowance}} {{symbol}}`  
+Until approval, this allowance remains in effect.
 
-**No expiration date:**  
-This authorization does not have an expiration date.
+**Approval expiration:**  
+This approval does not have an expiration.
 
-**Approval fee:** `{{approval_fee}}`  
-Charged for processing the authorization.
+**Approval fees:** `{{approval_fee}}`  
+Charged for processing the approval.
 
-**Fee paid by:**  
-`{{your_account}}`
+**Fees paid by:**  
+`{{from}}`
 
-**Transaction memo:**  
-`{{transaction_memo}}`
+**Memo:**  
+`{{memo}}`

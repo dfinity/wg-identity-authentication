@@ -1,6 +1,9 @@
-# Send {{name}}
+# Spend {{name}}
 
-You are approving a transfer of funds from your account.
+You are approving a transfer of funds from a withdrawal account.
+
+**From:**  
+`{{from}}`
 
 **Amount:** `{{amount}} {{symbol}}`
 

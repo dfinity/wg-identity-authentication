@@ -20,10 +20,6 @@
     [
       "Approval fees",
       "{{fees}} {{symbol}}"
-    ],
-    [
-      "Memo",
-      "{{memo}}"
     ]
   ]
 }
