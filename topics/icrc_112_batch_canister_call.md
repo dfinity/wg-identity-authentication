@@ -84,7 +84,7 @@ If the response doesn’t have an error, the signer will handle the response dif
 - If the signer supports the standard used in the request, the signer will do a signer-side validation. 
 - If the signer does not support the standard used in the request, the signer will call an external canister validation method provided by the relying party.
 
-The signer must implement signer-side validation for all the standards it supports (declared on ICRC-25). For example, with a ICRC-1 transfer request, the signer must decode the certificate included in the result, and confirm that a block id is included. Similarly, with other supported standards, the signer must parse the response and validate the response in respective ways.
+The signer must implement signer-side validation for all the standards it supports (declared on [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md)). For example, with a ICRC-1 transfer request, the signer must decode the certificate included in the result, and confirm that a block id is included. Similarly, with other supported standards, the signer must parse the response and validate the response in respective ways.
 
 If the signer does not support a standard, it can validate using the canister validation method ([ICRC-114](https://github.com/dfinity/wg-identity-authentication/pull/227)) that the relying party provided. This method simply returns ‘true’ if the request was successful and ‘false’ if failed. It is encouraged for relying party to provide the canister validation method that signers can use as fallback, since not all wallets support all the standards.
 
