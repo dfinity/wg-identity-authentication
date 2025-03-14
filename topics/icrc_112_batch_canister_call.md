@@ -2,7 +2,7 @@
 
 ![DRAFT] [![EXTENDS 25]](./icrc_25_signer_interaction_standard.md)
 
-**Authors:** [Long Tran](https://github.com/baolongt), [Thomas Gladdines](https://github.com/sea-snake)
+**Authors:** [Long Tran](https://github.com/baolongt), [Thomas Gladdines](https://github.com/sea-snake), [Mason](https://github.com/masonswj)
 
 <!-- TOC -->
 

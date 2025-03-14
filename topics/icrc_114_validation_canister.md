@@ -2,7 +2,7 @@
 
 ![DRAFT] [![EXTENDS 25]](./icrc_25_signer_interaction_standard.md)
 
-**Authors:** [Long Tran](https://github.com/baolongt)
+**Authors:** [Long Tran](https://github.com/baolongt), [Mason](https://github.com/masonswj)
 
 <!-- TOC -->
 
