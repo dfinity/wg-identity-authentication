@@ -88,7 +88,11 @@ The signer must implement signer-side validation for all the standards it suppor
 
 If the signer does not support a standard, it can validate using the canister validation method ([ICRC-114](https://github.com/dfinity/wg-identity-authentication/pull/227)) that the relying party provided. This method simply returns ‘true’ if the request was successful and ‘false’ if failed. It is encouraged for relying party to provide the canister validation method that signers can use as fallback, since not all wallets support all the standards.
 
-If a validation fails because the response includes an error, ICRC-112 will add the returned error code for the request in the aggregate response. If the signer was not able to attempt a validation for an unsupported standard because the relying party did not provide the validation method, error 1002 will be added. If the validation failed, either because of signer-side or canister validation fail, error 1003 will be added. 
+Validation related errors can be the following:
+- If a validation fails because the response includes an error, ICRC-112 will add the returned error code for the request in the aggregate response.
+- If the signer was not able to attempt a validation for an unsupported standard because the relying party did not provide the validation method, error 1002 will be added.
+- If the validation failed, either because of signer-side or canister validation fail, error 1003 will be added.
+- If any of the requests in a sub-array fails validation, all the requests in the following sub-arrays will be marked with 1001 error.
 
 **Using ICRC-25 with ICRC-112**
 
