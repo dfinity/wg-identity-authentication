@@ -76,7 +76,7 @@ There is only one response from ICRC-112, not separate responses for individual 
 
 **Validation**
 
-All request in a sub-array must be successfully validated before ICRC-112 executes the transactions in the next sub-array. Each request is validated in the following way.
+All requests in a sub-array must be successfully validated before ICRC-112 executes the transactions in the next sub-array. Each request is validated in following ways.
 
 First, if the response has an error, the request already failed the validation. 
 
@@ -86,7 +86,7 @@ If the response doesn’t have an error, the signer will handle the response dif
 
 The signer must implement signer-side validation for all the standards it supports (declared on [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md)). For example, with a ICRC-1 transfer request, the signer must decode the certificate included in the result, and confirm that a block id is included. Similarly, with other supported standards, the signer must parse the response and validate the response in respective ways.
 
-If the signer does not support a standard, it can validate using the canister validation method ([ICRC-114](https://github.com/dfinity/wg-identity-authentication/pull/227)) that the relying party provided. This method simply returns ‘true’ if the request was successful and ‘false’ if failed. It is encouraged for relying party to provide the canister validation method that signers can use as fallback, since not all wallets support all the standards.
+If the signer does not support a standard, signer must validate by calling the canister validation method ([ICRC-114](https://github.com/dfinity/wg-identity-authentication/pull/227)) that the relying party provided. This method simply returns ‘true’ if the request was successfully completed and ‘false’ otherwise. It is encouraged for relying party to provide the canister validation method that signers can use as fallback, since not all wallets support all the standards.
 
 Validation related errors can be the following:
 - If a validation fails because the response includes an error, ICRC-112 will add the `returned error code` for the request in the aggregate response.
