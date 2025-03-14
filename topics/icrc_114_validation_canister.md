@@ -53,15 +53,15 @@ So ICRC-114 exist to co-validate the sequence of ICRC-112, it is a key to decode
 sequenceDiagram
     participant S as Signer
     participant C as Target Canister
-    note over S, VC: Executing ICRC-112
+    note over S, C: Executing ICRC-112
     S ->> C: Submit canister call
     C -->> S: Response
     %% validation only one in both validation
     alt If signer supports request standard
         S ->> S: Parses response and validates
     else If signer does not support request standard
-        S ->> VC: canister validation with ICRC-114
-        VC -->> S: Response true (success) or false (fail)
+        S ->> C: canister validation with ICRC-114
+        C -->> S: Response true (success) or false (fail)
     end
 ```
 
