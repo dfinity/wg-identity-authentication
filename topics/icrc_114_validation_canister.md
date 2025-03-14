@@ -6,43 +6,68 @@
 
 <!-- TOC -->
 
-- [ICRC-Y: Validate batch response](#icrc-y-validate-batch-response)
+- [ICRC-114: Validate batch response](#icrc-114-validate-batch-response)
   - [Summary](#summary)
-  - [Methods](#methods)
-    - [icrcy_validate](#icrcy_validate)
-    - [icrc25_supported_standards](#icrc25_supported_standards)
-  - [Use-Cases](#use-cases)
+  - [Motivation](#motivation)
+  - [Assumptions](#assumptions)
+  - [ICRC-114 Flow](#icrc-114-flow)
+  - [Method](#method)
+    - [icrc_114_validate](#icrc_114_validate)
+  - [Notes](#notes)
+  - [icrc10_supported_standards](#icrc10_supported_standards)
+  - [Example](#example)
 
 ## Summary
 
-This standard is used by the signer to validate that a request was successfully complete. 
+ICRC-114 is a fallback for validating and contining the sequence of requests in [ICRC-112](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_112_batch_canister_call.md). When execute ICRC-112, the request can be vary and not all of them is supported by signer to parse the response.
 
-For example, this method is used by the signer when it executes a ICRC-112 batch request where requests need to be executed in certain sequence. In such cases, the signer needs to validate that preceding request was successfully complete, before executing the next. With known standards, signer can validate the requests by checking if there is a block id in the certificate. However, in cases where the request standard is unknown to the signer, the signer uses this method as a fallback to validate whether the request was successfully complete. The relying party provides this call when it constructs the ICRC-112 request. 
+## Motivation
 
+We introduced ICRC-112 enable a way to do batch canister transactions at one call for better UX. For signer implement the ICRC-112 there is need to validate the canister response
 
+In the flow below, it show how a canister call was made and how the signer handle the reply from canister
 
-## Methods
-
-### icrc114_validate
-
-First the signer needs to have received a response for canister call it is trying to validate. The signer will then make an ICRC-114 call, and includes the response as a blob.
-
-For example, when the signer receives the response below, it will add the contentMap as a blob to the ICRC-114 call. 
-```
-// response of the canister call that signer is trying to validate
-{
-  "contentMap": "2dn3p2NhcmdYTkRscmVxdWVzdF90eXBlZGNhbGxmc2VuZGVyWB1q63Snu+4C5/fpWFu4nq1IpZxCYDEYA8XSPqPfAg==",
-  "certificate": "..."
-}
+```mermaid
+sequenceDiagram
+    participant S as Signer
+    participant C as Target Canister
+    S ->> C: 1. Call method x
+    C ->> S: 2. Return candid result
+    S ->> S: 3. Lookup reply in certificate
+    S ->> S: 4. Decode reply
 ```
 
-When the signer makes the ICRC-114 call, it will return 
-- true if the validation was successful (request was successfully completed)
-- false if the validation failed (request was not successfully completed)
+In step 4 decoding need know the candid of the method and it cannot dynamically add in runtime of ICRC-112, there for only known standard in IC ecosystem can parse, eg: ICRC-1, ICRC-2, ICRC-7, ICRC-37.
 
-With Rust or Motoko, instead of boolean value, it can be `Ok` or `Err`.
+So ICRC-114 exist to co-validate the sequence of ICRC-112, it is a key to decode signer non supported methods for dapp using ICRC-112
 
+## Assumptions
 
+- The signer support ICRC-112 or have polyfill for handling ICRC-112 (Internet Identity)
+- The validate canister provided by relying party for enable ICRC-112
+- The validate canister is trusted by the user. Interactions with malicious canisters are not covered by this specification. In particular, interacting with a malicious canister can produce arbitrary outcomes
+
+## ICRC-114 Flow
+
+```mermaid
+sequenceDiagram
+    participant S as Signer
+    participant C as Target Canister
+    note over S, VC: Executing ICRC-112
+    S ->> C: Submit canister call
+    C -->> S: Response
+    %% validation only one in both validation
+    alt If signer supports request standard
+        S ->> S: Parses response and validates
+    else If signer does not support request standard
+        S ->> VC: canister validation with ICRC-114
+        VC -->> S: Response true (success) or false (fail)
+    end
+```
+
+## Method
+
+### icrc_114_validate
 
 **Candid**
 
@@ -57,27 +82,89 @@ type CanisterCall = record {
 icrc114_validate : (CanisterCall) -> bool
 ```
 
-## icrc25_supported_standards
+## Notes
 
-An ICRC-25 compliant signer must implement the [icrc25_supported_standards](icrc_25_signer_interaction_standard.md#icrc25_supported_standards) method which returns the list of supported standards. 
-Any signer implementing ICRC-114 must include a record with the name field equal to "ICRC-114" in that list.
+- It is not recommneded to make inter-canister call in ICRC-114 method.
+- Signer should return supported standard for ICRC via [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md). That where dapp know what they're supported
 
-## Use-Cases
+## icrc10_supported_standards
 
-- Validate the results of batch transactions to ensure all requests were processed successfully.
-- Provide a mechanism to check the success or failure of each individual request within a batch.
+An ICRC-10 compliant canister must implement the [icrc10_supported_standards](https://github.com/dfinity/ICRC/blob/main/ICRCs/ICRC-10/ICRC-10.md) method which returns the list of supported standards.
+Any canister implementing ICRC-114 must include a record with the name field equal to "ICRC-114" in that list.
 
-```mermaid
-sequenceDiagram
-    participant S as Signer
-    participant C as Target Canister
-    Note over C, S: Interactions follow ICRC-112 <br /> standard batch execution
-    S ->> C: Call ICRC-Y with response
-    C ->> S: Return result
-    S ->> S: Decide continue ICRC-112 or not
+## Example
 
+Signer execute ICRC-112 request via JSON RPC. We assume Signer supported ICRC-2
 
+```json
+{
+  "id": 1,
+  "jsonrpc": "2.0",
+  "method": "icrc_112_batch_call_canisters",
+  "params": {
+    "sender": "b7gqo-ulk5n-2kpo7-oalt7-p2kyl-o4j5l-kiuwo-eeybr-dab4l-ur6up-pqe",
+    "validation": {
+      "canisterId": "zzzzz-fqaaa-aaaao-a2hlq-ca",
+      "method": "icrc_114_validate"
+    },
+    "requests": [
+      [
+        {
+          "canisterId": "eeddf-fqaaa-aaaao-a2hlq-ca",
+          "method": "icrc2_approve",
+          "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdV+ztKgq7E4l1ffuTuwEmw8AtYSjlrJ+WLO5ofQIAAMgB"
+        },
+        {
+          "canisterId": "aaabb-fqaaa-aaaao-a2hlq-ca",
+          "method": "icrc2_approve",
+          "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdV+ztKgq7E4l1ffuTuwEmw8AtYSjlrJ+WLO5ofQIAAMgB"
+        }
+      ],
+      [
+        {
+          "canisterId": "xyzzz-fqaaa-aaaao-a2hlq-ca",
+          "method": "swap",
+          "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdV+ztKgq7E4l1ffuTuwEmw8AtYSjlrJ+WLO5ofQIAAMgB",
+          "nonce": [1, 2, 3, 2, 31, 31, 312] // array of bytes
+        }
+      ],
+      [
+        {
+          "canisterId": "bbbbb-fqaaa-aaaao-a2hlq-ca",
+          "method": "bridge_to_eth",
+          "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdV+ztKgq7E4l1ffuTuwEmw8AtYSjlrJ+WLO5ofQIAAMgB"
+        }
+      ]
+    ]
+  }
+}
 ```
+
+Execute order of ICRC-112:
+
+1. Execute 2 `icrc2_approve` requests
+2. Validate response for 2 requests
+3. Execute swap
+4. Validate response for swap request
+5. Execute bridge_to_eth
+
+For step 3 because it is not supported by signer there for it should be handle by ICRC-114.
+
+Signer have to call `icrc_114_validate` of canister defined in JSON RPC. This is what the request look like in candid when we send to validate canister
+
+```bash
+record {
+  canister_id = principal xyzzz-fqaaa-aaaao-a2hlq-ca;
+  method = "swap"
+  arg = blob <parse from arg base64 string in request>
+  nonce = optional blob <get from arg nonce>
+  res = blob <get from response when making canister call>
+}
+```
+
+If signer received `true` then continue for step 5 or else stop execute and handle the error case - [defined in ICRC-112](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_112_batch_canister_call.md#processing)
+
+[Code example](https://github.com/slide-computer/signer-js/blob/main/packages/signer-test/src/agentChannel.ts#L351) handle canister call and parsing it if it supported or sending to validate canister
 
 [DRAFT]: https://img.shields.io/badge/STATUS-DRAFT-f25a24.svg
 [EXTENDS 25]: https://img.shields.io/badge/EXTENDS-ICRC--25-ed1e7a.svg
