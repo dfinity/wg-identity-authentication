@@ -17,7 +17,7 @@
 
 ## Summary
 
-`icrc_112_batch_call_canister` method is used by the relying party to execute a batch request with one call to the signer. Signer must receive an approval from the user to execute the requests, but only one approval is needed for all of the requests in the batch. Furthermore, relying party can specify in ICRC-112 request whether requests in the batch should be executed in parallel or in certain sequences.
+`icrc_112_batch_call_canister` method is used by the relying party to execute a batch of requests with one call to the signer. Signer must receive an approval from the user to execute the requests, but only one approval is needed for all of the requests in the batch. Furthermore, relying party can specify in ICRC-112 request whether requests in the batch should be executed in parallel or in certain sequences.
 
 ## Request Params
 
