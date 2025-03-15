@@ -25,7 +25,7 @@ ICRC-114 is a fallback validation method used in [ICRC-112](https://github.com/d
 
 ICRC-112 was introduced to enable a way to initiate batch canister transactions with one call. Because there may be sequence logic in the batch transactions, signer implementing ICRC-112 must validate the canister response. 
 
-The flow below shows how a signer makes a request call in ICRC-112, and validates the reply signer-side. We will discuss below where the gap is with server-side validation.
+The flow below shows how a signer makes a request call in ICRC-112, and validates the reply signer-side. In step 4, the signer needs to know the candid of the method to decode the reply, but this could lead to issues that we will discuss below.
 
 ```mermaid
 sequenceDiagram
@@ -36,9 +36,12 @@ sequenceDiagram
     S ->> S: 3. Lookup reply in certificate
     S ->> S: 4. Decode reply
 ```
-In step 4, the signer needs to know the candid of the method to decode the reply.
 
-Hence, there are two reasons that ICRC-114 is provided as fallback validation method. First, during ICRC-112 runtime, the signer can only know the candid of known IC standards such as ICRC-1, ICRC-2, ICRC-7, ICRC-37, etc. If the request is a non-standard method, the signer will not be able to validate. Second, even if the request uses a known standard, the signer may not know how to interpret the decoded reply to validate the response.
+If the ICRC-112 batch request has request using a non-standard request (not ICRC-1, ICRC-2, ICRC-7, ICRC-37, etc), there is no way for the signer to know the candid during run time. Hence, it is not possible to validate non-standard requests signer-side. 
+
+In some cases, even if the request uses a known standard, the signer may not know how to interpret the decoded reply to validate the response. 
+
+ICRC-114 acts as a fallback validation for the two situations above.
 
 ## Assumptions
 
