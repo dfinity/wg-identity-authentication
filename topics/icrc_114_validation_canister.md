@@ -87,7 +87,7 @@ icrc114_validate : (CanisterCall) -> bool
 ## Notes
 
 - It is not recommneded to make inter-canister call in ICRC-114 method.
-- Signer should return supported standard for ICRC via [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md). That where dapp know what they're supported
+- Signer should return supported standard for ICRC via [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md). That where dapp know what they're supported.
 
 ## icrc10_supported_standards
 
@@ -96,7 +96,7 @@ Any canister implementing ICRC-114 must include a record with the name field equ
 
 ## Example
 
-Signer execute ICRC-112 request via JSON RPC. We assume Signer supported ICRC-2
+Signer executes ICRC-112 request via JSON RPC. We assume the signer supports ICRC-2.
 
 ```json
 {
@@ -144,15 +144,15 @@ Signer execute ICRC-112 request via JSON RPC. We assume Signer supported ICRC-2
 
 Execute order of ICRC-112:
 
-1. Execute 2 `icrc2_approve` requests
-2. Validate response for 2 requests
-3. Execute swap
-4. Validate response for swap request
-5. Execute bridge_to_eth
+1. Execute 2 `icrc2_approve` requests.
+2. Validate response for 2 requests.
+3. Execute swap.
+4. Validate response for swap request.
+5. Execute bridge_to_eth.
 
-For step 3 because it is not supported by signer there for it should be handle by ICRC-114.
+On step 3, because the standard is not supported by signer, validation should be handle by ICRC-114.
 
-Signer have to call `icrc_114_validate` of canister defined in JSON RPC. This is what the request look like in candid when we send to validate canister
+Signer has to call `icrc_114_validate` of canister defined in JSON RPC. This is what the request look like in candid when we send to validate canister:
 
 ```bash
 record {
@@ -164,7 +164,7 @@ record {
 }
 ```
 
-If signer received `true` then continue for step 5 or else stop execute and handle the error case - [defined in ICRC-112](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_112_batch_canister_call.md#processing)
+If signer receives `true`, then continue to step 5, or else stop execute and handle the error case. - [defined in ICRC-112](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_112_batch_canister_call.md#processing)
 
 [Code example](https://github.com/slide-computer/signer-js/blob/main/packages/signer-test/src/agentChannel.ts#L351)
 
