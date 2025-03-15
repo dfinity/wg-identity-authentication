@@ -91,8 +91,8 @@ If the signer does not support a standard, signer must validate by calling the c
 Validation related errors can be the following:
 - If a validation fails because the response includes an error, ICRC-112 will add the `returned error code` for the request in the aggregate response.
 - If the signer was not able to attempt a validation for an unsupported standard because the relying party did not provide the validation method, error `1002` will be added.
-- If the validation failed, either because of signer-side or canister validation fail, error `1003` will be added.
-- If any of the requests in a sub-array fails validation, all the requests in the following sub-arrays will be marked with `1001` error.
+- If the validation fails, either because of signer-side or canister validation fail, error `1003` will be added.
+- If any of the requests in a sub-array fails validation, all the requests in the following sub-arrays will not be executed and will be marked with `1001` error.
 
 [Code example](https://github.com/slide-computer/signer-js/blob/main/packages/signer-test/src/agentChannel.ts#L329)
 
