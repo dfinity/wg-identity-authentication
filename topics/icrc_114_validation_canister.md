@@ -145,9 +145,9 @@ Signer executes ICRC-112 request via JSON RPC. We assume the signer supports ICR
 Execute order of ICRC-112:
 
 1. Execute 2 `icrc2_approve` requests.
-2. Validate response for 2 requests.
+2. Validate response of the 2 requests.
 3. Execute swap.
-4. Validate response for swap request.
+4. Validate response of the swap request.
 5. Execute bridge_to_eth.
 
 On step 3, because the standard is not supported by signer, validation should be handle by ICRC-114.
