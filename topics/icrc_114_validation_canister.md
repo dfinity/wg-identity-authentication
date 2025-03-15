@@ -23,7 +23,7 @@ ICRC-114 is a fallback validation method used in [ICRC-112](https://github.com/d
 
 ## Motivation
 
-We introduced ICRC-112 enable a way to do batch canister transactions at one call for better UX. For signer implement the ICRC-112 there is need to validate the canister response
+ICRC-112 was introduced to enable a way to initiate batch canister transactions with one call. Because there may be sequence logic in the batch transactions, signer implementing ICRC-112 must validate the canister response. 
 
 In the flow below, it show how a canister call was made and how the signer handle the reply from canister
 
