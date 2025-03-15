@@ -81,8 +81,8 @@ All requests in a sub-array must be successfully validated before ICRC-112 execu
 First, if the response has an error, the request already failed the validation. 
 
 If the response doesn’t have an error, the signer will handle the response differently, depending on whether the signer supports the standard used in the request:
-- If the signer supports the standard used in the request, the signer will do a signer-side validation. 
-- If the signer does not support the standard used in the request, the signer will call an external canister validation method provided by the relying party.
+- If the signer supports the standard, the signer will do a signer-side validation. 
+- If the signer does not support the standard, the signer will call an external canister validation method provided by the relying party.
 
 The signer must implement signer-side validation for all the standards it supports (declared on [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md)). For example, with a ICRC-1 transfer request, the signer must look up the reply in the certificate, decode the reply using respective candid, and confirm that a block id is included. Similarly, with other supported standards, the signer must parse the response and validate the response in respective ways.
 
