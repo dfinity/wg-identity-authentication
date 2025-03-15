@@ -38,7 +38,7 @@ sequenceDiagram
 ```
 In step 4, the signer needs to know the candid of the method to decode the reply.
 
-Hence, there are two reasons that ICRC-114 is provided as fallback validation method. First, during ICRC-112 runtime, the signer can only know the candid of known IC standards such as ICRC-1, ICRC-2, ICRC-7, ICRC-37. If the request is a non-standard method, the signer will not be able to validate. Second, even if the request uses a known standard, the signer may not know how to interpret the decoded reply to validate the response.
+Hence, there are two reasons that ICRC-114 is provided as fallback validation method. First, during ICRC-112 runtime, the signer can only know the candid of known IC standards such as ICRC-1, ICRC-2, ICRC-7, ICRC-37, etc. If the request is a non-standard method, the signer will not be able to validate. Second, even if the request uses a known standard, the signer may not know how to interpret the decoded reply to validate the response.
 
 ## Assumptions
 
