@@ -68,8 +68,8 @@ There is only one response from ICRC-112, not separate responses for individual 
 {
   "requests": [
     [request1, request2, request3],   // Requests 1-3 execute in parallel
-    [request4, request5],             // Requests 4-5 execute in parallel, after request1-3 are validated
-    [request6]                        // Requests 6 executes, after request4-5 are validated (request 6 itself is not validated)
+    [request4, request5],             // Requests 4-5 execute in parallel, after requests 1-3 are validated
+    [request6]                        // Request 6 executes, after requests 4-5 are validated (request 6 itself is not validated)
   ]
 }
 ```
