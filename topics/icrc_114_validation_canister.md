@@ -36,10 +36,9 @@ sequenceDiagram
     S ->> S: 3. Lookup reply in certificate
     S ->> S: 4. Decode reply
 ```
+In step 4, the signer needs to know the candid of the method to decode the reply.
 
-In step 4 decoding need know the candid of the method and it cannot dynamically add in runtime of ICRC-112, there for only known standard in IC ecosystem can parse, eg: ICRC-1, ICRC-2, ICRC-7, ICRC-37.
-
-So ICRC-114 exist to co-validate the sequence of ICRC-112, it is a key to decode signer non supported methods for dapp using ICRC-112
+Hence, there are two reasons that ICRC-114 is provided as fallback validation method. First, during ICRC-112 runtime, the signer can only know the candid of known IC standards such as ICRC-1, ICRC-2, ICRC-7, ICRC-37. If the request is a non-standard method, the signer will not be able to validate. Second, even if the request uses a known standard, the signer may not know how to interpret the decoded reply to validate the response.
 
 ## Assumptions
 
