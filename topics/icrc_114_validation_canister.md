@@ -19,7 +19,7 @@
 
 ## Summary
 
-ICRC-114 is a fallback for validating and contining the sequence of requests in [ICRC-112](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_112_batch_canister_call.md). When execute ICRC-112, the request can be vary and not all of them is supported by signer to parse the response.
+ICRC-114 is a fallback validation method used in [ICRC-112](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_112_batch_canister_call.md). With ICRC-112, the signer validates response of each request before continuing to execute the next request in a sequence of requests. Normally, the signer would do a signer-side validation. But if the request uses a standard that the signer does not support, it falls back to the method provided with ICRC-114 to validate the request response.
 
 ## Motivation
 
