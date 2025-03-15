@@ -42,9 +42,9 @@ Hence, there are two reasons that ICRC-114 is provided as fallback validation me
 
 ## Assumptions
 
-- The signer support ICRC-112 or have polyfill for handling ICRC-112 (Internet Identity)
-- The validate canister provided by relying party for enable ICRC-112
-- The validate canister is trusted by the user. Interactions with malicious canisters are not covered by this specification. In particular, interacting with a malicious canister can produce arbitrary outcomes
+- The signer supports ICRC-112 or has polyfill for handling ICRC-112 (Internet Identity).
+- The validate canister is provided by relying party requesting the ICRC-112 call.
+- The validate canister is trusted by the user. Interactions with malicious canisters are not covered by this specification. In particular, interacting with a malicious canisters can produce arbitrary outcomes.
 
 ## ICRC-114 Flow
 
