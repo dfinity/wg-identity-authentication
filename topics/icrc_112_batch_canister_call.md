@@ -75,7 +75,7 @@ All requests in a sub-array must be successfully validated before ICRC-112 execu
 
 First, if the response has an error, the request already failed the validation. 
 
-If the response doesn’t have an error, the signer will handle the response differently, depending on whether the signer supports the standard used in the request:
+If the response doesn’t have an error, the signer handles the response differently, depending on whether the signer supports the standard used in the request:
 - If the signer supports the standard, the signer will do a signer-side validation. 
 - If the signer does not support the standard, the signer will call an external canister validation method provided by the relying party.
 
