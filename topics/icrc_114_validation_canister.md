@@ -25,7 +25,7 @@ ICRC-114 is a fallback validation method used in [ICRC-112](https://github.com/d
 
 ICRC-112 was introduced to enable a way to initiate batch canister transactions with one call. Because there may be sequence logic in the batch transactions, signer implementing ICRC-112 must validate the canister response. 
 
-The flow below shows how a signer makes a request call in ICRC-112, and validates the reply signer-side. In step 4, the signer needs to know the candid of the method to decode the reply, but this could lead to issues that we will discuss below.
+The flow below shows how a signer makes a request call in ICRC-112, and decodes the reply to validate the response signer-side. In step 4, the signer needs to know the candid of the method to decode the reply, but this could lead to issues that we will discuss below.
 
 ```mermaid
 sequenceDiagram
