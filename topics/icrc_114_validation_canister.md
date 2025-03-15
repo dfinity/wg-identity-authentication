@@ -150,9 +150,9 @@ Execute order of ICRC-112:
 4. Validate response of the swap request.
 5. Execute bridge_to_eth.
 
-On step 3, because the standard is not supported by signer, validation should be handle by ICRC-114.
+On step 3, because the standard of swap request is not supported by signer, validation should be handle by ICRC-114.
 
-Signer has to call `icrc_114_validate` of canister defined in JSON RPC. This is what the request look like in candid when we send to validate canister:
+Signer should call `icrc_114_validate` of canister defined in JSON RPC. This is what the request look like in candid when we send to validate canister:
 
 ```bash
 record {
