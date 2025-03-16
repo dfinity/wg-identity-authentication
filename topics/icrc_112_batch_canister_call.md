@@ -89,7 +89,7 @@ Validation related errors can be the following:
 - If the validation fails, either because of signer-side or canister validation fail, error `1003` will be added.
 - If any of the requests in a sub-array fails validation, all the requests in the following sub-arrays will not be executed and will be marked with `1001` error.
 
-[Code example](https://github.com/slide-computer/signer-js/blob/main/packages/signer-test/src/agentChannel.ts#L329)
+[Code example](https://github.com/slide-computer/signer-js/blob/main/packages/signer-test/src/agentChannel.ts#L329) for handling non standard request.
 
 **Using ICRC-25 with ICRC-112**
 
