@@ -12,9 +12,9 @@
   - [Assumptions](#assumptions)
   - [ICRC-114 Flow](#icrc-114-flow)
   - [Method](#method)
-    - [icrc_114_validate](#icrc_114_validate)
+    - [icrc114_validate](#icrc114_validate)
+    - [icrc10_supported_standards](#icrc10_supported_standards)
   - [Notes](#notes)
-  - [icrc10_supported_standards](#icrc10_supported_standards)
   - [Example](#example)
 
 ## Summary
@@ -23,7 +23,7 @@ ICRC-114 is a fallback validation method used in [ICRC-112](https://github.com/d
 
 ## Motivation
 
-ICRC-112 was introduced to enable a way to initiate batch canister transactions with one call. Because there may be sequence logic in the batch transactions, signer implementing ICRC-112 must validate the canister response. 
+ICRC-112 was introduced to enable a way to initiate batch canister transactions with one call. Because there may be sequence logic in the batch transactions, signer implementing ICRC-112 must validate the canister response.
 
 The flow below shows how a signer makes a request call in ICRC-112, and decodes the reply to validate the response signer-side. In step 4, the signer needs to know the candid of the method to decode the reply, but this could lead to issues that we will discuss below.
 
@@ -37,9 +37,9 @@ sequenceDiagram
     S ->> S: 4. Decode reply
 ```
 
-If the ICRC-112 batch request has request using a non-standard request (not ICRC-1, ICRC-2, ICRC-7, ICRC-37, etc), there is no way for the signer to know the candid during run time. Hence, it is not possible to validate non-standard requests signer-side. 
+If the ICRC-112 batch request has request using a non-standard request (not ICRC-1, ICRC-2, ICRC-7, ICRC-37, etc), there is no way for the signer to know the candid during run time. Hence, it is not possible to validate non-standard requests signer-side.
 
-In some cases, even if the request uses a known standard, the signer may not know how to interpret the decoded reply to validate the response. 
+In some cases, even if the request uses a known standard, the signer may not know how to interpret the decoded reply to validate the response.
 
 ICRC-114 acts as a fallback validation for the two situations above.
 
@@ -69,7 +69,7 @@ sequenceDiagram
 
 ## Method
 
-### icrc_114_validate
+### icrc114_validate
 
 **Candid**
 
@@ -84,15 +84,15 @@ type CanisterCall = record {
 icrc114_validate : (CanisterCall) -> bool
 ```
 
+### icrc10_supported_standards
+
+An ICRC-10 compliant canister must implement the [icrc10_supported_standards](https://github.com/dfinity/ICRC/blob/main/ICRCs/ICRC-10/ICRC-10.md) method which returns the list of supported standards.
+Any canister implementing ICRC-114 must include a record with the name field equal to "ICRC-114" in that list.
+
 ## Notes
 
 - It is not recommneded to make inter-canister call in ICRC-114 method.
 - Signer should return supported standard for ICRC via [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md). That where dapp know what they're supported.
-
-## icrc10_supported_standards
-
-An ICRC-10 compliant canister must implement the [icrc10_supported_standards](https://github.com/dfinity/ICRC/blob/main/ICRCs/ICRC-10/ICRC-10.md) method which returns the list of supported standards.
-Any canister implementing ICRC-114 must include a record with the name field equal to "ICRC-114" in that list.
 
 ## Example
 
@@ -107,7 +107,7 @@ Signer executes ICRC-112 request via JSON RPC. We assume the signer supports ICR
     "sender": "b7gqo-ulk5n-2kpo7-oalt7-p2kyl-o4j5l-kiuwo-eeybr-dab4l-ur6up-pqe",
     "validation": {
       "canisterId": "zzzzz-fqaaa-aaaao-a2hlq-ca",
-      "method": "icrc_114_validate"
+      "method": "icrc114_validate"
     },
     "requests": [
       [
@@ -166,7 +166,7 @@ record {
 
 If signer receives `true`, then continue to step 5, or else stop execute and handle the error case. - [defined in ICRC-112](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_112_batch_canister_call.md#processing)
 
-[Code example](https://github.com/slide-computer/signer-js/blob/main/packages/signer-test/src/agentChannel.ts#L351) for handling parsing ICRC token and NFT 
+[Code example](https://github.com/slide-computer/signer-js/blob/main/packages/signer-test/src/agentChannel.ts#L351) for handling parsing ICRC token and NFT
 
 [DRAFT]: https://img.shields.io/badge/STATUS-DRAFT-f25a24.svg
 [EXTENDS 25]: https://img.shields.io/badge/EXTENDS-ICRC--25-ed1e7a.svg
