@@ -1,6 +1,6 @@
 # ICRC-114: Validate batch response
 
-![DRAFT] [![EXTENDS 25]](./icrc_25_signer_interaction_standard.md)
+![DRAFT] 
 
 **Authors:** [Long Tran](https://github.com/baolongt), [Mason](https://github.com/masonswj)
 
