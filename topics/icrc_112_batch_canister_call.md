@@ -17,7 +17,7 @@
 
 ## Summary
 
-`icrc_112_batch_call_canister` method is used by the relying party to execute a batch of requests with one call to the signer. Signer must receive an approval from the user to execute the requests, but only one approval is needed for all of the requests in the batch. Furthermore, relying party can specify in ICRC-112 request whether requests in the batch should be executed in parallel or in certain sequences.
+`icrc112_batch_canister_call` method is used by the relying party to execute a batch of requests with one call to the signer. Signer must receive an approval from the user to execute the requests, but only one approval is needed for all of the requests in the batch. Furthermore, relying party can specify in ICRC-112 request whether requests in the batch should be executed in parallel or in certain sequences.
 
 ## Request Params
 
@@ -73,10 +73,11 @@ There is only one response from ICRC-112, not separate responses for individual 
 
 All requests in a sub-array must be successfully validated before ICRC-112 executes the transactions in the next sub-array. Each request is validated in following ways.
 
-First, if the response has an error, the request already failed the validation. 
+First, if the response has an error, the request already failed the validation.
 
 If the response doesn’t have an error, the signer handles the response differently, depending on whether the signer supports the standard used in the request:
-- If the signer supports the standard, the signer will do a signer-side validation. 
+
+- If the signer supports the standard, the signer will do a signer-side validation.
 - If the signer does not support the standard, the signer will call an external canister validation method provided by the relying party.
 
 The signer must implement signer-side validation for all the standards it supports (declared on [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md)). For example, with a ICRC-1 transfer request, the signer must look up the reply in the certificate, decode the reply using respective candid, and confirm that a block id is included. Similarly, with other supported standards, the signer must parse the response and validate the response in respective ways.
@@ -84,6 +85,7 @@ The signer must implement signer-side validation for all the standards it suppor
 If the signer does not support a standard, signer must validate by calling the canister validation method ([ICRC-114](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_114_validation_canister.md)) that the relying party provided. This method simply returns ‘true’ if the request was successfully completed and ‘false’ otherwise. It is encouraged for relying party to provide the canister validation method that signers can use as fallback, since not all wallets support all the standards.
 
 Validation related errors can be the following:
+
 - If a validation fails because the response includes an error, ICRC-112 will add the `returned error code` for the request in the aggregate response.
 - If the signer was not able to attempt a validation for an unsupported standard because the relying party did not provide the validation method, error `1002` will be added.
 - If the validation fails, either because of signer-side or canister validation fail, error `1003` will be added.
@@ -206,7 +208,7 @@ Response
 {
   "id": 1,
   "jsonrpc": "2.0",
-  "method": "icrc_112_batch_call_canisters",
+  "method": "icrc112_batch_canister_call",
   "params": {
     "sender": "b7gqo-ulk5n-2kpo7-oalt7-p2kyl-o4j5l-kiuwo-eeybr-dab4l-ur6up-pqe",
     "validation": {
@@ -294,7 +296,7 @@ Response
 {
   "id": 1,
   "jsonrpc": "2.0",
-  "method": "icrc_112_batch_call_canisters",
+  "method": "icrc112_batch_canister_call",
   "params": {
     "sender": "b7gqo-ulk5n-2kpo7-oalt7-p2kyl-o4j5l-kiuwo-eeybr-dab4l-ur6up-pqe",
     "validation": {

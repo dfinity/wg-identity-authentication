@@ -16,6 +16,7 @@
     - [icrc10_supported_standards](#icrc10_supported_standards)
   - [Notes](#notes)
   - [Example](#example)
+  - [Code example](#code-example)
 
 ## Summary
 
@@ -166,7 +167,9 @@ record {
 
 If signer receives `true`, then continue to step 5, or else stop execute and handle the error case. - [defined in ICRC-112](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_112_batch_canister_call.md#processing)
 
-[Code example](https://github.com/slide-computer/signer-js/blob/main/packages/signer-test/src/agentChannel.ts#L351) for handling parsing ICRC token and NFT
+## Code example
+
+For signer : [Code example](https://github.com/slide-computer/signer-js/blob/main/packages/signer-test/src/agentChannel.ts#L351) for handling parsing ICRC token and NFT
 
 [DRAFT]: https://img.shields.io/badge/STATUS-DRAFT-f25a24.svg
 [EXTENDS 25]: https://img.shields.io/badge/EXTENDS-ICRC--25-ed1e7a.svg
