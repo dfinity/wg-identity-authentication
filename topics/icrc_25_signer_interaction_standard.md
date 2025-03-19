@@ -281,7 +281,17 @@ Response
 
 ### `icrc25_supported_standards`
 
-The relying party can query the list of standards supported by the signer.
+The relying party can query the list of standards supported by the signer. The supported standards are not limited to ICRC-25 and its extensions. 
+It's _highly recommended_ to also return token standards like e.g. ICRC-1, ICRC-2, ICRC-7 and ICRC-37 if the signer is a wallet that supports these token standards.
+
+This enables relying parties to check for signer functionality:
+- Token swap checks if signer is a wallet that supports ICRC-1 and ICRC-2.
+- NFT marketplace checks if signer is a wallet that supports ICRC-7 and ICRC-37.
+
+If a required standard is not returned by a signer, it's up to the relying party implementation and particular use case to decide how to interact with the signer further:
+- Fallback to alternative standard that is supported by the signer.
+- Show error that suggests user to use a different signer.
+- Show warning that the signer might not be supported, asking users to continue at own risk.
 
 #### Prerequisites
 
