@@ -1,4 +1,4 @@
-# ICRC-114: Validate batch response
+# ICRC-114: Validate Batch Call
 
 ![DRAFT] 
 
