@@ -1,4 +1,4 @@
-# ICRC-114: Validate batch response
+# ICRC-114: Validate Batch Call
 
 ![DRAFT] 
 
@@ -128,7 +128,7 @@ Signer executes ICRC-112 request via JSON RPC. We assume the signer supports ICR
           "canisterId": "xyzzz-fqaaa-aaaao-a2hlq-ca",
           "method": "swap",
           "arg": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdV+ztKgq7E4l1ffuTuwEmw8AtYSjlrJ+WLO5ofQIAAMgB",
-          "nonce": [1, 2, 3, 2, 31, 31, 312] // array of bytes
+          "nonce": "RElETARte24AbAKzsNrDA2ithsqDBQFsA/vKAQKi3pTrBgHYo4yoDX0BAwEdV+ztKgq7E4l1ffuTuwEmw8AtYSjlrJ+WLO5ofQIAAMgB"
         }
       ],
       [

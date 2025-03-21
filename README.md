@@ -42,14 +42,14 @@ Before jumping into the standards, it's recommended to read the overview [here](
 
 Standards that describe interactions between relying parties and signers through JSON-RPC messages.
 
-| Standard                                                                                      | Status      |
-|-----------------------------------------------------------------------------------------------|-------------|
-| [ICRC-25: Signer Interaction](./topics/icrc_25_signer_interaction_standard.md)                | ![APPROVED] |
-| [ICRC-27: Accounts](./topics/icrc_27_accounts.md)                                             | ![APPROVED] |
-| [ICRC-34: Delegation](./topics/icrc_34_delegation.md)                                         | ![APPROVED] |
-| [ICRC-49: Call Canister](./topics/icrc_49_call_canister.md)                                   | ![APPROVED] |
-| [ICRC-95: Derivation Origin](./topics/icrc_95_derivationorigin.md)                            | ![APPROVED] |
-| [ICRC-#: Batch Call Canister](https://github.com/dfinity/wg-identity-authentication/pull/220) | ![ISSUE]    |
+| Standard                                                                       | Status      |
+|--------------------------------------------------------------------------------|-------------|
+| [ICRC-25: Signer Interaction](./topics/icrc_25_signer_interaction_standard.md) | ![APPROVED] |
+| [ICRC-27: Accounts](./topics/icrc_27_accounts.md)                              | ![APPROVED] |
+| [ICRC-34: Delegation](./topics/icrc_34_delegation.md)                          | ![APPROVED] |
+| [ICRC-49: Call Canister](./topics/icrc_49_call_canister.md)                    | ![APPROVED] |
+| [ICRC-95: Derivation Origin](./topics/icrc_95_derivationorigin.md)             | ![APPROVED] |
+| [ICRC-112: Batch Call Canister](./topics/icrc_112_batch_call_canister.md)      | ![DRAFT]    |
 
 ### Transport Channel
 
@@ -71,6 +71,7 @@ Standards that describe canister call interfaces used by signers.
 |----------------------------------------------------------------------------------------------------|-------------|
 | [ICRC-21: Canister Call Consent Messages](./topics/ICRC-21/icrc_21_consent_msg.md)                 | ![APPROVED] |
 | [ICRC-28: Trusted Origins](./topics/icrc_28_trusted_origins.md)                                    | ![APPROVED] |
+| [ICRC-114: Validate Batch Call](./topics/icrc_114_validate_batch_call.md)                          | ![DRAFT]    |
 | [ICRC-#: Dapp Metadata Registry](https://github.com/dfinity/wg-identity-authentication/issues/156) | ![ISSUE]    |
 
 ### Other
