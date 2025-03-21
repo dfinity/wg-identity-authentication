@@ -371,7 +371,7 @@ Recommended approach to recover from partial responses as relying party:
 
 1. Check the last sub-array that contains processed responses:
     - Check if processed responses are valid by either validating the candid response directly or by calling the validation canister directly.
-    - In case of using the validation canister, consider an additional canister method that returns more than a boolean e.g. error message and instructions to show to user.
+    - In case of using the validation canister, consider implementing and using an additional canister method that returns more than a boolean e.g. error message and instructions to show to user.
     - Resolve underlying issues that caused the error that resulted in partial responses e.g. not enough funds.
     - Inform the user of the error(s) and ask them to take certain actions where needed.
 2. Re-submit the `icrc112_batch_call_canister` request with the successful canister call requests omitted.
