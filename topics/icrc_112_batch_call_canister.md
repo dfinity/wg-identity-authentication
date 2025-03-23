@@ -28,19 +28,19 @@
 
 ## Request Params
 
-- **`sender` (`text`)** - The principal (textual representation) requested to execute the call.
+- **`sender` (`text`):** The principal (textual representation) requested to execute the call.
 
-- **`requests` (`record` `array`)** - A list of requests with following fields:
+- **`requests` (`array` of `array` of `record`):** A list of lists of requests with following fields:
 
-  - **`canisterId` (`text`)** - The id of the canister on which the call should be executed.
-  - **`method` (`text`)** - The name of the call method to be executed.
-  - **`arg` (`text`)** - The arguments for the call.
-  - **`nonce` (`blob` `optional`)** - Arbitrary data of length at most 32 bytes, typically randomly generated. This can be used to create distinct requests with otherwise identical fields.
+  - **`canisterId` (`text`):** The id of the canister on which the call should be executed.
+  - **`method` (`text`):** The name of the call method to be executed.
+  - **`arg` (`text`):** The arguments for the call.
+  - **`nonce` (`blob` optional):** Arbitrary data of length at most 32 bytes, typically randomly generated. This can be used to create distinct requests with otherwise identical fields.
 
-- **`validation` (`record` `optional`)** - Validation request with following fields:
+- **`validation` (`record` optional):** Validation request with following fields:
 
-  - **`canisterId` (`text`)** - The id of the canister on which the validation call should be executed.
-  - **`method` (`text`)** - The name of the validation call method to be executed.
+  - **`canisterId` (`text`):** The id of the canister on which the validation call should be executed.
+  - **`method` (`text`):** The name of the validation call method to be executed.
 
 ## Processing
 
