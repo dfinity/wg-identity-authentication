@@ -9,6 +9,10 @@
   * [Summary](#summary)
   * [Request Params](#request-params)
   * [Processing](#processing)
+    * [Approval Message](#approval-message)
+    * [Parallel and Sequential Execution](#parallel-and-sequential-execution)
+    * [Validation](#validation)
+  * [Leveraging ICRC-25](#leveraging-icrc-25)
   * [Notes](#notes)
   * [Flow](#flow)
   * [Example request](#example-request)
@@ -44,26 +48,24 @@
 
 ## Processing
 
-This standard builds on top of the canister call processing defined in [ICRC-49](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_49_call_canister.md). Go [here](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_49_call_canister.md#message-processing) for details regarding canister call execution, processing, and verification on the relying party side. All requirements, recommendations, guidelines, warnings and other details in the ICRC-49 standard should be strictly followed.
+This standard builds upon the canister call processing defined in [ICRC-49](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_49_call_canister.md). Refer to ICRC-49 for details regarding canister call execution, processing, and verification on the relying party side. All requirements, recommendations, guidelines, and warnings in ICRC-49 should be strictly followed.
 
-**Approval message**
+### Approval Message
 
-Before the signer executes the batch requests, the signer should receive approval from the user to execute the requests. There are two ways the signer can implement the consent message.
+Before executing the batch, the signer *must* obtain a single user approval **for the entire batch of requests at once**, regardless of the individual consent mechanisms used for each request. The signer handles each request within the batch as follows:
 
-First way is to follow the ICRC-21 standard. Signer can follow the standard to query consent messages, for each of the ICRC-112 requests, from the canisters. Then the signer can display the constent messages together for the user to approve.
+1. **Supported ICRC Standard:** For requests using standards the signer supports (as declared via [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md#icrc25_supported_standards)), the signer implements its own consent screen, tailored to the specific standard. This screen should clearly summarize the actions the user is authorizing **for that particular request**.
+2. **ICRC-21 Consent Messages:** If a request uses a standard the signer does *not* support, the signer attempts to retrieve a consent message from the target canister using the ICRC-21 standard. This allows the canister to provide a custom explanation of the requested action **for that particular request**.
+3. **Blind Request Warning:** If a canister doesn't support ICRC-21 (and the signer doesn't natively support the standard), the signer *must* display a warning to the user **for that particular request**. This warning *must* include the canister ID, sender, method, and arguments. Arguments *should* be decoded for clarity. If decoding is not possible, a stronger warning must be displayed. The warning must clearly indicate that the canister does not support ICRC-21 and that the user is authorizing an action without a detailed explanation from the target canister. The signer may also choose to return an error, **aborting the entire batch operation**, instead of displaying the warning.
 
-Second way is to implement the approval as a blind request. In this case, signer should display the warning with canister call details, such as canisterId, sender, method, and arg (more details on these fields below). The warning must inform the user that the canister does not support ICRC-21. The arguments should be decoded, otherwise a stronger warning must be displayed.
+The signer **aggregates the consent information from all requests** (using the mechanisms above) into a single, clear prompt for the user to approve or reject the entire batch.
 
-**Parallel & sequence logic**
+### Parallel and Sequential Execution
 
-Relying party can specify whether requests in ICRC-112 should be executed in parallel or in specified sequences. Below is how such logic is handled.
+The `requests` parameter defines the execution order:
 
-ICRC-112 is constructed as array & sub-array of requests, which behave in the following ways:
-
-- The requests in the sub-array are executed in parallel.
-- The requests in the next sub-array, if any, are executed only after all transactions in previous sub-array are validated. The requests in the last sub-array is not validated, since there are no further requests waiting for these to be successfully completed. Details on how validation is done is described in next section.
-
-There is only one response from ICRC-112, not separate responses for individual requests. The final response aggregates and includes the results from individual request calls.
+- Requests *within* a sub-array are executed in **parallel**.
+- Sub-arrays are executed **sequentially**. A sub-array is only executed after *all* requests in the preceding sub-array have been successfully validated (see "Validation" below). The final sub-array is executed without validation, as there are no subsequent requests dependent on its outcome.
 
 ```json5
 // Example execution order
@@ -76,46 +78,41 @@ There is only one response from ICRC-112, not separate responses for individual 
 }
 ```
 
-**Validation**
+### Validation
 
-All requests in a sub-array must be successfully validated before ICRC-112 executes the transactions in the next sub-array. Each request is validated in following ways.
+Before executing requests in a subsequent sub-array, the signer must validate the successful execution of all requests in the preceding sub-array. 
 
-First, if the response has an error, the request already failed the validation.
+Validation is handled as follows:
 
-If the response doesn’t have an error, the signer handles the response differently, depending on whether the signer supports the standard used in the request:
+1. **Request Executed Check:** The signer first verifies that a request was executed by the canister. This includes confirming that:
+   - The canister call could be made (no network errors).
+   - A certificate is available for the canister call.
+   - The certificate contains a reply from the canister.
+   
+   If any of these checks fail, the request is considered to have failed validation. The specific error code (e.g., network error) is included in the aggregated response.
 
-- If the signer supports the standard, the signer will do a signer-side validation.
-- If the signer does not support the standard, the signer will call an external canister validation method provided by the relying party.
+2. **Successful Response Handling:** If a request executed and returned a certificate with a reply, the signer proceeds with validation based on its support for the underlying standard used by the request:
+   - **Signer-Side Validation (Preferred):** For standards the signer supports (as declared via [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md#icrc25_supported_standards)), the signer must perform validation internally. This involves parsing the response data (e.g., looking up the reply in the certificate, decoding the reply using the relevant Candid definition) to confirm successful execution according to the standard's requirements. For example, an ICRC-1 transfer would require confirming the inclusion of a valid block ID.
+   - **Canister Validation (Fallback):** If the signer does not support the standard, it uses the validation canister method specified in the request parameters. The signer calls the specified method (which should conform to ICRC-114) on this canister. This validation canister is responsible for determining whether the request completed successfully.
+   
+   If something completed successfully or not should always be implemented abstractly, in most cases this means checking if there is either a result or error.
 
-The signer must implement signer-side validation for all the standards it supports (declared on [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md)). For example, with a ICRC-1 transfer request, the signer must look up the reply in the certificate, decode the reply using respective candid, and confirm that a block id is included. Similarly, with other supported standards, the signer must parse the response and validate the response in respective ways.
 
-If the signer does not support a standard, signer must validate by calling the canister validation method ([ICRC-114](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_114_validation_canister.md)) that the relying party provided. This method simply returns ‘true’ if the request was successfully completed and ‘false’ otherwise. It is encouraged for relying party to provide the canister validation method that signers can use as fallback, since not all wallets support all the standards.
+## Leveraging ICRC-25
 
-Validation related errors can be the following:
+Before calling `icrc112_batch_call_canister`, the relying party can use ICRC-25 to determine which standards the signer supports.
 
-- If a validation fails because the response includes an error, ICRC-112 will add the `returned error code` for the request in the aggregate response.
-- If the signer was not able to attempt a validation for an unsupported standard because the relying party did not provide the validation method, error `1002` will be added.
-- If the validation fails, either because of signer-side or canister validation fail, error `1003` will be added.
-- If any of the requests in a sub-array fails validation, all the requests in the following sub-arrays will not be executed and will be marked with `1001` error.
+Constructing the `icrc112_batch_call_canister` request using only standards the signer supports is the most efficient approach, as it avoids the need for external validation calls.
 
-[Code example](https://github.com/slide-computer/signer-js/blob/main/packages/signer-test/src/agentChannel.ts#L329) for handling non standard request.
-
-**Using ICRC-25 with ICRC-112**
-
-Not all signer support the same standards. Hence, prior to calling ICRC-112, it may be helpful to make an [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md) request to check which standards the signer supports.
-
-Best practice would be to construct ICRC-112 using only standards that the signer supports. This would be the fastest solution, since the signer would do any validation logic directly on the signer.
-
-However, if it is unavoidable to use standards that the signer does not support, the relying party could include canisterValidation call as fallback. This solution would be a bit slower since there is an external validation call involved. But providing a fallback canisterValidation call would make the implementation more robust, in case the relying party encounters wallets that do not support certain standards thats used by the relying party ICRC-112 batch transactions.
+If using unsupported standards is unavoidable, providing a validation canister allows the signer to validate the request through an external call. This offers a more robust implementation, as it handles cases where the user's signer does not natively support all standards used in the batch. However, it adds latency due to the external validation call.
 
 ## Notes
 
-- The maximum number of requests is defined by the signer. For example, depending on the type of calls made, a signer can choose to raise or lower the limit. If too many requests are sent, the signer may respond with error code
-  `1004` for `Too many requests`
+- The maximum number of requests within a batch is signer-defined. The signer may adjust this limit based on the types of calls being made. If the number of requests exceeds the limit, the signer responds with error code `1001` (`Too many requests`).
 
-- It's up to the signer how to display the sequence of parallel requests to the user for approval. But it's recommended to show some sort of progress indicator to the user after approval, particularly for longer sequences.
+- The signer determines how to present parallel requests to the user for approval. Displaying some form of progress indicator after approval is recommended, especially for longer sequences.
 
-- The relying party handles any errors if any transactions failed. The responses of individual transactions are aggregated into the response of the batch call. It is up to the relying party to decide how to handle any errors in the response.
+- The relying party is responsible for handling any errors. Individual transaction responses are aggregated into the batch call response, and the relying party must decide how to handle these errors.
 
 ## Flow
 
