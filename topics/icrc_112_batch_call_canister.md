@@ -389,7 +389,7 @@ The batch request was partially executed, since one or more requests did not pas
 }
 ```
 
-## Handling Partial responses
+## Handling Partial Responses
 
 In case of an error, the relying party might receive partial responses. This means that not all requests are processed and/or validated since the error stopped the signer from processing.
 
