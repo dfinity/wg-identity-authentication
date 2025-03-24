@@ -26,7 +26,7 @@
       * [`1001` Too many requests](#1001-too-many-requests)
       * [`1002` Validation required](#1002-validation-required)
       * [`1003` Validation failed](#1003-validation-failed)
-  * [Handling Partial responses](#handling-partial-responses)
+  * [Handling Partial Responses](#handling-partial-responses)
   * [Leveraging ICRC-25](#leveraging-icrc-25)
 <!-- TOC -->
 
