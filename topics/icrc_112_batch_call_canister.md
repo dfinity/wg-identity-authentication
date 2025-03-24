@@ -51,10 +51,9 @@
     "jsonrpc": "2.0",
     "method": "icrc25_request_permissions",
     "params": {
-        "version": "1",
         "scopes": [
             {
-                "method": "icrc49_call_canister"
+                "method": "icrc112_batch_call_canister"
             }
         ]
     }
