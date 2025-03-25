@@ -1,19 +1,19 @@
 # ICRC-114: Validate Batch Call
 
-![DRAFT] 
+![DRAFT]
 
 **Authors:** [Long Tran](https://github.com/baolongt), [Mason](https://github.com/masonswj)
 
 <!-- TOC -->
 
-- [ICRC-114: Validate batch response](#icrc-114-validate-batch-response)
+- [ICRC-114: Validate Batch Call](#icrc-114-validate-batch-call)
   - [Summary](#summary)
   - [Motivation](#motivation)
   - [Assumptions](#assumptions)
   - [ICRC-114 Flow](#icrc-114-flow)
   - [Method](#method)
-    - [icrc114_validate](#icrc114_validate)
-    - [icrc10_supported_standards](#icrc10_supported_standards)
+    - [icrc114\_validate](#icrc114_validate)
+    - [icrc10\_supported\_standards](#icrc10_supported_standards)
   - [Notes](#notes)
   - [Example](#example)
   - [Code example](#code-example)
@@ -106,10 +106,7 @@ Signer executes ICRC-112 request via JSON RPC. We assume the signer supports ICR
   "method": "icrc_112_batch_call_canisters",
   "params": {
     "sender": "b7gqo-ulk5n-2kpo7-oalt7-p2kyl-o4j5l-kiuwo-eeybr-dab4l-ur6up-pqe",
-    "validation": {
-      "canisterId": "zzzzz-fqaaa-aaaao-a2hlq-ca",
-      "method": "icrc114_validate"
-    },
+    "validationCanisterId": "zzzzz-fqaaa-aaaao-a2hlq-ca",
     "requests": [
       [
         {
@@ -153,7 +150,7 @@ Execute order of ICRC-112:
 
 On step 3, because the standard of swap request is not supported by signer, validation should be handle by ICRC-114.
 
-Signer should call `icrc_114_validate` of canister defined in JSON RPC. This is what the request look like in candid when we send to validate canister:
+Signer should call `icrc114_validate` of canister defined in JSON RPC. This is what the request look like in candid when we send to validate canister:
 
 ```bash
 record {
