@@ -12,11 +12,13 @@
   - [Assumptions](#assumptions)
   - [ICRC-114 Flow](#icrc-114-flow)
   - [Method](#method)
-    - [icrc114\_validate](#icrc114_validate)
-    - [icrc10\_supported\_standards](#icrc10_supported_standards)
+    - [icrc114_validate](#icrc114_validate)
+    - [icrc10_supported_standards](#icrc10_supported_standards)
   - [Notes](#notes)
   - [Example](#example)
   - [Code example](#code-example)
+
+<!-- TOC -->
 
 ## Summary
 
@@ -78,7 +80,7 @@ sequenceDiagram
 type CanisterCall = record {
     canister_id: principal;
     method: text;
-    nonce: optional blob;
+    nonce: opt blob;
     arg: blob;
     res: blob;
 };
