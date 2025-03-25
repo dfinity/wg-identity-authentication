@@ -76,7 +76,7 @@ An ICRC-25 compliant signer must implement the [icrc25_supported_standards](./ic
 - **`arg` (`text`):** The arguments for the call.
 - **`nonce` (`blob` optional):** Arbitrary data of length at most 32 bytes, typically randomly generated. This can be used to create distinct requests with otherwise identical fields.
 
-**`validationCanister` (`text` optional):** The id of the canister which implements the [ICRC-114](./icrc_114_validate_batch_call.md) standard for validation. By default, the signer must call the `icrc_114_validate` method from this canister to validate the responses of unsupported standards.
+**`validationCanisterId` (`text` optional):** The id of the canister which implements the [ICRC-114](./icrc114_validate_batch_call.md) standard for validation. By default, the signer must call the `icrc114_validate` method from this canister to validate the responses of unsupported standards.
 
 ### Example RPC Request
 
@@ -87,7 +87,7 @@ An ICRC-25 compliant signer must implement the [icrc25_supported_standards](./ic
   "method": "icrc112_batch_call_canister",
   "params": {
     "sender": "b7gqo-ulk5n-2kpo7-oalt7-p2kyl-o4j5l-kiuwo-eeybr-dab4l-ur6up-pqe",
-    "validationCanister": "zzzzz-fqaaa-aaaao-a2hlq-ca",
+    "validationCanisterId": "zzzzz-fqaaa-aaaao-a2hlq-ca",
     "requests": [
       [
         {
@@ -223,7 +223,7 @@ Validation is handled as follows:
 2. **Successful Response Handling:** If a request executed and returned a certificate with a reply, the signer proceeds with validation based on its support for the underlying standard used by the request:
 
    - **Signer-Side Validation (Preferred):** For standards the signer supports (as declared via [ICRC-25](https://github.com/dfinity/wg-identity-authentication/blob/main/topics/icrc_25_signer_interaction_standard.md#icrc25_supported_standards)), the signer must perform validation internally. This involves parsing the response data (e.g., looking up the reply in the certificate, decoding the reply using the relevant Candid definition) to confirm successful execution according to the standard's requirements. For example, an ICRC-1 transfer would require confirming the inclusion of a valid block ID.
-   - **Canister Validation (Fallback):** If the signer does not support the standard, it uses the validation canister specified in the request parameters. The signer calls the `icrc_114_validate` method on this canister. This validation canister is responsible for determining whether the request completed successfully.
+   - **Canister Validation (Fallback):** If the signer does not support the standard, it uses the validation canister specified in the request parameters. The signer calls the `icrc114_validate` method on this canister. This validation canister is responsible for determining whether the request completed successfully.
 
    If something completed successfully or not should always be implemented abstractly, in most cases this means checking if there is either a result or error.
 
@@ -374,11 +374,9 @@ The batch request was partially executed, since one or more requests did not pas
         ],
         [
           null, // Not processed
-          null, // Not processed
+          null
         ],
-        [
-          null, // Not processed
-        ],
+        [null],
       ],
     },
   },
