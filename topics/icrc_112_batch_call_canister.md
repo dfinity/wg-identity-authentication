@@ -48,7 +48,7 @@
 
 ### Example Permission Request
 
-```json
+```json5
 {
   "id": 1,
   "jsonrpc": "2.0",
@@ -78,11 +78,11 @@ An ICRC-25 compliant signer must implement the [icrc25_supported_standards](./ic
 - **`arg` (`text`):** The arguments for the call.
 - **`nonce` (`blob` optional):** Arbitrary data of length at most 32 bytes, typically randomly generated. This can be used to create distinct requests with otherwise identical fields.
 
-**`validationCanisterId` (`text` optional):** The id of the canister which implements the [ICRC-114](./icrc114_validate_batch_call.md) standard for validation. By default, the signer must call the `icrc114_validate` method from this canister to validate the responses of unsupported standards.
+**`validationCanisterId` (`text` optional):** The id of the canister which implements the [ICRC-114](./icrc_114_validate_batch_call.md) standard for validation. By default, the signer must call the `icrc114_validate` method from this canister to validate the responses of unsupported standards.
 
 ### Example RPC Request
 
-```json
+```json5
 {
   "id": 1,
   "jsonrpc": "2.0",
@@ -137,7 +137,7 @@ An ICRC-25 compliant signer must implement the [icrc25_supported_standards](./ic
 
 ### Example RPC Response
 
-```json
+```json5
 {
   "id": 1,
   "jsonrpc": "2.0",
@@ -195,7 +195,7 @@ The `requests` parameter defines the execution order:
 - Requests _within_ a sub-array are executed in **parallel**.
 - Sub-arrays are executed **sequentially**. A sub-array is only executed after _all_ requests in the preceding sub-array have been successfully validated (see "Validation" below). The final sub-array is executed without validation, as there are no subsequent requests dependent on its outcome.
 
-```json
+```json5
 // Example execution order
 {
   "requests": [
@@ -277,7 +277,7 @@ sequenceDiagram
 
 Existing errors defined in [ICRC-25](./icrc_25_signer_interaction_standard.md#errors-3) might additionally return partial responses in the error details. A `null` value is returned for requests that weren't processed.
 
-```json
+```json5
 {
   "id": 1,
   "jsonrpc": "2.0",
@@ -353,7 +353,7 @@ The batch request was not executed, since the signer does not support the standa
 
 The batch request was partially executed, since one or more requests did not pass validation. A `null` value is returned for requests that weren't processed.
 
-```json
+```json5
 {
   "id": 1,
   "jsonrpc": "2.0",
@@ -376,7 +376,7 @@ The batch request was partially executed, since one or more requests did not pas
         ],
         [
           null, // Not processed
-          null
+          null // Not processed
         ],
         [null]
       ]
