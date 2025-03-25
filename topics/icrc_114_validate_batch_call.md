@@ -1,12 +1,12 @@
 # ICRC-114: Validate Batch Call
 
-![DRAFT] 
+![DRAFT]
 
 **Authors:** [Long Tran](https://github.com/baolongt), [Mason](https://github.com/masonswj)
 
 <!-- TOC -->
 
-- [ICRC-114: Validate batch response](#icrc-114-validate-batch-response)
+- [ICRC-114: Validate Batch Call](#icrc-114-validate-batch-call)
   - [Summary](#summary)
   - [Motivation](#motivation)
   - [Assumptions](#assumptions)
@@ -82,7 +82,7 @@ type CanisterCall = record {
     arg: blob;
     res: blob;
 };
-icrc114_validate : (CanisterCall) -> bool
+icrc_114_validate : (CanisterCall) -> bool
 ```
 
 ### icrc10_supported_standards
@@ -106,10 +106,7 @@ Signer executes ICRC-112 request via JSON RPC. We assume the signer supports ICR
   "method": "icrc_112_batch_call_canisters",
   "params": {
     "sender": "b7gqo-ulk5n-2kpo7-oalt7-p2kyl-o4j5l-kiuwo-eeybr-dab4l-ur6up-pqe",
-    "validation": {
-      "canisterId": "zzzzz-fqaaa-aaaao-a2hlq-ca",
-      "method": "icrc114_validate"
-    },
+    "validationCanister": "zzzzz-fqaaa-aaaao-a2hlq-ca",
     "requests": [
       [
         {
