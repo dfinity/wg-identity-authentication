@@ -323,7 +323,7 @@ In addition to the errors defined in [ICRC-25](./icrc_25_signer_interaction_stan
 
 The batch request was not executed, since the numbers of requests in the batch reached the limit defined by the signer. The signer may adjust this limit based on the types of calls being made.
 
-```json
+```json5
 {
   "id": 1,
   "jsonrpc": "2.0",
@@ -338,7 +338,7 @@ The batch request was not executed, since the numbers of requests in the batch r
 
 The batch request was not executed, since the signer does not support the standard used by one or more of the requests and a validation argument was not provided.
 
-```json
+```json5
 {
   "id": 1,
   "jsonrpc": "2.0",
