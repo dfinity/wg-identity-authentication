@@ -23,15 +23,10 @@ type icrc21_consent_message_spec = record {
         // A generic display able to handle large documents and do line wrapping and pagination / scrolling.
         // Text must be Markdown formatted, no external resources (e.g. images) are allowed.
         GenericDisplay;
-        // Simple display able to handle lines of text with a maximum number of characters per line.
-        // Multiple pages can be used if the text does no fit on a single page.
+        // A simple display able to handle multiple fields with a title and content.
+        // It's able to do line wrapping and splits fields into multiple pages if they're too long.
         // Text must be plain text without any embedded formatting elements.
-        LineDisplay: record {
-            // Maximum number of characters that can be displayed per line.
-            characters_per_line: nat16;
-            // Maximum number of lines that can be displayed at once on a single page.
-            lines_per_page: nat16;
-        };
+        FieldsDisplay;
     };
 };
 
@@ -48,17 +43,14 @@ type icrc21_consent_message = variant {
     // Message for a generic display able to handle large documents and do proper line wrapping and pagination / scrolling.
     // Uses Markdown formatting, no external resources (e.g. images) are allowed.
     GenericDisplayMessage: text;
-    // Message for a simple display able to handle pages with multiple lines of text with a fixed maximum number of
-    // characters per line.
-    // Multiple pages can be used if the text does no fit on a single page.
+    // Message for a simple display able to handle multiple fields title and content.
+    // It's able to do line wrapping and splits fields into multiple pages if they're too long.
     // Uses plain text, without any embedded formatting elements.
-    LineDisplayMessage: record {
-        pages: vec record {
-            // Lines of text to be displayed on a single page.
-            // Must not have more entries (lines) than specified in the icrc21_consent_message_spec.
-            // Lines must not exceed the number of characters per line specified in the icrc21_consent_message_spec.
-            lines: vec text;
-        };
+    FieldsDisplayMessage: record {
+        // Context and type of canister call, accurate and concise e.g. Send ICP
+        intent: text;
+        // Canister call fields for review e.g. Amount 234.73 ICP
+        fields: vec record { text; text };
     };
 };
 
