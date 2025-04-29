@@ -1,0 +1,29 @@
+{
+  "intent": "Approve spending",
+  "fields": [
+    [
+      "From",
+      "{{from}}"
+    ],
+    [
+      "Approve to spender",
+      "{{spender}}"
+    ],
+    [
+      "Requested allowance",
+      "{{requested_allowance}} {{symbol}}"
+    ],
+    [
+      "Approval expiration",
+      "{{expiration}}"
+    ],
+    [
+      "Approval fees",
+      "{{fees}} {{symbol}}"
+    ],
+    [
+      "Memo",
+      "{{memo}}"
+    ]
+  ]
+}
