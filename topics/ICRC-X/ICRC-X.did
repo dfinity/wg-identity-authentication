@@ -1,0 +1,142 @@
+
+type icrc21_consent_message_metadata = record {
+    // BCP-47 language tag. See https://www.rfc-editor.org/rfc/bcp/bcp47.txt
+    language: text;
+
+    // The users local timezone offset in minutes from UTC.
+    // Applicable when converting timestamps to human-readable format.
+    //
+    // If absent in the request, the canister should fallback to the UTC timezone when creating the consent message.
+    // If absent in the response, the canister is indicating that the consent message is not timezone sensitive.
+    utc_offset_minutes: opt int16;
+};
+
+type icrc21_consent_message_spec = record {
+    // BCP-47 language tag. See https://www.rfc-editor.org/rfc/bcp/bcp47.txt
+    language: text;
+
+    // The users local timezone offset in minutes from UTC.
+    // Applicable when converting timestamps to human-readable format.
+    //
+    // If absent in the request, the canister should fallback to the UTC timezone when creating the consent message.
+    // If absent in the response, the canister is indicating that the consent message is not timezone sensitive.
+    utc_offset_minutes: opt int16;
+};
+
+// This inherit from ICRC 21 
+type icrcX_consent_message_request = record {
+    // Method name of the canister call.
+    method: text;
+    // Argument of the canister call.
+    arg: blob;
+    // User preferences with regards to the consent message presented to the end-user.
+    user_preferences: icrc21_consent_message_spec;
+    // Content type of the consent message.
+    content_type: text;
+};
+
+type icrcX_consent_message = variant {
+    // Message for a generic display able to handle large documents and do proper line wrapping and pagination / scrolling.
+    // Uses Markdown formatting, no external resources (e.g. images) are allowed.
+    GenericDisplayMessage: text;
+};
+
+
+type icrc21_consent_info = record {
+    // Consent message describing in a human-readable format what the call will do.
+    //
+    // The message should adhere as close as possible to the user_preferences specified in the consent_message_spec + format in content_type
+    // of the icrcX_consent_message_request.
+    // If the message is not available for the given user_preferences any fallback message should be used. Providing a
+    // message should be preferred over sending an icrc21_error.
+    // The metadata must match the consent_message provided.
+    //
+    // The message should be short and concise.
+    // It should only contain information that is:
+    // * relevant to the user
+    // * relevant given the canister call argument
+    // * formatted in valid content_type provided in the request
+    // Example with "content_type" : "application/json"
+    // {
+    //     "message": "This call will transfer 100 tokens from your account to the recipient account.",
+    //     "assetIn" : [
+    //                      {"address": "0x1234", "amount": 100}],     
+    //                  ]
+    //     "assetOut" : [
+    //                      {"address": "0x1234", "amount": 100}],
+    //                  ]   
+    //      "to": "0x1234",
+    //      "from": "0x1234",
+    //      "fee": 100,
+    // }
+    consent_message: icrcX_consent_message;
+    // Metadata of the consent_message.
+    metadata: icrc21_consent_message_metadata;
+
+};
+
+type icrc21_error_info = record {
+    // Human readable technical description of the error intended for developers, not the end-user.
+    description: text;
+};
+
+type icrcX_error = variant {
+    // The canister does not support this call (i.e. it will lead to a rejection or error response).
+    // Reasons might be (non-exhaustive list):
+    // * the canister call is malformed (e.g. wrong method name, argument cannot be decoded)
+    // * the arguments exceed certain bounds
+    //
+    // The developer should provide more information about the error using the description in icrc21_error_info.
+    UnsupportedCanisterCall: icrc21_error_info;
+
+    // The canister cannot produce a consent message for this call.
+    // Reasons might be (non-exhaustive list):
+    // * it is an internal call not intended for end-users
+    // * the canister developer has not yet implemented a consent message for this call
+    //
+    // The developer should provide more information about the error using the description in icrc21_error_info.
+    ConsentMessageUnavailable: icrc21_error_info;
+
+    // The canister did not provide a consent message for because payment was missing or insufficient.
+    //
+    // This error is used to account for payment extensions to be added in the future:
+    // While small consent messages are easy and cheap to provide, this might not generally be the case for all consent
+    // messages. To avoid future breaking changes, when introducing a payment flow, this error is already introduced
+    // even though there no standardized payment flow yet.
+    InsufficientPayment: icrc21_error_info;
+
+    // The content type of the consent message is not supported.
+    NotSupportedContentType: icrc21_error_info;
+
+    // Any error not covered by the above variants.
+    GenericError: record {
+       // Machine parsable error. Can be chosen by the target canister but should indicate the error category.
+       error_code: nat;
+       // Human readable technical description of the error intended for developers, not the end-user.
+       description: text;
+   };
+};
+
+type icrc21_consent_message_response = variant {
+    // The call is ok, consent message is provided.
+    Ok: icrc21_consent_info;
+    // The call is not ok, error is provided.
+    Err: icrc21_error;
+};
+
+service : {
+    // Returns a human-readable consent message for the given canister call.
+    //
+    // This call must not require authentication (i.e. must be available for the anonymous sender).
+    // If the call is made with a non-anonymous identity, the response may be tailored to the identity.
+    //
+    // This is currently an update call. As soon as secure (replicated) query calls are available, this will be changed to such a replicated query call.
+    icrcX_canister_call_consent_message: (icrcX_consent_message_request) -> (icrc21_consent_message_response);
+
+    // Returns a list of supported standards that this canister implements.
+    // The result must include an entry for ICRC-21:
+    // record { name = "ICRC-21"; url = "https://github.com/dfinity/ICRC/blob/main/ICRCs/ICRC-21/ICRC-21.md" }
+    //
+    // See ICRC-10 for more information: https://github.com/dfinity/ICRC/blob/main/ICRCs/ICRC-10/ICRC-10.md
+    icrc10_supported_standards : () -> (vec record { name : text; url : text }) query;
+}
