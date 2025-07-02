@@ -50,6 +50,7 @@ Standards that describe interactions between relying parties and signers through
 | [ICRC-49: Call Canister](./topics/icrc_49_call_canister.md)                    | ![APPROVED] |
 | [ICRC-95: Derivation Origin](./topics/icrc_95_derivationorigin.md)             | ![APPROVED] |
 | [ICRC-112: Batch Call Canister](./topics/icrc_112_batch_call_canister.md)      | ![DRAFT]    |
+| [ICRC-146: Cross Chain JSON-RPC](./topics/icrc_146_cross_chain_json_rpc.md)    | ![DRAFT]    |
 
 ### Transport Channel
 
