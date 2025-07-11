@@ -32,11 +32,11 @@ pub enum Value {
         amount: u64,
         symbol: String,
     },
-    Timestamp {
-        seconds: Option<u64>,
+    TimestampSeconds {
+        amount: u64,
     },
-    Duration {
-        seconds: Option<u64>,
+    DurationSeconds {
+        amount: u64,
     },
     Text {
         content: String

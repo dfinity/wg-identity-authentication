@@ -45,12 +45,12 @@ type token_amount = record {
     symbol: text;
 };
 
-type timestamp = record {
-    seconds: opt nat64;
+type timestamp_seconds = record {
+    amount: nat64;
 };
 
-type duration = record {
-    seconds: opt nat64;
+type duration_seconds = record {
+    amount: nat64;
 };
 
 type text_value = record {
@@ -59,8 +59,8 @@ type text_value = record {
 
 type Value = variant {
     TokenAmount: token_amount;
-    Timestamp: timestamp;
-    Duration: duration;
+    TimestampSeconds: timestamp_seconds;
+    DurationSeconds: duration_seconds;
     Text: text_value;
 };
 

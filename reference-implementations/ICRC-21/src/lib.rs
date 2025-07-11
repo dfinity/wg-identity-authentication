@@ -58,8 +58,8 @@ fn icrc21_canister_call_consent_message(
                 intent: "Greet user".into(),
                 fields: vec![
                     ("User".into(), Value::Text { content: name.clone() }),
-                    ("created_at".into(), Value::Timestamp { seconds: Some(1752218864) }),
-                    ("active_for".into(), Value::Duration { seconds: Some(600) }),
+                    ("created_at".into(), Value::TimestampSeconds { amount: 1752218864 }),
+                    ("active_for".into(), Value::DurationSeconds { amount: 600 }),
                     ("amount".into(), Value::TokenAmount {
                         decimals: 8,
                         amount: 200000000,
