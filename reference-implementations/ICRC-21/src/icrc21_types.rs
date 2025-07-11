@@ -26,11 +26,26 @@ pub struct Icrc21ConsentMessageRequest {
 }
 
 #[derive(CandidType, Deserialize, Eq, PartialEq, Debug)]
+pub enum Value {
+    TokenAmount {
+        decimals: u8,
+        amount: u64,
+        symbol: String,
+    },
+    Timestamp {
+        value: u64,
+    },
+    Text {
+        content: String
+    }
+}
+
+#[derive(CandidType, Deserialize, Eq, PartialEq, Debug)]
 pub enum Icrc21ConsentMessage {
     GenericDisplayMessage(String),
     FieldsDisplayMessage {
         intent: String,
-        fields: Vec<(String, String)>,
+        fields: Vec<(String, Value)>,
     },
 }
 

@@ -1,9 +1,8 @@
 use crate::icrc21_types::{
     Icrc21ConsentInfo, Icrc21ConsentMessage, Icrc21ConsentMessageMetadata,
     Icrc21ConsentMessageRequest, Icrc21DeviceSpec, Icrc21Error, Icrc21ErrorInfo,
-    Icrc21SupportedStandard,
+    Icrc21SupportedStandard, Value,
 };
-use itertools::Itertools;
 use Icrc21ConsentMessage::{FieldsDisplayMessage, GenericDisplayMessage};
 use Icrc21DeviceSpec::{FieldsDisplay, GenericDisplay};
 use Icrc21Error::UnsupportedCanisterCall;
@@ -57,7 +56,15 @@ fn icrc21_canister_call_consent_message(
             metadata,
             consent_message: FieldsDisplayMessage {
                 intent: "Greet user".into(),
-                fields: vec![("User".into(), name.clone())],
+                fields: vec![
+                    ("User".into(), Value::Text { content: name.clone() }),
+                    ("created_at".into(), Value::Timestamp { value: 1752218864732 }),
+                    ("amount".into(), Value::TokenAmount {
+                        decimals: 8,
+                        amount: 200000000,
+                        symbol: "ICP".to_string(),
+                    }),
+                ],
             },
         }),
         Some(GenericDisplay) | None => Ok(Icrc21ConsentInfo {

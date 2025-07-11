@@ -39,6 +39,26 @@ type icrc21_consent_message_request = record {
     user_preferences: icrc21_consent_message_spec;
 };
 
+type token_amount = record {
+    decimals: nat8;
+    amount: nat64;
+    symbol: text;
+};
+
+type timestamp = record {
+    value: nat64;
+};
+
+type text_value = record {
+    content: text;
+};
+
+type Value = variant {
+    TokenAmount: token_amount;
+    Timestamp: timestamp;
+    Text: text_value;
+};
+
 type icrc21_consent_message = variant {
     // Message for a generic display able to handle large documents and do proper line wrapping and pagination / scrolling.
     // Uses Markdown formatting, no external resources (e.g. images) are allowed.
