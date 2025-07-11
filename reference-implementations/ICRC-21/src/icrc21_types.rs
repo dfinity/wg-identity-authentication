@@ -33,7 +33,10 @@ pub enum Value {
         symbol: String,
     },
     Timestamp {
-        value: u64,
+        seconds: Option<u64>,
+    },
+    Duration {
+        seconds: Option<u64>,
     },
     Text {
         content: String

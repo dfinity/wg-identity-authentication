@@ -46,7 +46,11 @@ type token_amount = record {
 };
 
 type timestamp = record {
-    value: nat64;
+    seconds: opt nat64;
+};
+
+type duration = record {
+    seconds: opt nat64;
 };
 
 type text_value = record {
@@ -56,6 +60,7 @@ type text_value = record {
 type Value = variant {
     TokenAmount: token_amount;
     Timestamp: timestamp;
+    Duration: duration;
     Text: text_value;
 };
 
