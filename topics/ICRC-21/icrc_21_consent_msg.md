@@ -33,16 +33,16 @@ In addition to implementing this interface, it is recommended that the canister 
 
 ### Authentication
 
-The signer may send the `icrc21_consent_message` call using the same identity as it would for the actual canister call for which the consent message was issued.
+The signer may send the `icrc21_canister_call_consent_message` call using the same identity as it would for the actual canister call for which the consent message was issued.
 
-Any canister implementing the `icrc21_consent_message` interface must not require authentication for this call. Anonymous consent messages are required in the [cold signer use-case](#cold-signer-use-case) which would otherwise require two interactions with the cold signer component, making the flow very cumbersome for users.
+Any canister implementing the `icrc21_canister_call_consent_message` interface must not require authentication for this call. Anonymous consent messages are required in the [cold signer use-case](#cold-signer-use-case) which would otherwise require two interactions with the cold signer component, making the flow very cumbersome for users.
 
 Canisters may add additional or different information if a non-anonymous `sender` is used.
 For example, a canister might include private information in the consent message, if the call is made by the owner of that information.
 
 > **_WARNING:_**  Canister developers must take care to not rely on the current state of the canister / identity attached data when issuing the consent message. There might be a significant time delay (depending on the signer used) between retrieving the consent message and submitting the canister call. The consent message must accurately describe all possible outcomes of the canister call, accounting for that time delay.
 
-> **_NOTE:_** The `icrc21_consent_message` method is currently declared as an `update` call, due to the necessity
+> **_NOTE:_** The `icrc21_canister_call_consent_message` method is currently declared as an `update` call, due to the necessity
 > of supporting dynamic data in a secure way. As soon as secure (replicated) query calls are available, this will be changed to such a replicated query call.
 
 ## Use-Cases
@@ -86,9 +86,9 @@ sequenceDiagram
 2. The signer fetches the consent message from the target canister and validates the response:
    * `icrc21_consent_message_request.method` must match the canister call method.
    * `icrc21_consent_message_request.arg` must match the canister call argument.
-   * The signer must use the same identity for the `icrc21_consent_message` request as is used for signing the canister call (in step 6).
-   * The `icrc21_consent_message` canister call must be made to the target canister.
-   * The response to the `icrc21_consent_message` canister call (fetched using `read_state`) must be delivered in a valid certificate (see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification)).
+   * The signer must use the same identity for the `icrc21_canister_call_consent_message` request as is used for signing the canister call (in step 6).
+   * The `icrc21_canister_call_consent_message` canister call must be made to the target canister.
+   * The response to the `icrc21_canister_call_consent_message` canister call (fetched using `read_state`) must be delivered in a valid certificate (see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification)).
    * The decoded response must not be `null` and match the `icrc21_consent_message_response::OK` variant.
 3. The consent message is presented to the user.
 4. User approval:
@@ -141,19 +141,19 @@ sequenceDiagram
 2. The chain-connected signer component fetches the consent message from the target canister:
    * `icrc21_consent_message_request.method` must match the canister call method.
    * `icrc21_consent_message_request.arg` must match the canister call argument.
-   * The chain-connected signer component must use the anonymous identity for the `icrc21_consent_message` request.
-   * The `icrc21_consent_message` canister call must be made to the target canister.
-   * The response to the `icrc21_consent_message` canister call (fetched using `read_state`) must be delivered in a valid certificate (see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification)).
+   * The chain-connected signer component must use the anonymous identity for the `icrc21_canister_call_consent_message` request.
+   * The `icrc21_canister_call_consent_message` canister call must be made to the target canister.
+   * The response to the `icrc21_canister_call_consent_message` canister call (fetched using `read_state`) must be delivered in a valid certificate (see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification)).
    * The decoded response must not be `null` and match the `icrc21_consent_message_response::OK` variant.
 3. The canister call and the consent message request as well as the certified response are transferred to the cold signer component.
 4. The cold signer component validates the consent message:
    1. The consent message request must match the canister call:
       * `icrc21_consent_message_request.method` must match the canister call method.
       * `icrc21_consent_message_request.arg` must match the canister call argument.
-      * The `icrc21_consent_message` request `sender` must be anonymous or match the identity used to sign the canister call request (in step 7).
-      * The `icrc21_consent_message` request `canister_id` must match the target canister id.
+      * The `icrc21_canister_call_consent_message` request `sender` must be anonymous or match the identity used to sign the canister call request (in step 7).
+      * The `icrc21_canister_call_consent_message` request `canister_id` must match the target canister id.
    2. The consent message response must be certified and valid:
-      * The response to the `icrc21_consent_message` canister call must be provided in a valid certificate (see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification)).
+      * The response to the `icrc21_canister_call_consent_message` canister call must be provided in a valid certificate (see [Certification](https://internetcomputer.org/docs/current/references/ic-interface-spec#certification)).
       * The decoded response must not be `null` and match the `icrc21_consent_message_response::Ok` variant.
    3. The consent message response certificate `time` must be recent with respect to the `ingress_expiry` of the canister call.
    4. The consent message user preferences must match the user preferences of the signer. In particular, the consent message must be in a language understood by the user.
@@ -189,7 +189,7 @@ Argument for the ledger canister call to `transfer`:
 )
 ```
 
-Argument for the ledger canister call to `icrc21_consent_message`:
+Argument for the ledger canister call to `icrc21_canister_call_consent_message`:
 
 ```
 (
