@@ -39,29 +39,29 @@ type icrc21_consent_message_request = record {
     user_preferences: icrc21_consent_message_spec;
 };
 
-type token_amount = record {
+type TokenAmount = record {
     decimals: nat8;
     amount: nat64;
     symbol: text;
 };
 
-type timestamp_seconds = record {
+type TimestampSeconds = record {
     amount: nat64;
 };
 
-type duration_seconds = record {
+type DurationSeconds = record {
     amount: nat64;
 };
 
-type text_value = record {
+type TextValue = record {
     content: text;
 };
 
 type Value = variant {
-    TokenAmount: token_amount;
-    TimestampSeconds: timestamp_seconds;
-    DurationSeconds: duration_seconds;
-    Text: text_value;
+    TokenAmount: TokenAmount;
+    TimestampSeconds: TimestampSeconds;
+    DurationSeconds: DurationSeconds;
+    Text: TextValue;
 };
 
 type icrc21_consent_message = variant {
