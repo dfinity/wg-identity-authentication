@@ -75,7 +75,7 @@ type icrc21_consent_message = variant {
         // Context and type of canister call, accurate and concise e.g. Send ICP
         intent: text;
         // Canister call fields for review e.g. Amount 234.73 ICP
-        fields: vec record { text; text };
+        fields: vec record { text; Value };
     };
 };
 
