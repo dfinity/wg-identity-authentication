@@ -39,6 +39,31 @@ type icrc21_consent_message_request = record {
     user_preferences: icrc21_consent_message_spec;
 };
 
+type TokenAmount = record {
+    decimals: nat8;
+    amount: nat64;
+    symbol: text;
+};
+
+type TimestampSeconds = record {
+    amount: nat64;
+};
+
+type DurationSeconds = record {
+    amount: nat64;
+};
+
+type TextValue = record {
+    content: text;
+};
+
+type Value = variant {
+    TokenAmount: TokenAmount;
+    TimestampSeconds: TimestampSeconds;
+    DurationSeconds: DurationSeconds;
+    Text: TextValue;
+};
+
 type icrc21_consent_message = variant {
     // Message for a generic display able to handle large documents and do proper line wrapping and pagination / scrolling.
     // Uses Markdown formatting, no external resources (e.g. images) are allowed.
@@ -50,7 +75,7 @@ type icrc21_consent_message = variant {
         // Context and type of canister call, accurate and concise e.g. Send ICP
         intent: text;
         // Canister call fields for review e.g. Amount 234.73 ICP
-        fields: vec record { text; text };
+        fields: vec record { text; Value };
     };
 };
 
