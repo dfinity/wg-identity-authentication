@@ -1,0 +1,29 @@
+{
+  "intent": "Increase dissolve delay",
+  "fields": [
+    [
+      "Neuron ID",
+      {
+        "Text": {
+          "content": "{{neuron_id}}"
+        }
+      }
+    ],
+    [
+      "Additional Delay",
+      {
+        "DurationSeconds": {
+          "amount": "{{delay}}"
+        }
+      }
+    ],
+    [
+      "Memo",
+      {
+        "Text": {
+          "content": "{{memo}}"
+        }
+      }
+    ]
+  ]
+}

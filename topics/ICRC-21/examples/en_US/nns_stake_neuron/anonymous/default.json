@@ -1,11 +1,11 @@
 {
-  "intent": "Send {{name}}",
+  "intent": "Stake neuron",
   "fields": [
     [
-      "From",
+      "From account",
       {
         "Text": {
-          "content": "{{from}}"
+          "content": "{{from_account}}"
         }
       }
     ],
@@ -20,20 +20,20 @@
       }
     ],
     [
-      "To",
-      {
-        "Text": {
-          "content": "{{to}}"
-        }
-      }
-    ],
-    [
       "Fees",
       {
         "TokenAmount": {
           "decimals": "{{decimals}}",
           "amount": "{{fees}}",
           "symbol": "{{symbol}}"
+        }
+      }
+    ],
+    [
+      "Memo",
+      {
+        "Text": {
+          "content": "{{memo}}"
         }
       }
     ]

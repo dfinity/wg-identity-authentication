@@ -3,31 +3,65 @@
   "fields": [
     [
       "From",
-      "{{from}}"
+      {
+        "Text": {
+          "content": "{{from}}"
+        }
+      }
     ],
     [
       "Approve to spender",
-      "{{spender}}"
+      {
+        "Text": {
+          "content": "{{spender}}"
+        }
+      }
     ],
     [
       "Requested allowance",
-      "{{requested_allowance}} {{symbol}}"
+      {
+        "TokenAmount": {
+          "decimals": "{{decimals}}",
+          "amount": "{{requested_allowance}}",
+          "symbol": "{{symbol}}"
+        }
+      }
     ],
     [
       "Existing allowance",
-      "{{existing_allowance}} {{symbol}}"
+      {
+        "TokenAmount": {
+          "decimals": "{{decimals}}",
+          "amount": "{{existing_allowance}}",
+          "symbol": "{{symbol}}"
+        }
+      }
     ],
     [
       "Approval expiration",
-      "{{expiration}}"
+      {
+        "TimestampSeconds": {
+          "amount": "{{expiration}}"
+        }
+      }
     ],
     [
       "Approval fees",
-      "{{fees}} {{symbol}}"
+      {
+        "TokenAmount": {
+          "decimals": "{{decimals}}",
+          "amount": "{{fees}}",
+          "symbol": "{{symbol}}"
+        }
+      }
     ],
     [
       "Memo",
-      "{{memo}}"
+      {
+        "Text": {
+          "content": "{{memo}}"
+        }
+      }
     ]
   ]
 }

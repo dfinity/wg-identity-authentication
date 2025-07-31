@@ -3,19 +3,39 @@
   "fields": [
     [
       "Amount",
-      "{{amount}} {{symbol}}"
+      {
+        "TokenAmount": {
+          "decimals": "{{decimals}}",
+          "amount": "{{amount}}",
+          "symbol": "{{symbol}}"
+        }
+      }
     ],
     [
       "To",
-      "{{to}}"
+      {
+        "Text": {
+          "content": "{{to}}"
+        }
+      }
     ],
     [
       "Fees",
-      "{{fees}} {{symbol}}"
+      {
+        "TokenAmount": {
+          "decimals": "{{decimals}}",
+          "amount": "{{fees}}",
+          "symbol": "{{symbol}}"
+        }
+      }
     ],
     [
       "Memo",
-      "{{memo}}"
+      {
+        "Text": {
+          "content": "{{memo}}"
+        }
+      }
     ]
   ]
 }

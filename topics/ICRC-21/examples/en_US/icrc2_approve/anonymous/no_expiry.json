@@ -3,27 +3,55 @@
   "fields": [
     [
       "Approve to spender",
-      "{{spender}}"
+      {
+        "Text": {
+          "content": "{{spender}}"
+        }
+      }
     ],
     [
       "Requested allowance",
-      "{{requested_allowance}} {{symbol}}"
+      {
+        "TokenAmount": {
+          "decimals": "{{decimals}}",
+          "amount": "{{requested_allowance}}",
+          "symbol": "{{symbol}}"
+        }
+      }
     ],
     [
       "Existing allowance",
-      "Any existing allowance remains in effect until approval."
+      {
+        "Text": {
+          "content": "Any existing allowance remains in effect until approval."
+        }
+      }
     ],
     [
       "Approval expiration",
-      "This approval does not have an expiration."
+      {
+        "Text": {
+          "content": "This approval does not have an expiration."
+        }
+      }
     ],
     [
       "Approval fees",
-      "{{fees}} {{symbol}}"
+      {
+        "TokenAmount": {
+          "decimals": "{{decimals}}",
+          "amount": "{{fees}}",
+          "symbol": "{{symbol}}"
+        }
+      }
     ],
     [
       "Memo",
-      "{{memo}}"
+      {
+        "Text": {
+          "content": "{{memo}}"
+        }
+      }
     ]
   ]
 }
