@@ -1,0 +1,13 @@
+{
+  "intent": "Start dissolving",
+  "fields": [
+    [
+      "Neuron ID",
+      {
+        "Text": {
+          "content": "{{neuron_id}}"
+        }
+      }
+    ]
+  ]
+}

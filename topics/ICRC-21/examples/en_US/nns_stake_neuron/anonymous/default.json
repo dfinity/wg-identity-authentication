@@ -1,0 +1,41 @@
+{
+  "intent": "Stake neuron",
+  "fields": [
+    [
+      "From account",
+      {
+        "Text": {
+          "content": "{{from_account}}"
+        }
+      }
+    ],
+    [
+      "Amount",
+      {
+        "TokenAmount": {
+          "decimals": "{{decimals}}",
+          "amount": "{{amount}}",
+          "symbol": "{{symbol}}"
+        }
+      }
+    ],
+    [
+      "Fees",
+      {
+        "TokenAmount": {
+          "decimals": "{{decimals}}",
+          "amount": "{{fees}}",
+          "symbol": "{{symbol}}"
+        }
+      }
+    ],
+    [
+      "Memo",
+      {
+        "Text": {
+          "content": "{{memo}}"
+        }
+      }
+    ]
+  ]
+}
