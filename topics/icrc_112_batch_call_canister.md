@@ -75,12 +75,14 @@ An ICRC-25 compliant signer must implement the [icrc25_supported_standards](./ic
 
 - **`canisterId` (`text`):** The id of the canister on which the call should be executed.
 - **`method` (`text`):** The name of the call method to be executed.
-- **`arg` (`text`):** The arguments for the call.
+- **`arg` (`blob`):** The arguments for the call.
 - **`nonce` (`blob` optional):** Arbitrary data of length at most 32 bytes, typically randomly generated. This can be used to create distinct requests with otherwise identical fields.
 
 **`validationCanisterId` (`text` optional):** The id of the canister which implements the [ICRC-114](./icrc_114_validate_batch_call.md) standard for validation. By default, the signer must call the `icrc114_validate` method from this canister to validate the responses of unsupported standards.
 
 ### Example RPC Request
+
+*note: the `arg` field is base64 decoded*
 
 ```json5
 {
