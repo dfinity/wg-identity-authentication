@@ -70,8 +70,7 @@ Once the connection is established, the relying party must continue sending `icr
 
 ### Heartbeats
 
-As mentioned above, the relying party continues to send periodic `"icrc29_status"` messages intended as heartbeat signals, and the signer responds to each received heartbeat with `"result": "ready"`. If the relying party does not receive responses for a given timeframe, it should treat this as a disconnection and stop sending `"icrc29_status"`
-messages.
+As mentioned above, the relying party continues to send periodic `"icrc29_status"` messages intended as heartbeat signals, and the signer responds to each received heartbeat with either `"result": "ready"` or `"result": "pending"`. If the relying party does not receive responses for a given timeframe, it should treat this as a disconnection and stop sending `"icrc29_status"` messages.
 
 ## Relying party
 
