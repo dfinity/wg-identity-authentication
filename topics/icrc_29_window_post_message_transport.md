@@ -56,7 +56,7 @@ Two types of responses are defined:
 - `"ready"` indicates the signer is able to receive and process messages immediately.
 - `"pending"` indicates the signer has successfully received the heartbeat and confirms its origin, but is temporarily unable to process further requests.
 
-While `"pending"`, the signer may not respond to subsequent heartbeats for a period of time. Once the signer is able to respond to future requests again, it must resume responding to heartbeats with `"ready"`.
+While `"pending"`, the signer may not respond to subsequent heartbeats for a period of time. The signer must resume responding to heartbeats with `"ready"` to indicate it is able to respond to future requests again once it's ready to do so.
 
 ### Establishment
 
@@ -75,7 +75,7 @@ messages.
 
 ## Relying party
 
-> The `origin` value of the first received reply to a `"icrc29_status"` message with `"result": "ready"` when establishing the communication channel, is mentioned below as `establishedOrigin`.
+> The `origin` value of the first received reply to a `"icrc29_status"` message with either `"result": "ready"` or `"result": "pending"` when establishing the communication channel, is mentioned below as `establishedOrigin`.
 >
 > The `window` that was opened for the signer is mentioned below as `signerWindow`.
 
