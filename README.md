@@ -60,7 +60,7 @@ Standards that describe how the communication channel between a relying party an
 |-------------------------------------------------------------------------------------------------------------|-------------|
 | [ICRC-29: Browser Post Message Transport](./topics/icrc_29_window_post_message_transport.md)                | ![APPROVED] |
 | [ICRC-94: Browser Extension Discovery and Transport](./topics/icrc_94_multi_injected_provider_discovery.md) | ![DRAFT]    |
-| ICRC-#: Browser URL Transport                                                                               | ![IDEA]     |
+| [ICRC-167: Browser URL Transport](./topics/icrc_167_browser_url_transport.md)                               | ![DRAFT]    |
 | ICRC-#: Wallet Connect Transport                                                                            | ![IDEA]     |
 | ICRC-#: Browser Web Signer Discovery                                                                        | ![IDEA]     |
 
