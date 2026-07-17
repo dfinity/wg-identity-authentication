@@ -162,13 +162,14 @@ No re-establishment is required between round-trips. The signer retains [ICRC-25
 
 An interaction is usually initiated by the relying party, but a signer may also initiate one, for example to start an authentication (delegation) flow with a relying party on the user's behalf. This mirrors [OpenID Connect third-party-initiated login](https://openid.net/specs/openid-connect-core-1_0.html#ThirdPartyInitiatedLogin).
 
-To initiate, the signer navigates the browser to one of the relying party's declared [callbacks](#callback-allow-list) with the following fragment parameter in place of a `message`:
+To initiate, the signer navigates the browser to one of the relying party's declared [callbacks](#callback-allow-list) with the following fragment parameters in place of a `message`:
 
 * `init` (required): a hint of the interaction the signer suggests the relying party start, such as the JSON-RPC method name (e.g. `icrc34_delegation`). It may be empty if the signer has no specific suggestion.
+* `signer` (optional): a hint identifying the initiating signer, given as its origin. When the relying party supports multiple signers, this lets it preselect the intended one and spare the user a signer-selection step on the first hop.
 
-On receiving an `init` navigation, the relying party begins an ordinary relying-party-initiated interaction (see [Request](#request)), guided by the `init` hint. It determines the signer to navigate to exactly as for any [relying-party-initiated](#relying-party) interaction; the `init` navigation does not name a signer, so the relying party never navigates to a signer chosen by untrusted input.
+On receiving an `init` navigation, the relying party begins an ordinary relying-party-initiated interaction (see [Request](#request)), guided by the `init` hint. It determines the signer to navigate to exactly as for any [relying-party-initiated](#relying-party) interaction. The `signer` hint may only *select* among signers the relying party already knows; the relying party must ignore a `signer` value that does not match one of them, and must never navigate to a signer solely because the `init` navigation named it. So neither `init` nor `signer` is a destination the relying party navigates to on untrusted say-so.
 
-`init` is only a trigger and carries no authority. Because it neither delivers a secret nor names a destination, the worst a forged `init` navigation can do is prompt the relying party to begin an authentication flow the user then drives. Landing on a declared callback merely ensures the signer can only navigate the user to a relying-party-sanctioned page.
+`init` is only a trigger and carries no authority. Because it delivers no secret and can at most select among signers the relying party already trusts, the worst a forged `init` navigation can do is prompt the relying party to begin an authentication flow the user then drives. Landing on a declared callback merely ensures the signer can only navigate the user to a relying-party-sanctioned page.
 
 ```mermaid
 sequenceDiagram
@@ -177,9 +178,9 @@ sequenceDiagram
     participant RP as Relying Party
     participant U as User
 
-    S ->> B: Navigate to declared callback<br>(init in fragment)
+    S ->> B: Navigate to declared callback<br>(init, optional signer hint in fragment)
     B ->> RP: Load callback URL
-    Note over RP: Determine signer as for any<br>relying-party-initiated interaction
+    Note over RP: Determine signer as for any relying-party-initiated<br>interaction (signer hint may preselect a known one)
     RP ->> B: Navigate to signer transport URL<br>(message + callback + state)
     B ->> S: Load transport URL — ordinary interaction continues
 ```
@@ -208,7 +209,7 @@ Requests are sent by navigating the browser to `signerUrl` with the `message`, `
 
 Responses are received on load of the `callback` URL by reading the `message` and `state` fragment parameters. A received message is considered a valid response only if its `state` matches the `state` the relying party generated for a request it is still awaiting, and each response `id` corresponds to a request in that batch; the relying party must ignore any other message. The relying party treats `signerOrigin` as the origin of the signer that produced the response.
 
-A navigation to a `callback` that carries `init` in place of `message` is a [signer-initiated interaction](#signer-initiated-interaction): the relying party begins an ordinary interaction, determining the signer as usual, as described in that section.
+A navigation to a `callback` that carries `init` in place of `message` is a [signer-initiated interaction](#signer-initiated-interaction): the relying party begins an ordinary interaction, determining the signer as usual — optionally preselecting a known signer from the `signer` hint — as described in that section.
 
 The relying party should remove the fragment from the `callback` URL after reading it, for example using [history.replaceState](https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState), to avoid leaking the message through subsequent navigations, bookmarks, or the referrer.
 
@@ -222,7 +223,7 @@ Before returning any response, the signer must validate `callbackUrl` against th
 
 Responses are sent by navigating the browser to `callbackUrl` with the `message` fragment parameter, and the `state` parameter if one was received, set as described in [Response](#response). The signer must only ever navigate to a validated `callbackUrl` and must not include the response anywhere other than the fragment. This guarantees that a relying party can only ever receive responses delivered to a callback it declared for its own origin.
 
-The signer may also initiate an interaction by navigating the browser to one of the relying party's declared callbacks with `init` in place of a `message`, as described in [Signer-Initiated Interaction](#signer-initiated-interaction). The same [Callback Allow-List](#callback-allow-list) constraint applies to the callback it navigates to.
+The signer may also initiate an interaction by navigating the browser to one of the relying party's declared callbacks with `init`, and optionally a `signer` hint, in place of a `message`, as described in [Signer-Initiated Interaction](#signer-initiated-interaction). The same [Callback Allow-List](#callback-allow-list) constraint applies to the callback it navigates to.
 
 ## Error Handling
 
