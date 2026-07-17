@@ -187,9 +187,32 @@ sequenceDiagram
 
 ### Deep Links
 
-The signer's transport URL and/or the `callback` URL may use a platform deep link instead of an `https:` web URL, allowing a native or mobile application to act as the signer or the relying party. Only **domain-verified** deep links may be used: [Android App Links](https://developer.android.com/training/app-links) and [iOS Universal Links](https://developer.apple.com/documentation/xcode/allowing-apps-and-websites-to-link-to-your-content), which the operating system binds to an application only after verifying ownership of the associated domain through `/.well-known/assetlinks.json` and `/.well-known/apple-app-site-association` respectively.
+The signer's transport URL and/or the `callback` URL may be a platform deep link instead of a browser-handled `https:` URL, allowing a native application to act as the signer or the relying party. A deep link may only be used when the operating system binds it to the application after verifying **ownership of the associated domain**; the verification file the domain hosts is what makes the link as trustworthy as a web origin. On mobile this browser-to-app hand-off is reliable; on desktop it is not (see [Desktop](#desktop) below).
 
-Custom URI schemes (for example `mysigner://`) must not be used to deliver a response. Their registration is not verified by the operating system, so any installed application can claim the same scheme and intercept a response, which may contain a delegation or other sensitive result. A verified deep link resolves to a real `https` origin, so the [Callback Allow-List](#callback-allow-list) applies to it unchanged; a custom scheme has no such origin and cannot be validated.
+#### iOS — Universal Links
+
+1. Add the [Associated Domains](https://developer.apple.com/documentation/xcode/supporting-associated-domains) capability to the app with an `applinks:<domain>` entry.
+2. Host an `apple-app-site-association` file at **`https://<domain>/.well-known/apple-app-site-association`**, served as `application/json` without redirects, listing the app's identifier and the paths it handles.
+3. Handle the incoming link in the app, for example through `NSUserActivity` — see [Supporting universal links in your app](https://developer.apple.com/documentation/xcode/supporting-universal-links-in-your-app).
+
+#### Android — App Links
+
+1. Add an `<intent-filter>` for the `https` scheme with `android:autoVerify="true"` to the activity in the app manifest — see [Handle Android App Links](https://developer.android.com/training/app-links).
+2. Host a Digital Asset Links file at **`https://<domain>/.well-known/assetlinks.json`** containing the app's package name and its SHA-256 signing-certificate fingerprint — see [Verify Android App Links](https://developer.android.com/training/app-links/verify-android-applinks).
+3. Handle the matched intent in the activity.
+
+#### Desktop
+
+Browser-to-native-app hand-off is not reliable on desktop, so this transport is generally not suitable for reaching a native desktop application through a deep link:
+
+* **macOS** supports [Universal Links](https://developer.apple.com/documentation/xcode/supporting-associated-domains) (since macOS 10.15), but the browser opens them in the browser by default, only offering the user the option to open the app.
+* **Windows** [app URI handlers](https://learn.microsoft.com/en-us/windows/apps/develop/launch/web-to-app-linking) do verify domain ownership (through a `windows-app-web-link` association file and a packaged app), but on the Windows 10 Creators Update and all Windows 11 versions, supported links opened in a modern browser (Edge Chromium, Firefox, and so on) stay in the browser rather than launching the app — only the deprecated Edge Legacy performed the hand-off. The only mechanism that launches a native app from a modern Windows browser is a custom protocol, which is not permitted (see below).
+
+A native desktop signer or relying party should therefore either run as a web page and use a browser transport such as [ICRC-29](./icrc_29_window_post_message_transport.md), or implement a **loopback callback** itself: a local `http://127.0.0.1:<port>` server used as the `callback`, as established for native apps by [RFC 8252](https://datatracker.ietf.org/doc/html/rfc8252#section-7.3). A loopback callback does not fit the origin-based [Callback Allow-List](#callback-allow-list) — its trust derives instead from the operating system guaranteeing that `127.0.0.1` is local — so reconciling the two is left to the implementer and out of scope for this standard.
+
+#### Custom schemes are not permitted
+
+Custom URI schemes and unverified protocol handlers (for example `mysigner://`, or a Win32 registry-registered protocol) must not be used to deliver a response or carry an `init` navigation. Their registration is not verified by the operating system, so any installed application can claim the same scheme and intercept the navigation, which may carry a delegation or other sensitive result. A verified deep link resolves to a real `https` origin, so the [Callback Allow-List](#callback-allow-list) applies to it unchanged; an unverified scheme has no such origin and cannot be validated.
 
 ### Message Size
 
