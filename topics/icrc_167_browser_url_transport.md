@@ -14,6 +14,8 @@ The JSON-RPC messages are carried in the URL [hash fragment](https://developer.m
 
 Because a single round-trip carries the browser away from the relying party and back, the request may be a [JSON-RPC 2.0 batch](https://www.jsonrpc.org/specification#batch) so that several messages, for example a delegation request and an accounts or attribute request, are answered in one navigation rather than one context switch per message.
 
+An interaction may also span several sequential round-trips, for when a later request depends on an earlier response, and either party may start an interaction: the relying party by navigating to the signer, or the signer by navigating to the relying party to initiate an authentication flow.
+
 ## Terminology
 
 * signer: A service that manages a user's keys and can sign and perform canister calls on their behalf.
@@ -148,6 +150,41 @@ The indirection is only as safe as its validation, so the signer's fetch and mat
 
 The relying party must serve the document with CORS headers that let the signer read it (`Access-Control-Allow-Origin`). It should list only clean endpoints it fully controls — no reflecting routes, user-content paths, or anything that redirects — since any entry can receive JSON-RPC responses, including delegations.
 
+The declared callbacks are the complete set of URLs a signer may navigate the browser to for a relying party. They serve both the [Response](#response) navigation and the [Signer-Initiated Interaction](#signer-initiated-interaction) navigation; the relying party distinguishes the two by which parameters are present.
+
+### Multi-step Interactions
+
+A logical interaction may consist of several sequential round-trips, for example when the content of a request depends on the response to an earlier one. Each round-trip is an independent navigation as described in [Request](#request) and [Response](#response); the relying party drives the sequence, navigating to the signer again after processing each response.
+
+No re-establishment is required between round-trips. The signer retains [ICRC-25 permission scopes](./icrc_25_signer_interaction_standard.md#permissions) keyed by the relying party origin, so a scope that is already `granted` is not prompted for again, and the relying party carries its own progress across each navigation using `state` and the persisted pending-request store.
+
+### Signer-Initiated Interaction
+
+An interaction is usually initiated by the relying party, but a signer may also initiate one, for example to start an authentication (delegation) flow with a relying party on the user's behalf. This mirrors [OpenID Connect third-party-initiated login](https://openid.net/specs/openid-connect-core-1_0.html#ThirdPartyInitiatedLogin).
+
+To initiate, the signer navigates the browser to one of the relying party's declared [callbacks](#callback-allow-list) with the following fragment parameters in place of a `message`:
+
+* `init` (required): a hint of the interaction the signer suggests the relying party start, such as the JSON-RPC method name (e.g. `icrc34_delegation`). It may be empty if the signer has no specific suggestion.
+* `transport` (required): the signer's transport URL the relying party should send its subsequent request to.
+
+On receiving an `init` navigation, the relying party begins an ordinary relying-party-initiated interaction (see [Request](#request)) against `transport`, guided by the `init` hint. Because `init` carries no secret result, it does not require the [Callback Allow-List](#callback-allow-list) to protect a delivery; landing on a declared callback merely ensures the signer can only navigate the user to a relying-party-sanctioned page.
+
+The relying party must not treat `transport` as trusted. Before navigating to it, the relying party must validate it against the signers it knows or is configured with, or confirm the signer with the user. Otherwise a malicious `init` navigation could lure the user to an attacker-controlled signer.
+
+```mermaid
+sequenceDiagram
+    participant S as Signer
+    participant B as Browser
+    participant RP as Relying Party
+    participant U as User
+
+    S ->> B: Navigate to declared callback<br>(init + transport in fragment)
+    B ->> RP: Load callback URL
+    Note over RP: Validate transport against known signers,<br>or confirm signer with user
+    RP ->> B: Navigate to signer transport URL<br>(message + callback + state)
+    B ->> S: Load transport URL — ordinary interaction continues
+```
+
 ### Deep Links
 
 The signer's transport URL and/or the `callback` URL may use a platform deep link instead of an `https:` web URL, allowing a native or mobile application to act as the signer or the relying party. Only **domain-verified** deep links may be used: [Android App Links](https://developer.android.com/training/app-links) and [iOS Universal Links](https://developer.apple.com/documentation/xcode/allowing-apps-and-websites-to-link-to-your-content), which the operating system binds to an application only after verifying ownership of the associated domain through `/.well-known/assetlinks.json` and `/.well-known/apple-app-site-association` respectively.
@@ -172,6 +209,8 @@ Requests are sent by navigating the browser to `signerUrl` with the `message`, `
 
 Responses are received on load of the `callback` URL by reading the `message` and `state` fragment parameters. A received message is considered a valid response only if its `state` matches the `state` the relying party generated for a request it is still awaiting, and each response `id` corresponds to a request in that batch; the relying party must ignore any other message. The relying party treats `signerOrigin` as the origin of the signer that produced the response.
 
+A navigation to a `callback` that carries `init` in place of `message` is a [signer-initiated interaction](#signer-initiated-interaction). The relying party must validate the accompanying `transport` before starting an ordinary interaction against it, as described in that section.
+
 The relying party should remove the fragment from the `callback` URL after reading it, for example using [history.replaceState](https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState), to avoid leaking the message through subsequent navigations, bookmarks, or the referrer.
 
 ## Signer
@@ -184,6 +223,8 @@ Before returning any response, the signer must validate `callbackUrl` against th
 
 Responses are sent by navigating the browser to `callbackUrl` with the `message` fragment parameter, and the `state` parameter if one was received, set as described in [Response](#response). The signer must only ever navigate to a validated `callbackUrl` and must not include the response anywhere other than the fragment. This guarantees that a relying party can only ever receive responses delivered to a callback it declared for its own origin.
 
+The signer may also initiate an interaction by navigating the browser to one of the relying party's declared callbacks with `init` and `transport` in place of a `message`, as described in [Signer-Initiated Interaction](#signer-initiated-interaction). The same [Callback Allow-List](#callback-allow-list) validation applies to the callback it navigates to.
+
 ## Error Handling
 
 ### Aborted Request
@@ -193,6 +234,10 @@ If the user dismisses the request, or the signer is otherwise unable to complete
 ### Invalid Callback
 
 If the signer cannot fetch the relying party's [Callback Allow-List](#callback-allow-list), or `callbackUrl` does not exactly match a declared entry, the signer must abort without returning a response. It must not navigate to an unvalidated `callbackUrl`, since doing so could deliver a response to a destination the relying party did not sanction.
+
+### Untrusted Initiating Signer
+
+On a [signer-initiated interaction](#signer-initiated-interaction), if the relying party cannot validate the received `transport` against a signer it knows or is configured with, and the user does not confirm it, the relying party must not navigate to it and should abort the interaction.
 
 ### Unreachable Signer or Relying Party
 
