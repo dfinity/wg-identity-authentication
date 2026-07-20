@@ -200,7 +200,13 @@ Browser-to-native-app hand-off is not reliable on desktop, so this transport is 
 * **macOS** supports [Universal Links](https://developer.apple.com/documentation/xcode/supporting-associated-domains) (since macOS 10.15), but the browser opens them in the browser by default, only offering the user the option to open the app.
 * **Windows** [app URI handlers](https://learn.microsoft.com/en-us/windows/apps/develop/launch/web-to-app-linking) do verify domain ownership (through a `windows-app-web-link` association file and a packaged app), but on the Windows 10 Creators Update and all Windows 11 versions, supported links opened in a modern browser (Edge Chromium, Firefox, and so on) stay in the browser rather than launching the app — only the deprecated Edge Legacy performed the hand-off. The only mechanism that launches a native app from a modern Windows browser is a custom protocol, which is not permitted (see below).
 
-To reach a native desktop application, the application should instead open a web page it controls and let that page act as an ordinary relying party, using any applicable transport with the signer. The page then forwards the messages to the application over a loopback connection — a local `http://127.0.0.1:<port>` server the application runs, following the loopback interface pattern from [RFC 8252](https://datatracker.ietf.org/doc/html/rfc8252#section-7.3). The page is the relying party and its `callback` is its own `https` URL, so the [Callback Allow-List](#callback-allow-list) applies unchanged; the loopback carries messages only between the page and the application and is never a signer callback.
+Instead, a native desktop application reaches a signer through a web page it controls:
+
+1. The application opens that web page in the user's browser.
+2. The page runs the flow as an ordinary relying party — its `callback` is a URL on the page's own origin — exactly as described above.
+3. On completion, the page relays the result to the application over a local channel the application listens on, such as a loopback `http://127.0.0.1:<port>` server (the pattern from [RFC 8252](https://datatracker.ietf.org/doc/html/rfc8252#section-7.3)).
+
+Only the web page participates in this transport; how it relays the result to the application is outside this standard.
 
 #### Custom schemes are not permitted
 
