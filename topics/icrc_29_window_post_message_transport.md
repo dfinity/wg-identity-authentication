@@ -22,7 +22,7 @@ For this standard to represent an [ICRC-25](https://github.com/dfinity/wg-identi
 
 The relying party initiates and maintains the communication channel by opening a new window for the signer and periodically sending `icrc29_status` messages using the [window.postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) API to indicate it is ready for interactions.
 
-The message has `targetOrigin` set to `'*'` and is a [JSON-RPC 2.0 (https://www.jsonrpc.org/specification) call with method `icrc29_status` and no parameters:
+The message has `targetOrigin` set to `'*'` and is a [JSON-RPC 2.0 (https://www.jsonrpc.org/specification) call with method `"icrc29_status"` and no parameters:
 
 ```json
 {
@@ -31,8 +31,11 @@ The message has `targetOrigin` set to `'*'` and is a [JSON-RPC 2.0 (https://www.
     "method": "icrc29_status"
 }
 ```
+The signer should respond to every `"icrc29_status"` message received to indicate its current readiness state. The response message `targetOrigin` should be set to the received `"icrc29_status"` message its `origin` property value.
 
-The signer should respond to every `icrc29_status` messsage received to indicate it is ready to receive additional messages. The response message `targetOrigin` should be set to the received `icrc29_status` message its `origin` property value:
+Two types of responses are defined:
+
+**Ready:**
 ```json
 {
     "jsonrpc": "2.0",
@@ -41,20 +44,37 @@ The signer should respond to every `icrc29_status` messsage received to indicate
 }
 ```
 
+**Pending:**
+```json
+{
+    "jsonrpc": "2.0",
+    "id": "1",
+    "result": "pending"
+}
+```
+
+- `"ready"` indicates the signer is able to receive and process messages immediately.
+- `"pending"` indicates the signer has successfully received the heartbeat and confirms its origin, but is temporarily unable to process further requests.
+
+While in the `"pending"` state, the signer may temporarily stop responding to heartbeats. Once it can accept requests again, it must resume responding to heartbeats with `"ready"`, indicating it is prepared to receive and process incoming requests.
+
 ### Establishment
 
-The connection is considered established once the relying party receives a `"result": "ready"` response to an `icrc29_status` message fromt the signer. This may not necessarily be a response to the first message sent by the relying party, since it might take some time for the signer to be ready. In case the relying party does not receive this response within a reasonable timeframe, it should treat this as a failure to establish the connection.
+The connection is considered established once the relying party receives a `"result": "ready"` response to an `icrc29_status` message from the signer. 
 
-Once the connection is established, the relying party must continue sending `icrc29_status` messages at regular intervals to maintain the connection.
+A `"pending"` response does not establish the channel, but it does authenticate the signer’s origin. The relying party should therefore wait longer for a subsequent `"ready"` response before timing out.
+
+The signer may not necessarily be able to respond to the first message sent by the relying party, since it might take some time for the signer to be able to respond. In case the relying party does not receive any response within a reasonable timeframe, it should treat this as a failure to establish the connection.
+
+Once the connection is established, the relying party must continue sending `icrc29_status` messages at regular intervals to maintain the connection and allow the signer to indicate it is temporarily unable to process further requests whenever needed with `"pending"` responses.
 
 ### Heartbeats
 
-As mentioned above, the relying party continues to send periodic `icrc29_status` messages intended as heartbeat signals, and the signer responds to each received heartbeat with `"result": "ready"`. If the relying party does not receive responses for a given timeframe, it should treat this as a disconnection and stop sending `icrc29_status`
-messages.
+As mentioned above, the relying party continues to send periodic `"icrc29_status"` messages intended as heartbeat signals, and the signer responds to each received heartbeat with either `"result": "ready"` or `"result": "pending"`. If the relying party does not receive responses for a given timeframe, it should treat this as a disconnection and stop sending `"icrc29_status"` messages.
 
 ## Relying party
 
-> The `origin` value of the first received reply to a `icrc29_status` message with `"result": "ready"` when establishing the communication channel, is mentioned below as `establishedOrigin`.
+> The `origin` value of the first received reply to a `"icrc29_status"` message with either `"result": "ready"` or `"result": "pending"` when establishing the communication channel, is mentioned below as `establishedOrigin`.
 >
 > The `window` that was opened for the signer is mentioned below as `signerWindow`.
 
@@ -69,7 +89,7 @@ After having closed the window, the signer must again go through the process of 
 
 ## Signer
 
-> The `origin` and `source` values of the received message `icrc29_status` when the communication channel was established, are mentioned below as `establishedOrigin` and `establishedSource` respectively.
+> The `origin` and `source` values of the received message `"icrc29_status"` when the communication channel was established, are mentioned below as `establishedOrigin` and `establishedSource` respectively.
 
 Messages are received by listening to `message` events and are considered as coming from relying party if both:
 - The received message `origin` property is equal to the `establishedOrigin`.
